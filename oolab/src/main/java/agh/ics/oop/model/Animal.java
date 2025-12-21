@@ -12,13 +12,9 @@ public class Animal implements WorldElement {
     private int kidsCount;
     private ArrayList<Integer> genomes;
 
-    public Animal(){
-        this(new Vector2d(2,2));
-    }
-
     public Animal(Vector2d position){
         this.position = position;
-        direction = MapDirection.NORTH;
+        direction = MapDirection.NORTH; // !!! trzeba bedzie pobierac genotyp. juz nie ma tak latwo
     }
 
     @Override
@@ -26,8 +22,12 @@ public class Animal implements WorldElement {
         return  switch (direction){
             case NORTH -> "N";
             case SOUTH -> "S";
+            case NORTH_EAST -> "NE";
             case EAST -> "E";
             case WEST -> "W";
+            case SOUTH_EAST -> "SE";
+            case SOUTH_WEST -> "SW";
+            case NORTH_WEST -> "NW";
         };
     }
 
@@ -35,21 +35,23 @@ public class Animal implements WorldElement {
         return Objects.equals(this.position, position);
     }
 
-    public void move(MoveDirection direction, MoveValidator moveValidator){
-        switch (direction){
-            case RIGHT -> this.direction = this.direction.next();
-            case LEFT -> this.direction = this.direction.previous();
-            case BACKWARDS, FORWARD -> {
-                Vector2d move = this.direction.toUnitVector();
-                if (direction == MoveDirection.BACKWARDS)
-                    move = move.opposite();
+    public void move(MoveDirection direction, MoveValidator moveValidator) {
+        switch (direction) {
+            case N  -> this.direction = MapDirection.NORTH;
+            case NE -> this.direction = MapDirection.NORTH_EAST;
+            case E  -> this.direction = MapDirection.EAST;
+            case SE -> this.direction = MapDirection.SOUTH_EAST;
+            case S  -> this.direction = MapDirection.SOUTH;
+            case SW -> this.direction = MapDirection.SOUTH_WEST;
+            case W  -> this.direction = MapDirection.WEST;
+            case NW -> this.direction = MapDirection.NORTH_WEST;
+        }
 
-                Vector2d positionAfterMove = this.position.add(move);
+        Vector2d moveVector = this.direction.toUnitVector();
+        Vector2d positionAfterMove = this.position.add(moveVector);
 
-                if(moveValidator.canMoveTo(positionAfterMove)){
-                    this.position = positionAfterMove;
-                }
-            }
+        if (moveValidator.canMoveTo(positionAfterMove)) {
+            this.position = positionAfterMove;
         }
     }
 

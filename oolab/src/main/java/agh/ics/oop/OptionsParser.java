@@ -17,13 +17,12 @@ public class OptionsParser {
         List<MoveDirection> moveDirectionList = new ArrayList<>();
 
         for(String arg : args){
-            switch (arg){
-                case "f" -> moveDirectionList.add(MoveDirection.FORWARD);
-                case "b" -> moveDirectionList.add(MoveDirection.BACKWARDS);
-                case "l" -> moveDirectionList.add(MoveDirection.LEFT);
-                case "r" -> moveDirectionList.add(MoveDirection.RIGHT);
-                default -> throw new IllegalArgumentException(arg + " is not legal move specification");
-            };
+            try {
+                MoveDirection direction = MoveDirection.fromString(arg);
+                moveDirectionList.add(direction);
+            } catch (IllegalStateException e) {
+                System.err.println("We just caught an error [" + arg + "]. " + e.getMessage());
+            }
         }
 
         return moveDirectionList;

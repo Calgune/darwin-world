@@ -11,12 +11,12 @@ class OptionsParserTest {
 
     @Test
     void parse() {
-        String[] args = new String[] {"l", "x", "r", "f", "l", "x", "x", "b"};
+        String[] args = new String[] {"6", "2", "0", "6", "4"};
 
         List<MoveDirection> moveDirections = List.of(
-                MoveDirection.LEFT, MoveDirection.RIGHT,
-                MoveDirection.FORWARD, MoveDirection.LEFT,
-                MoveDirection.BACKWARDS);
+                MoveDirection.W, MoveDirection.E,
+                MoveDirection.N, MoveDirection.W,
+                MoveDirection.S);
 
         assertEquals(moveDirections, OptionsParser.parse(args));
     }
