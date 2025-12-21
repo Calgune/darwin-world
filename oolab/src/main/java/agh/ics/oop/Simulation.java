@@ -4,9 +4,11 @@ import agh.ics.oop.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Simulation implements  Runnable{
-    private final List<Animal> animals = new ArrayList<>();
+    private List<Animal> animals = new ArrayList<>();
     private final List<MoveDirection> moves;
     private final WorldMap map;
 
@@ -27,9 +29,12 @@ public class Simulation implements  Runnable{
 
     @Override
     public void run(){
-        // pozycja poczatkowa zwierzakow
+        // usunięcie martwych zwierzaków
+        animals = animals.stream()
+                .filter(animal -> !animal.hasStarved())
+                .collect(Collectors.toList());
 
-
+        // ruch wszystkich zwierzaków
         for (int i = 0; i < moves.size(); i++) {
             try {
                 Thread.sleep(500);
@@ -38,8 +43,16 @@ public class Simulation implements  Runnable{
             }
             Animal animal = animals.get(i % animals.size());
             map.move(animal, moves.get(i));
-
         }
+
+        // zjadzanie roślin
+
+
+        // rozmnażanie
+
+        // wzrost nowych roślin
+
+
 
     }
 
