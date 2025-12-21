@@ -3,6 +3,7 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.OptionsParser;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -70,7 +71,7 @@ public class SimulationPresenter implements MapChangeListener {
         int rows = worldMap.getRowsCount();
         int columns = worldMap.getColumnsCount();
 
-        Boundary boundary = worldMap.getCurrentBound();
+        Boundary boundary = worldMap.getBoundary();
 
         canvas.setHeight(CELL_SIZE*(columns+1));
         canvas.setWidth(CELL_SIZE*(rows+1));
@@ -130,10 +131,13 @@ public class SimulationPresenter implements MapChangeListener {
         startButton.setDisable(true);
         String moves = movementsTextField.getText();
 
-        List<Vector2d> positions = List.of(new Vector2d(0,0), new Vector2d(10,10));
+        List<Vector2d> positions = List.of(new Vector2d(0,0), new Vector2d(0,0), new Vector2d(1,0));
         List<MoveDirection> directions = OptionsParser.parse(moves.split(""));
 
-        setWorldMap(new GrassField(10));
+        MapSettings settings = new MapSettings.Builder()
+                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 11)))
+                .build();
+        setWorldMap(new CylindricalMap(settings));
 
         Simulation simulation = new Simulation(positions, map, directions);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));

@@ -31,8 +31,8 @@ public class Simulation implements  Runnable{
     public void run(){
         // usunięcie martwych zwierzaków
         animals = animals.stream()
-                .filter(animal -> !animal.hasStarved())
-                .collect(Collectors.toList());
+            .filter(animal -> !animal.hasStarved())
+            .collect(Collectors.toList());
 
         // ruch wszystkich zwierzaków
         for (int i = 0; i < moves.size(); i++) {

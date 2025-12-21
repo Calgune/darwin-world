@@ -45,7 +45,7 @@ public interface WorldMap extends MoveValidator {
 
     Collection<WorldElement> getElements();
 
-    Boundary getCurrentBound();
+    Boundary getBoundary();
 
     int getRowsCount();
     int getColumnsCount();

@@ -6,7 +6,8 @@ import java.util.Objects;
 public class Animal implements WorldElement {
     private MapDirection direction;
     private Vector2d position;
-    private int energy;
+    // narazie
+    private int energy = 1;
     private int age;
     private int kidsCount;
     private ArrayList<Integer> genomes;
