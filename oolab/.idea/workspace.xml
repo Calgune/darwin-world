@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f037f9cd-6f3e-402b-b2bf-cff0ff59e605" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/simulation.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/simulation.fxml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="oolab" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="JUnit5 Test Class" />
+        <option value="Record" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Calgune&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Calgune/PO_2025_CZ1500_POCHWALSKI.git&quot;,
+    &quot;accountId&quot;: &quot;d98d6036-9926-4ffd-aab3-a5d3db61df19&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="34CWraPMAywcw8NYPQZuVPxLcai" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.AnimalMovementIT (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AnimalMovementIT.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AnimalMovementIT.testAnimalMovement (1).executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AnimalMovementIT.testAnimalMovement.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AnimalMovementTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.AnimalMovementTest.testAnimalMovement.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.canMoveTo.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.getUpperRightWorldElement.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.isOccupied.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.move.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.objectAt.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.place.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.testEmptyMap.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.testGetElements.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrassFieldTest.testToString.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MapDirectionTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MapDirectionTest.next.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MapDirectionTest.previous.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.OptionParserTest.changeInformation.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.OptionParserTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.OptionsParserTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.OptionsParserTest.parse.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RandomPositionGeneratorTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RandomPositionGeneratorTest.testGenerateEnough.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RandomPositionGeneratorTest.testGenerating.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RandomPositionGeneratorTest.testHasDuplicates.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.canMoveTo.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.isOccupied.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.move.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.objectAt.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.place.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.testGetElements.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.RectangularMapTest.testToString.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.SimulationTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.SimulationTest.testSimulationWithSeveralAnimals.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.add.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.follows.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.lowerLeft.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.opposite.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.precedes.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.subtract.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.testEquals.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.testToString.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Vector2dTest.upperRight.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.oolab [:agh.ics.oop.World.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.oolab [:agh.ics.oop.view.WorldGUI.main()].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#10 on lab8&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;http.proxy&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\pawel\Documents\GitHub\PO_2025_CZ1500_POCHWALSKI\oolab\src\main\resources" />
+      <recent name="C:\Users\pawel\Documents\GitHub\PO_2025_CZ1500_POCHWALSKI\oolab\src\test\java\integration" />
+      <recent name="C:\Users\pawel\Documents\GitHub\PO_2025_CZ1500_POCHWALSKI\oolab\src\test\java\agh\ics\oop" />
+      <recent name="C:\Users\pawel\Documents\GitHub\PO_2025_CZ1500_POCHWALSKI\oolab\src\test\java\agh\ics\oop\intergration" />
+      <recent name="C:\Users\pawel\Documents\GitHub\PO_2025_CZ1500_POCHWALSKI\oolab\src\test\java\agh\ics" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="agh.ics.oop.model" />
+      <recent name="agh.ics.oop" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.WorldGUI">
+    <configuration name="World" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="agh.ics.oop.World" />
+      <module name="oolab.main" />
+      <option name="PROGRAM_PARAMETERS" value="f b r l f f r r f f f f f f f f" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WorldGUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="agh.ics.oop.view.WorldGUI" />
+      <module name="oolab.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="agh.ics.oop.view.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="World" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="agh.ics.oop.World" />
+      <module name="oolab.main" />
+      <option name="PROGRAM_PARAMETERS" value="f b r l f f r r f f f f f f f f" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GrassFieldTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;agh.ics.oop.model.GrassFieldTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="GrassFieldTest.getUpperRightWorldElement" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;agh.ics.oop.model.GrassFieldTest.getUpperRightWorldElement&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="RectangularMapTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;agh.ics.oop.model.RectangularMapTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="RectangularMapTest.objectAt" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;agh.ics.oop.model.RectangularMapTest.objectAt&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.World" />
+      <item itemvalue="Application.WorldGUI" />
+      <item itemvalue="Gradle.GrassFieldTest.getUpperRightWorldElement" />
+      <item itemvalue="Gradle.RectangularMapTest" />
+      <item itemvalue="Gradle.RectangularMapTest.objectAt" />
+      <item itemvalue="Gradle.GrassFieldTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.WorldGUI" />
+        <item itemvalue="Gradle.RectangularMapTest" />
+        <item itemvalue="Gradle.GrassFieldTest" />
+        <item itemvalue="Gradle.GrassFieldTest.getUpperRightWorldElement" />
+        <item itemvalue="Gradle.RectangularMapTest.objectAt" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f037f9cd-6f3e-402b-b2bf-cff0ff59e605" name="Changes" comment="" />
+      <created>1760718234918</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1760718234918</updated>
+      <workItem from="1760718236899" duration="2758000" />
+      <workItem from="1760956535369" duration="2606000" />
+      <workItem from="1761216447304" duration="13000" />
+      <workItem from="1761227229247" duration="1175000" />
+      <workItem from="1761228419305" duration="1396000" />
+      <workItem from="1761308735668" duration="9626000" />
+      <workItem from="1761324819041" duration="1266000" />
+      <workItem from="1761568046127" duration="1381000" />
+      <workItem from="1761835529605" duration="16567000" />
+      <workItem from="1761861496168" duration="51000" />
+      <workItem from="1761914666432" duration="6732000" />
+      <workItem from="1762170500669" duration="1842000" />
+      <workItem from="1762439398042" duration="12000" />
+      <workItem from="1762439457083" duration="2365000" />
+      <workItem from="1762765406502" duration="17307000" />
+      <workItem from="1762981866767" duration="429000" />
+      <workItem from="1763044938942" duration="2724000" />
+      <workItem from="1763062501090" duration="6314000" />
+      <workItem from="1763111919820" duration="22475000" />
+      <workItem from="1763291333328" duration="3627000" />
+      <workItem from="1763717601537" duration="3363000" />
+      <workItem from="1763738698742" duration="733000" />
+      <workItem from="1764254289198" duration="3027000" />
+      <workItem from="1764271482098" duration="5798000" />
+      <workItem from="1764405280603" duration="5504000" />
+      <workItem from="1764771552600" duration="98000" />
+      <workItem from="1764860298470" duration="1920000" />
+      <workItem from="1764875097998" duration="739000" />
+      <workItem from="1765377904560" duration="5039000" />
+      <workItem from="1765396295029" duration="4406000" />
+      <workItem from="1765445911027" duration="8663000" />
+      <workItem from="1765468010626" duration="15059000" />
+      <workItem from="1765539365485" duration="6493000" />
+      <workItem from="1765824646703" duration="604000" />
+      <workItem from="1766067231382" duration="2542000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/agh/ics/oop/presenter/SimulationPresenter.java</url>
+          <line>122</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
