@@ -2,7 +2,6 @@ package agh.ics.oop.view;
 
 
 import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.GrassField;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
 import agh.ics.oop.presenter.SimulationPresenter;
@@ -28,9 +27,9 @@ public class SimulationApp extends Application {
 
         configureStage(primaryStage, viewRoot);
 
-        WorldMap map = new GrassField(10);
-        presenter.setWorldMap(map);
-        map.addObserver(presenter);
+//        WorldMap map = new GrassField(10);
+//        presenter.setWorldMap(map);
+//        map.addObserver(presenter);
 
         primaryStage.show();
     }
