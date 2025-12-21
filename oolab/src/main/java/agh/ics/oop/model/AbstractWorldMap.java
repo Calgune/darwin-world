@@ -1,27 +1,31 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.util.MapVisualizer;
+import agh.ics.oop.model.util.MapSettings;
 
 import java.util.*;
 
 public abstract class AbstractWorldMap implements WorldMap{
-    protected final Map<Vector2d, Animal> animals = new HashMap<>();
+    protected final Map<Vector2d, List<Animal>> animals = new HashMap<>();
+    protected final Map<Vector2d, Grass> grasses = new HashMap<>();
     protected final MapVisualizer mapVisualizer = new MapVisualizer(this);
     protected  final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
+    private final MapSettings settings;
 
-    public AbstractWorldMap(){
+    public AbstractWorldMap(MapSettings settings){
+        this.settings = settings;
         this.id = UUID.randomUUID();
     }
 
     @Override
     public int getRowsCount(){
-        return getCurrentBound().upperRight().getX()-getCurrentBound().lowerLeft().getX()+1;
+        return getBoundary().upperRight().getX()-getBoundary().lowerLeft().getX()+1;
     }
 
     @Override
     public int getColumnsCount(){
-        return getCurrentBound().upperRight().getY()-getCurrentBound().lowerLeft().getY()+1;
+        return getBoundary().upperRight().getY()-getBoundary().lowerLeft().getY()+1;
     }
 
     @Override
@@ -47,22 +51,24 @@ public abstract class AbstractWorldMap implements WorldMap{
 
     @Override
     public void place(Animal animal) throws IncorrectPositionException{
-        if(canMoveTo(animal.getPosition())){
-            animals.put(animal.getPosition(), animal);
-            mapChanged(String.format("zwierze zostalo umieszczone na %s", animal.getPosition()));
-        }
-        else throw new IncorrectPositionException(animal.getPosition());
+        animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
+                .add(animal);
+
+        mapChanged(String.format("zwierze zostalo umieszczone na %s", animal.getPosition()));
     }
 
     @Override
     public void move(Animal animal, MoveDirection direction) {
         if(animals.containsKey(animal.getPosition())){
+            List<Animal> fromCellList = animals.get(animal.getPosition());
+
             Vector2d previousPosition = animal.getPosition();
             MapDirection previousDirection = animal.getDirection();
 
-            animals.remove(animal.getPosition());
+            fromCellList.remove(animal);
             animal.move(direction, this);
-            animals.put(animal.getPosition(), animal);
+            animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
+                    .add(animal);
 
             mapChanged(String.format("zwierze zostalo przesuniete z %s %s na %s %s", previousPosition, previousDirection,
                     animal.getPosition(), animal.getDirection()));
@@ -71,30 +77,44 @@ public abstract class AbstractWorldMap implements WorldMap{
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        return animals.containsKey(position);
+        return animals.containsKey(position) && !animals.get(position).isEmpty();
     }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return !animals.containsKey(position);
+        return true;
     }
 
     @Override
     public String toString(){
-        return mapVisualizer.draw(getCurrentBound().lowerLeft(),
-                                  getCurrentBound().upperRight());
+        return mapVisualizer.draw(getBoundary().lowerLeft(),
+                getBoundary().upperRight());
     }
 
     @Override
     public WorldElement objectAt(Vector2d position){
-        return animals.get(position);
+        List<Animal> animalList = animals.get(position);
+
+        if(animalList == null || animalList.isEmpty()){
+            return null;
+        }
+        
+        return animalList.stream().
+                max(Comparator.comparingInt(Animal::getEnergy)).
+                get();
     }
 
     @Override
     public Collection<WorldElement> getElements(){
-        return new ArrayList<>(animals.values());
+        List<WorldElement> elements = new ArrayList<>();
+        for(List<Animal> animalList : animals.values()){
+            elements.addAll(animalList);
+        }
+        return elements;
     }
 
     @Override
-    abstract public Boundary getCurrentBound();
+    public Boundary getBoundary(){
+        return settings.getBoundary();
+    }
 }

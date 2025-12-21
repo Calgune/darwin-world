@@ -1,9 +1,16 @@
 package agh.ics.oop.model;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Animal implements WorldElement {
     private MapDirection direction;
     private Vector2d position;
+    // narazie
+    private int energy = 1;
+    private int age;
+    private int kidsCount;
+    private ArrayList<Integer> genomes;
 
     public Animal(){
         this(new Vector2d(2,2));
@@ -46,6 +53,10 @@ public class Animal implements WorldElement {
         }
     }
 
+    public void eat(){
+
+    }
+
     @Override
     public Vector2d getPosition(){
         return position;
@@ -53,5 +64,26 @@ public class Animal implements WorldElement {
 
     public MapDirection getDirection() {
         return direction;
+    }
+
+
+    public boolean hasStarved(){
+        return energy <= 0;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public int getKidsCount() {
+        return kidsCount;
+    }
+
+    public ArrayList<Integer> getGenomes() {
+        return genomes;
     }
 }
