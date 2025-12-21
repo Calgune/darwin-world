@@ -31,9 +31,9 @@ class RectangularMapTest {
         Animal animal1 = new Animal(new Vector2d(2, 2));
         assertDoesNotThrow(() -> map.place(animal1));
 
-        map.move(animal1, MoveDirection.FORWARD);
-        map.move(animal1, MoveDirection.LEFT);
-        map.move(animal1, MoveDirection.FORWARD);
+        map.move(animal1, MoveDirection.N);
+        map.move(animal1, MoveDirection.W);
+        map.move(animal1, MoveDirection.N);
 
         assertEquals(new Vector2d(1,3), animal1.getPosition());
         assertEquals(animal1, map.objectAt(new Vector2d(1, 3)));

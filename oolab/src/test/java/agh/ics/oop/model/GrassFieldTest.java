@@ -50,10 +50,9 @@ class GrassFieldTest {
             fail();
         }
 
-        grasses.move(animal1, MoveDirection.BACKWARDS);
-        grasses.move(animal1, MoveDirection.FORWARD);
-        grasses.move(animal3, MoveDirection.RIGHT);
-        grasses.move(animal3, MoveDirection.FORWARD);
+        grasses.move(animal1, MoveDirection.S);
+        grasses.move(animal1, MoveDirection.N);
+        grasses.move(animal3, MoveDirection.E);
 
         assertEquals(new Vector2d(2, 3), animal1.getPosition());
         assertEquals(new Vector2d(6, 5), animal3.getPosition());
