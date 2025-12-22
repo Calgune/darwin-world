@@ -82,7 +82,21 @@ public abstract class AbstractWorldMap implements WorldMap{
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return true;
+        return position.getY() >= 0 && position.getY() < getBoundary().upperRight().getY();
+    }
+
+    @Override
+    public Vector2d nextPosition(Vector2d position) {
+        int newX = position.getX();
+        int width = getBoundary().upperRight().getX();
+
+        if (newX < 0) {
+            newX = width;
+        } else if (newX >= width) {
+            newX = 0;
+        }
+
+        return new Vector2d(newX, position.getY());
     }
 
     @Override

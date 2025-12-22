@@ -1,5 +1,4 @@
 package agh.ics.oop.model;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -14,7 +13,8 @@ public class Animal implements WorldElement {
 
     public Animal(Vector2d position){
         this.position = position;
-        direction = MapDirection.NORTH; // !!! trzeba bedzie pobierac genotyp. juz nie ma tak latwo
+        direction = MapDirection.NORTH; // nieuzywane pole. zwierzaki przed ruchem i tak obracaja sie
+        // o nowa wartosc
     }
 
     @Override
@@ -36,22 +36,17 @@ public class Animal implements WorldElement {
     }
 
     public void move(MoveDirection direction, MoveValidator moveValidator) {
-        switch (direction) {
-            case N  -> this.direction = MapDirection.NORTH;
-            case NE -> this.direction = MapDirection.NORTH_EAST;
-            case E  -> this.direction = MapDirection.EAST;
-            case SE -> this.direction = MapDirection.SOUTH_EAST;
-            case S  -> this.direction = MapDirection.SOUTH;
-            case SW -> this.direction = MapDirection.SOUTH_WEST;
-            case W  -> this.direction = MapDirection.WEST;
-            case NW -> this.direction = MapDirection.NORTH_WEST;
-        }
-
+        this.direction = this.direction.changeDirection(direction.getValue());
         Vector2d moveVector = this.direction.toUnitVector();
         Vector2d positionAfterMove = this.position.add(moveVector);
 
         if (moveValidator.canMoveTo(positionAfterMove)) {
-            this.position = positionAfterMove;
+            this.position = moveValidator.nextPosition(positionAfterMove);
+        } else {
+            this.direction = this.direction.bounceOfTheWall();
+            Vector2d newMoveVector = this.direction.toUnitVector();
+            Vector2d newPositionAfterMove = this.position.add(newMoveVector);
+            this.position = moveValidator.nextPosition(newPositionAfterMove);
         }
     }
 

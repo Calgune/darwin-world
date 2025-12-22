@@ -131,7 +131,7 @@ public class SimulationPresenter implements MapChangeListener {
         startButton.setDisable(true);
         String moves = movementsTextField.getText();
 
-        List<Vector2d> positions = List.of(new Vector2d(0,0), new Vector2d(0,0), new Vector2d(1,0));
+        List<Vector2d> positions = List.of(new Vector2d(0,0), new Vector2d(0,0));
         List<MoveDirection> directions = OptionsParser.parse(moves.split(""));
 
         MapSettings settings = new MapSettings.Builder()

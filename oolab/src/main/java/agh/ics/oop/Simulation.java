@@ -37,7 +37,7 @@ public class Simulation implements  Runnable{
         // ruch wszystkich zwierzaków
         for (int i = 0; i < moves.size(); i++) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
