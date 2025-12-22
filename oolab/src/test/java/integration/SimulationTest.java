@@ -1,10 +1,8 @@
 package integration;
 import agh.ics.oop.Simulation;
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.RectangularMap;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 
+import agh.ics.oop.model.util.MapSettings;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 
@@ -33,8 +31,11 @@ public class SimulationTest {
                 new Vector2d(10, 3)
         );
 
-        RectangularMap map = new RectangularMap(4, 4);
-        Simulation simulation = new Simulation(positions, map, directions);
+        MapSettings settings = new MapSettings.Builder()
+                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 11)))
+                .build();
+        CylindricalMap map = new CylindricalMap(settings);
+        Simulation simulation = new Simulation(positions, map, directions, settings);
         simulation.run();
 
         List<Animal> animals = simulation.getAnimals();

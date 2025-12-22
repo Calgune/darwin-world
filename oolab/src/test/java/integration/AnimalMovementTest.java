@@ -2,6 +2,7 @@ package integration;
 
 import agh.ics.oop.OptionsParser;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.util.MapSettings;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +24,11 @@ public class AnimalMovementTest {
 
         assertEquals(moveDirectionsProper, moveDirections);
 
-        MoveValidator map = new RectangularMap(4, 4);
+        MapSettings settings = new MapSettings.Builder()
+                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 11)))
+                .build();
+
+        MoveValidator map = new CylindricalMap(settings);
         Animal animal = new Animal(new Vector2d(2, 2));
 
         assertEquals(MapDirection.NORTH, animal.getDirection());
