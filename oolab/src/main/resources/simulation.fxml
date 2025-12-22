@@ -9,7 +9,7 @@
    <top>
       <HBox alignment="CENTER" prefHeight="56.0" prefWidth="506.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="movementsTextField" prefHeight="26.0" prefWidth="400.0" text="0001123" />
+            <TextField fx:id="movementsTextField" prefHeight="26.0" prefWidth="400.0" text="7" />
             <Button fx:id="startButton" alignment="CENTER" mnemonicParsing="false" onAction="#onSimulationStartClicked" prefHeight="19.0" prefWidth="78.0" text="Start">
                <HBox.margin>
                   <Insets left="10.0" />

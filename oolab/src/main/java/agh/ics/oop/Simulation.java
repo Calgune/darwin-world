@@ -6,104 +6,110 @@ import com.sun.scenario.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Simulation implements  Runnable {
-    private List<Animal> animals = new ArrayList<>();
     private final WorldMap map;
     private final MapSettings settings;
 
-    public Simulation(List<Vector2d> positions, WorldMap map, int genomeLength, MapSettings settings) { //POPRAWIC
-//     public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> moves, MapSettings settings){
-//         this.moves = moves;
+    public void spawnGrasses(int grassToSpawn){
+        int grassInJungle = (int) (Math.ceil(grassToSpawn * 0.8f));
+        int grassOnSteppes = (int) (Math.floor(grassToSpawn * 0.2f));
+
+        RandomPositionGenerator jungleGen = new RandomPositionGenerator(map.getJungleBoundary(), grassInJungle);
+        jungleGen.forEach(pos -> map.placeGrass(new Grass(pos)));
+
+        Random random = new Random();
+        int grassCountOnNorth = (int) Math.ceil(grassOnSteppes / 2.0f);
+        int grassCountOnSouth = (int) Math.floor(grassOnSteppes / 2.0f);
+
+        if (random.nextInt(0, 2) == 0) {
+            int temp = grassCountOnNorth;
+            grassCountOnNorth = grassCountOnSouth;
+            grassCountOnSouth = temp;
+        }
+
+        RandomPositionGenerator northGen = new RandomPositionGenerator(map.getNorthSteppes(), grassCountOnNorth);
+        RandomPositionGenerator southGen = new RandomPositionGenerator(map.getSouthSteppes(), grassCountOnSouth);
+
+        northGen.forEach(pos -> map.placeGrass(new Grass(pos)));
+        southGen.forEach(pos -> map.placeGrass(new Grass(pos)));
+    }
+
+    public Simulation(WorldMap map, MapSettings settings) { //POPRAWIC
         this.map = map;
         this.settings = settings;
 
-        int grassInJungle = (int) (Math.ceil(settings.getInitialGrassCount() * 0.8f));
-        int grassOnSteppes = (int) (Math.floor(settings.getInitialGrassCount() * 0.2f));
+        spawnGrasses(settings.getInitialGrassCount());
 
-        RandomPositionGenerator jungleGen = new RandomPositionGenerator(map.getJungleBoundary(), grassInJungle);
-        jungleGen.forEach(pos -> map.place(new Grass(pos)));
+        //spawnowanie zwierząt na początku
+        Random random = new Random();
+        IntStream.range(0, settings.getInitialAnimalCount()).forEach(i -> {
+            Genotype genes = Genotype.generateRandom(settings.getGenomeLength());
 
-        RandomPositionGenerator northGen = new RandomPositionGenerator(map.getNorthSteppes(), (int) Math.ceil(grassOnSteppes / 2.0f));
-        northGen.forEach(pos -> map.place(new Grass(pos)));
+            Vector2d position = Vector2d.randomPositive(settings.getBoundary().upperRight().getX(),
+                    settings.getBoundary().upperRight().getY());
 
-        RandomPositionGenerator southGen = new RandomPositionGenerator(map.getSouthSteppes(), (int) Math.floor(grassOnSteppes / 2.0f));
-        southGen.forEach(pos -> map.place(new Grass(pos)));
-
-        for (Vector2d position : positions) {
-            Genotype genes = Genotype.generateRandom(genomeLength);
-            Animal animal = new Animal(position, genes);
-            map.place(animal);
-            animals.add(animal);
-        }
-//            try {
-//                map.place(animal);
-//                animals.add(animal);
-//            } catch (IncorrectPositionException e) {
-//                e.printStackTrace();
-//            }
-//        }
+            Animal animal = new Animal(position, genes, settings.getInitialAnimalEnergy());
+            map.placeAnimal(animal);
+        });
     }
 
     @Override
-    public void run() { // bedzie trzeba to zamienic na while True. Na razie dam tutaj po
-        // prostu jakas stala.
+    public void run(){
+        for (int i = 0; i < 1000; i++) { // ten for powinien obejmowac wszystkie metody,
+            // 1 usunięcie martwych zwierzaków
+            // zwierzeta trzeba jeszcze z mapy usunąć
+            map.getAnimalsList().
+                    stream().
+                    filter(Animal::hasStarved).
+                    forEach(map::removeAnimal);
 
-        for (int i = 0; i < 10; i++) { // ten for powinien obejmowac wszystkie metody,
+            // 2 ruch wszystkich zwierzaków
+            // bedzie trzeba to zamienic na while True. Na razie dam tutaj stałą
             // ale dopoki ich nie ma to rusza tylko zwierzakami.
-            for (Animal animal : animals) {
+
+            map.getAnimalsList().forEach(animal -> {
                 map.move(animal);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-            }
+            });
+
+           // 3 zjadzanie roślin
+           // aktualizowanie energi, usunięcie rośliny
+            List<Grass> toRemove = map.getGrassesList().
+                    stream().
+                    filter(grass -> map.isOccupiedByAnimal(grass.getPosition())).
+                    toList();
+
+            // usunięcie rośliny
+            toRemove.forEach(grass -> {
+                map.removeGrass(grass);
+                // animal = (tu dajemy funkcje kto dostaje energie funckje !!!!!)
+                // animal.eat(settings.getEnergyFromGrass())
+            });
+
+
+           // 4 rozmnażanie
+
+
+           // aktualizowanie energi
+
+           // 5 wzrost nowych roślin
+            spawnGrasses(settings.getNewDailyGrasses());
+
+           // 6 utrata energi zewzględu na przeminięcie dnia
+            map.getAnimalsList().forEach(animal -> animal.loseEnergy(settings.getDailyEnergyDecay()));
         }
-
-    }
-
-    public List<Animal> getAnimals() {
-        return animals;
     }
 }
 
-//     @Override
-//     public void run(){
-//         // 1 usunięcie martwych zwierzaków
-//         // zwierzeta trzeba jeszcze z mapy usunąć
-//         animals = animals.stream()
-//             .filter(animal -> !animal.hasStarved())
-//             .collect(Collectors.toList());
-
-//         // ruch wszystkich zwierzaków
-//         for (int i = 0; i < 10; i++) { // ten for powinien obejmowac wszystkie metody,
-//             // ale dopoki ich nie ma to rusza tylko zwierzakami.
-//             for (Animal animal : animals) {
-//                 map.move(animal);
-//                 try {
-//                     Thread.sleep(1000);
-//                 } catch (InterruptedException e) {
-//                     throw new RuntimeException(e);
-//                 }
-//             }
-//         }
-
-    // 3 zjadzanie roślin
-    // aktualizowanie energi
-
-    // usunięcie rośliny
 
 
-    // 4 rozmnażanie
-    // aktualizowanie energi
-
-    // usunięcie rośliny
-
-
-    // 5 wzrost nowych roślin
-
-    // 6 utrata energi zewzględu na przeminięcie dnia
-//}
