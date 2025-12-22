@@ -92,8 +92,9 @@ public class Simulation implements  Runnable {
             // usunięcie rośliny
             toRemove.forEach(grass -> {
                 map.removeGrass(grass);
-                // animal = (tu dajemy funkcje kto dostaje energie funckje !!!!!)
-                // animal.eat(settings.getEnergyFromGrass())
+                List<Animal> animals = map.getAnimalsAt(grass.getPosition());
+                Animal animal = PriorityHandler.whoEats(animals);
+                animal.eat(settings.getEnergyFromGrass());
             });
 
 
