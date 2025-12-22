@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class Vector2d {
     private final int x, y;
@@ -66,5 +67,10 @@ public class Vector2d {
 
     public int getY() {
         return y;
+    }
+
+    public static Vector2d randomPositive(int maxX, int maxY){
+        Random random = new Random();
+        return new Vector2d(random.nextInt(0,maxX+1), random.nextInt(0,maxY+1));
     }
 }

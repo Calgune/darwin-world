@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,9 +19,9 @@ public interface WorldMap extends MoveValidator {
      * @param animal The animal to be placed on the map.
      * @return True if the animal was placed. The rules for valid placement are the same as for movement.
      */
-    void place(Animal animal);
+    void placeAnimal(Animal animal);
 
-    void place(Grass grass);
+    void placeGrass(Grass grass);
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
@@ -61,4 +62,12 @@ public interface WorldMap extends MoveValidator {
 
     public Boundary getSouthSteppes();
     public Boundary getNorthSteppes();
+    public Collection<Animal> getAnimalsList();
+    public void removeAnimal(Animal animal);
+    public void removeGrass(Grass grass);
+    public Collection<Grass> getGrassesList();
+    public boolean isOccupiedByAnimal(Vector2d position);
+    public boolean isOccupiedByGrass(Vector2d position);
+    public int animalsCountOnCell(Vector2d position);
+    Collection<List<Animal>> getReproductionCells();
 }

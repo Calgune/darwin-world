@@ -148,18 +148,20 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
         startButton.setDisable(true);
-        int genomeLength = Integer.parseInt(movementsTextField.getText());
-
-        List<Vector2d> positions = List.of(new Vector2d(0,0), new Vector2d(0,0));
 
         MapSettings settings = new MapSettings.Builder()
                 .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
                 .initialGrassCount(30)
+                .initialAnimalEnergy(200)
+                .genomeLength(Integer.parseInt(movementsTextField.getText()))
+                .initialAnimalCount(15)
+                .newDailyGrasses(8)
                 .build();
 
         setWorldMap(new CylindricalMap(settings));
 
-        Simulation simulation = new Simulation(positions, map, genomeLength, settings);
+        Simulation simulation = new Simulation(map, settings); // POPRAWIC!
+//        Simulation simulation = new Simulation(positions, map, directions, settings);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
 

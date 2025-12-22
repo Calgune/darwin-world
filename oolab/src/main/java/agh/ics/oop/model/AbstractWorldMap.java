@@ -3,7 +3,9 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.util.MapVisualizer;
 import agh.ics.oop.model.util.MapSettings;
 
+import javax.swing.text.Position;
 import java.util.*;
+import java.util.stream.Stream;
 
 public abstract class AbstractWorldMap implements WorldMap{
     protected final Map<Vector2d, List<Animal>> animals = new HashMap<>();
@@ -82,13 +84,14 @@ public abstract class AbstractWorldMap implements WorldMap{
     }
 
     @Override
-    public void place(Animal animal){
+    public void placeAnimal(Animal animal){
         animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
                 .add(animal);
         mapChanged(String.format("zwierze zostalo umieszczone na %s", animal.getPosition()));
     }
 
-    public void place(Grass grass){
+    @Override
+    public void placeGrass(Grass grass){
         grasses.put(grass.getPosition(), grass);
         mapChanged(String.format("trawa zostala umieszczone na %s", grass.getPosition()));
     }
@@ -113,7 +116,17 @@ public abstract class AbstractWorldMap implements WorldMap{
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        return (animals.containsKey(position) && !animals.get(position).isEmpty()) || grasses.containsKey(position);
+        return  isOccupiedByAnimal(position) || isOccupiedByGrass(position);
+    }
+
+    @Override
+    public boolean isOccupiedByAnimal(Vector2d position){
+        return animals.containsKey(position) && !animals.get(position).isEmpty();
+    }
+
+    @Override
+    public boolean isOccupiedByGrass(Vector2d position){
+        return grasses.containsKey(position);
     }
 
     @Override
@@ -162,6 +175,55 @@ public abstract class AbstractWorldMap implements WorldMap{
         }
         elements.addAll(grasses.values());
         return elements;
+    }
+
+    @Override
+    public Collection<Animal> getAnimalsList(){
+        List<Animal> result = new ArrayList<>();
+        for (List<Animal> list : animals.values()) {
+            result.addAll(list);
+        }
+        return result;
+    }
+
+    @Override
+    public Collection<List<Animal>> getReproductionCells(){
+        return animals.values()
+                .stream()
+                .filter(animalsList -> !animalsList.isEmpty())
+                .map(animalsList -> animalsList.stream()
+                        .filter(animal -> animal.getEnergy() > settings.getReproductionEnergyThreshold())
+                        .toList()
+                )
+                .filter(animalsList -> !animalsList.isEmpty())
+                .toList();
+    }
+
+    @Override
+    public Collection<Grass> getGrassesList(){
+        return grasses.values();
+    }
+
+    @Override
+    public void removeAnimal(Animal animal){
+        List<Animal> animalList = animals.get(animal.getPosition());
+        if(animalList == null || animalList.isEmpty()){
+            return;
+        }
+        animalList.remove(animal);
+    }
+
+    @Override
+    public void removeGrass(Grass grass){
+        if(!grasses.containsKey(grass.getPosition())){
+            return;
+        }
+        grasses.remove(grass.getPosition());
+    }
+
+    @Override
+    public int animalsCountOnCell(Vector2d position){
+        return animals.get(position).size();
     }
 
     @Override

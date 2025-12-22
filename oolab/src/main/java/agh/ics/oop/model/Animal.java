@@ -6,16 +6,16 @@ public class Animal implements WorldElement {
     private MapDirection direction;
     private Vector2d position;
     // narazie
-    private int energy = 1;
+    private int energy;
     private int age;
     private int kidsCount;
     private final Genotype genotype;
 
-    public Animal(Vector2d position, Genotype genes){
+    public Animal(Vector2d position, Genotype genes, int energy){
         this.position = position;
         direction = MapDirection.NORTH; // zwierzak przed kaxdym ruchem i tak najpierw
         // sie obraca. moze byc tutaj dowolna wartosc
-
+        this.energy = energy;
 //        this.direction = MapDirection.values()[(int) (Math.random() * 8)];
 
         this.genotype = genes;
@@ -60,13 +60,18 @@ public class Animal implements WorldElement {
         }
     }
 
-    public void eat(){
-
-    }
 
     @Override
     public Vector2d getPosition(){
         return position;
+    }
+
+    public void eat(int energyFromGrass){
+        energy += energyFromGrass;
+    }
+
+    public void loseEnergy(int decay) {
+        energy -= decay;
     }
 
     public MapDirection getDirection() {
