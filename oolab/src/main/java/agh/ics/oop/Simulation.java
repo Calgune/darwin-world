@@ -14,9 +14,7 @@ public class Simulation implements  Runnable {
     private final WorldMap map;
     private final MapSettings settings;
 
-    public Simulation(List<Vector2d> positions, WorldMap map, int genomeLength, MapSettings settings) { //POPRAWIC
-//     public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> moves, MapSettings settings){
-//         this.moves = moves;
+    public Simulation(List<Vector2d> positions, WorldMap map, int genomeLength, MapSettings settings) {
         this.map = map;
         this.settings = settings;
 
@@ -38,20 +36,25 @@ public class Simulation implements  Runnable {
             map.place(animal);
             animals.add(animal);
         }
-//            try {
-//                map.place(animal);
-//                animals.add(animal);
-//            } catch (IncorrectPositionException e) {
-//                e.printStackTrace();
-//            }
-//        }
+    }
+
+    public List<Animal> getAnimals() {
+        return animals;
     }
 
     @Override
-    public void run() { // bedzie trzeba to zamienic na while True. Na razie dam tutaj po
+    public void run() {
+        // 1 usunięcie martwych zwierzaków
+        // zwierzeta trzeba jeszcze z mapy usunąć
+        animals = animals.stream()
+                .filter(animal -> !animal.hasStarved())
+                .collect(Collectors.toList());
+
+        // ruch wszystkich zwierzaków
+        // bedzie trzeba to zamienic na while True. Na razie dam tutaj po
         // prostu jakas stala.
 
-        for (int i = 0; i < 10; i++) { // ten for powinien obejmowac wszystkie metody,
+        for (int i = 0; i < 30; i++) { // ten for powinien obejmowac wszystkie metody,
             // ale dopoki ich nie ma to rusza tylko zwierzakami.
             for (Animal animal : animals) {
                 map.move(animal);
@@ -63,47 +66,20 @@ public class Simulation implements  Runnable {
             }
         }
 
-    }
-
-    public List<Animal> getAnimals() {
-        return animals;
+//     3 zjadzanie roślin
+//     aktualizowanie energi
+//
+//     usunięcie rośliny
+//
+//
+//     4 rozmnażanie
+//     aktualizowanie energi
+//
+//     usunięcie rośliny
+//
+//
+//     5 wzrost nowych roślin
+//
+//     6 utrata energi zewzględu na przeminięcie dnia
     }
 }
-
-//     @Override
-//     public void run(){
-//         // 1 usunięcie martwych zwierzaków
-//         // zwierzeta trzeba jeszcze z mapy usunąć
-//         animals = animals.stream()
-//             .filter(animal -> !animal.hasStarved())
-//             .collect(Collectors.toList());
-
-//         // ruch wszystkich zwierzaków
-//         for (int i = 0; i < 10; i++) { // ten for powinien obejmowac wszystkie metody,
-//             // ale dopoki ich nie ma to rusza tylko zwierzakami.
-//             for (Animal animal : animals) {
-//                 map.move(animal);
-//                 try {
-//                     Thread.sleep(1000);
-//                 } catch (InterruptedException e) {
-//                     throw new RuntimeException(e);
-//                 }
-//             }
-//         }
-
-    // 3 zjadzanie roślin
-    // aktualizowanie energi
-
-    // usunięcie rośliny
-
-
-    // 4 rozmnażanie
-    // aktualizowanie energi
-
-    // usunięcie rośliny
-
-
-    // 5 wzrost nowych roślin
-
-    // 6 utrata energi zewzględu na przeminięcie dnia
-//}
