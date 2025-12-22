@@ -66,6 +66,15 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
+    private void drawRectangle(GraphicsContext graphicsContext, int v, int v1, int v2, int v3, Color color){
+        graphicsContext.save();
+        graphicsContext.setFill(color);
+
+        graphicsContext.fillRect(v, v1, v2, v3);
+
+        graphicsContext.restore();
+    }
+
     public void drawMap(WorldMap worldMap){
 
         int rows = worldMap.getRowsCount();
@@ -84,16 +93,7 @@ public class SimulationPresenter implements MapChangeListener {
         graphicsContext2d.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         drawTextInTheMiddleOfRectangle(graphicsContext2d, "x/y", 0, 0);
 
-        // rysowanie siatki liniami
-        for (int i = 0; i <= columns+1; i++) {
-            int y = i * CELL_SIZE;
-            graphicsContext2d.strokeLine(0, y, (rows+1) * CELL_SIZE, y);
-        }
 
-        for (int j = 0; j <= rows+1; j++) {
-            int x = j * CELL_SIZE;
-            graphicsContext2d.strokeLine(x, 0, x, (columns+1) * CELL_SIZE);
-        }
 
         // rysowanie elementów mapy (zwierzki i trawa w tym przypadku)
         // x i y w pętli tłumaczy wspołrzędne mapy na wspołrzędne canvasu
@@ -106,10 +106,29 @@ public class SimulationPresenter implements MapChangeListener {
                 int y = (boundary.upperRight().getY() - i + 1) * CELL_SIZE;
 
                 Vector2d position = new Vector2d(j, i);
+                if(position.precedes(map.getJungleBoundary().upperRight()) &&
+                        position.follows(map.getJungleBoundary().lowerLeft())){
+                    drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, Color.rgb(34, 139, 34));
+                }
+                else {
+                    drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, Color.rgb(144, 238, 144));
+                }
+
                 if(map.isOccupied(position)){
                     drawTextInTheMiddleOfRectangle(graphicsContext2d, map.objectAt(position).toString(), x, y);
                 }
             }
+        }
+
+        // rysowanie siatki liniami
+        for (int i = 0; i <= columns+1; i++) {
+            int y = i * CELL_SIZE;
+            graphicsContext2d.strokeLine(0, y, (rows+1) * CELL_SIZE, y);
+        }
+
+        for (int j = 0; j <= rows+1; j++) {
+            int x = j * CELL_SIZE;
+            graphicsContext2d.strokeLine(x, 0, x, (columns+1) * CELL_SIZE);
         }
 
         // rysowanie opisu osi x
@@ -135,11 +154,13 @@ public class SimulationPresenter implements MapChangeListener {
         List<MoveDirection> directions = OptionsParser.parse(moves.split(""));
 
         MapSettings settings = new MapSettings.Builder()
-                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 11)))
+                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
+                .initialGrassCount(30)
                 .build();
+
         setWorldMap(new CylindricalMap(settings));
 
-        Simulation simulation = new Simulation(positions, map, directions);
+        Simulation simulation = new Simulation(positions, map, directions, settings);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
 

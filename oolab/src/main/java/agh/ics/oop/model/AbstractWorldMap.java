@@ -12,10 +12,42 @@ public abstract class AbstractWorldMap implements WorldMap{
     protected  final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
     private final MapSettings settings;
+    private final Boundary jungleBoundary;
+    private final Boundary northSteppes;
+    private final Boundary southSteppes;
 
     public AbstractWorldMap(MapSettings settings){
         this.settings = settings;
         this.id = UUID.randomUUID();
+        this.jungleBoundary = calculateJungleBoundary();
+        this.northSteppes = calculateNorthSteppes();
+        this.southSteppes = calculateSouthSteppes();
+    }
+
+    private Boundary calculateJungleBoundary() {
+        Boundary mapBoundary = settings.getBoundary();
+        int height = mapBoundary.upperRight().getY() - mapBoundary.lowerLeft().getY() + 1;
+        int jungleHeight = (int)(height * 0.2f);
+
+        int bottomY = height / 2 - jungleHeight / 2;
+
+        return new Boundary(new Vector2d(0, bottomY),
+                new Vector2d(mapBoundary.upperRight().getX(), bottomY+jungleHeight));
+    }
+
+    private Boundary calculateNorthSteppes(){
+        return new Boundary(new Vector2d(jungleBoundary.lowerLeft().getX(), jungleBoundary.upperRight().getY()+1),
+                settings.getBoundary().upperRight());
+    }
+
+    private Boundary calculateSouthSteppes(){
+        return new Boundary(settings.getBoundary().lowerLeft(),
+                new Vector2d(jungleBoundary.upperRight().getX(), jungleBoundary.lowerLeft().getY()-1));
+    }
+
+    @Override
+    public Boundary getJungleBoundary(){
+        return jungleBoundary;
     }
 
     @Override
@@ -50,11 +82,16 @@ public abstract class AbstractWorldMap implements WorldMap{
     }
 
     @Override
-    public void place(Animal animal) throws IncorrectPositionException{
+    public void place(Animal animal){
         animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
                 .add(animal);
-
         mapChanged(String.format("zwierze zostalo umieszczone na %s", animal.getPosition()));
+    }
+
+    @Override
+    public void place(Grass grass){
+        grasses.put(grass.getPosition(), grass);
+        mapChanged(String.format("trawa zostala umieszczone na %s", grass.getPosition()));
     }
 
     @Override
@@ -77,7 +114,7 @@ public abstract class AbstractWorldMap implements WorldMap{
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        return animals.containsKey(position) && !animals.get(position).isEmpty();
+        return (animals.containsKey(position) && !animals.get(position).isEmpty()) || grasses.containsKey(position);
     }
 
     @Override
@@ -110,7 +147,7 @@ public abstract class AbstractWorldMap implements WorldMap{
         List<Animal> animalList = animals.get(position);
 
         if(animalList == null || animalList.isEmpty()){
-            return null;
+            return grasses.get(position);
         }
         
         return animalList.stream().
@@ -124,11 +161,21 @@ public abstract class AbstractWorldMap implements WorldMap{
         for(List<Animal> animalList : animals.values()){
             elements.addAll(animalList);
         }
+        elements.addAll(grasses.values());
         return elements;
     }
 
     @Override
     public Boundary getBoundary(){
         return settings.getBoundary();
+    }
+
+    @Override
+    public Boundary getSouthSteppes() {
+        return southSteppes;
+    }
+    @Override
+    public Boundary getNorthSteppes() {
+        return northSteppes;
     }
 }

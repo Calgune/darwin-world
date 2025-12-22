@@ -11,13 +11,16 @@ import java.util.UUID;
  */
 public interface WorldMap extends MoveValidator {
 
+    public Boundary getJungleBoundary();
     /**
      * Place a new animal on the map.
      *
      * @param animal The animal to be placed on the map.
      * @return True if the animal was placed. The rules for valid placement are the same as for movement.
      */
-    void place(Animal animal) throws IncorrectPositionException;
+    void place(Animal animal);
+
+    void place(Grass grass);
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
@@ -55,4 +58,7 @@ public interface WorldMap extends MoveValidator {
     void removeObserver(MapChangeListener observer);
 
     UUID getId();
+
+    public Boundary getSouthSteppes();
+    public Boundary getNorthSteppes();
 }
