@@ -8,9 +8,10 @@ public class CylindricalMap extends AbstractWorldMap{
     }
 
     public boolean canMoveTo(Vector2d position) {
-        Boundary boundary = getBoundary();
-        return position.precedes(boundary.upperRight()) &&
-                position.follows(boundary.lowerLeft()) &&
-                super.canMoveTo(position);
+//        Boundary boundary = getBoundary();
+//        return position.precedes(boundary.upperRight()) &&
+//                position.follows(boundary.lowerLeft()) &&
+//                super.canMoveTo(position);
+        return super.canMoveTo(position); // nie dziala mechanizm globu jak sa precedes follows
     }
 }

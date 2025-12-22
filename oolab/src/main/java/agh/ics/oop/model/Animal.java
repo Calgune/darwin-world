@@ -44,14 +44,19 @@ public class Animal implements WorldElement {
         this.direction = this.direction.changeDirection(rotation);
         Vector2d moveVector = this.direction.toUnitVector();
         Vector2d positionAfterMove = this.position.add(moveVector);
+        Vector2d targetPosition = moveValidator.nextPosition(positionAfterMove);
 
         if (moveValidator.canMoveTo(positionAfterMove)) {
-            this.position = moveValidator.nextPosition(positionAfterMove);
+            this.position = targetPosition;
         } else {
             this.direction = this.direction.bounceOfTheWall();
-            Vector2d newMoveVector = this.direction.toUnitVector();
-            Vector2d newPositionAfterMove = this.position.add(newMoveVector);
-            this.position = moveValidator.nextPosition(newPositionAfterMove);
+            moveVector = this.direction.toUnitVector();
+            positionAfterMove = this.position.add(moveVector);
+            targetPosition = moveValidator.nextPosition(positionAfterMove);
+
+            if (moveValidator.canMoveTo(positionAfterMove)) {
+                this.position = targetPosition;
+            }
         }
     }
 

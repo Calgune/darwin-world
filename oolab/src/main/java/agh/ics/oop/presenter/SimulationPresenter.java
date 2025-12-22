@@ -173,7 +173,5 @@ public class SimulationPresenter implements MapChangeListener {
             }
             startButton.setDisable(false);
         }).start();
-
-
     }
 }
