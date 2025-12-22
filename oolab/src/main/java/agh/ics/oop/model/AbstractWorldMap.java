@@ -26,6 +26,17 @@ public abstract class AbstractWorldMap implements WorldMap{
         this.southSteppes = calculateSouthSteppes();
     }
 
+    @Override
+    public List<Animal> getAnimalsAt(Vector2d position) {
+        List<Animal> animalsAtPos = this.animals.get(position);
+
+        if (animalsAtPos == null || animalsAtPos.isEmpty()) {
+            return List.of(); // niemodyfikowalna pusta
+        }
+
+        return animalsAtPos;
+    }
+
     private Boundary calculateJungleBoundary() {
         Boundary mapBoundary = settings.getBoundary();
         int height = mapBoundary.upperRight().getY() - mapBoundary.lowerLeft().getY() + 1;

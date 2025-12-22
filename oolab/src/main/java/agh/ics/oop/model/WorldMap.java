@@ -2,6 +2,7 @@ package agh.ics.oop.model;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -11,6 +12,8 @@ import java.util.UUID;
  * @author apohllo, idzik
  */
 public interface WorldMap extends MoveValidator {
+
+    public List<Animal> getAnimalsAt(Vector2d position);
 
     public Boundary getJungleBoundary();
     /**
