@@ -37,6 +37,10 @@ public abstract class AbstractWorldMap implements WorldMap{
         return animalsAtPos;
     }
 
+    public Map<Vector2d, List<Animal>> getAnimalHashMap() {
+        return this.animals;
+    }
+
     private Boundary calculateJungleBoundary() {
         Boundary mapBoundary = settings.getBoundary();
         int height = mapBoundary.upperRight().getY() - mapBoundary.lowerLeft().getY() + 1;
