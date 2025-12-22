@@ -118,7 +118,7 @@ public abstract class AbstractWorldMap implements WorldMap{
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return position.getY() >= 0 && position.getY() < getBoundary().upperRight().getY();
+        return position.getY() >= 0 && position.getY() <= getBoundary().upperRight().getY();
     }
 
     @Override
