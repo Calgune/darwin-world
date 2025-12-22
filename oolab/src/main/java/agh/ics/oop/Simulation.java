@@ -11,15 +11,32 @@ import java.util.stream.Collectors;
 
 public class Simulation implements  Runnable{
     private List<Animal> animals = new ArrayList<>();
-    private final List<MoveDirection> moves;
     private final WorldMap map;
     private final MapSettings settings;
 
-    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> moves, MapSettings settings){
-        this.moves = moves;
+    public Simulation(List<Vector2d> positions, WorldMap map, int genomeLength, MapSettings settings){ //POPRAWIC
+//     public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> moves, MapSettings settings){
+//         this.moves = moves;
         this.map = map;
         this.settings = settings;
 
+        for (Vector2d position : positions) {
+            Genotype genes = Genotype.generateRandom(genomeLength);
+            Animal animal = new Animal(position, genes);
+            try {
+                map.place(animal);
+                animals.add(animal);
+            } catch (IncorrectPositionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void run(){ // bedzie trzeba to zamienic na while True. Na razie dam tutaj po
+        // prostu jakas stala.
+
+        // usunięcie martwych zwierzaków
         // dodanie traw
 
         int grassInJungle = (int)(Math.ceil(settings.getInitialGrassCount()*0.8f));;
@@ -35,32 +52,46 @@ public class Simulation implements  Runnable{
         randomPositionGenerator.forEach(position -> {map.place(new Grass(position));});
 
         // dodanie zwierzaków
-        positions.forEach(position -> {
-            Animal animal = new Animal(position);
-            map.place(animal);
-            animals.add(animal);
-        });
-
-    }
-
-    @Override
-    public void run(){
-        // 1 usunięcie martwych zwierzaków
-        // zwierzeta trzeba jeszcze z mapy usunąć
-        animals = animals.stream()
-            .filter(animal -> !animal.hasStarved())
-            .collect(Collectors.toList());
-
-        // 2 ruch wszystkich zwierzaków
-        for (int i = 0; i < moves.size(); i++) {
+//         positions.forEach(position -> {
+//             Animal animal = new Animal(position);
+//             map.place(animal);
+//             animals.add(animal);
+//         });
+      
+        for (int i = 0; i < 10; i++) { // ten for powinien obejmowac wszystkie metody,
+        // ale dopoki ich nie ma to rusza tylko zwierzakami.
+        for (Animal animal : animals) {
+            map.move(animal);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            Animal animal = animals.get(i % animals.size());
-            map.move(animal, moves.get(i));
         }
+    }
+
+    }
+
+//     @Override
+//     public void run(){
+//         // 1 usunięcie martwych zwierzaków
+//         // zwierzeta trzeba jeszcze z mapy usunąć
+//         animals = animals.stream()
+//             .filter(animal -> !animal.hasStarved())
+//             .collect(Collectors.toList());
+
+//         // ruch wszystkich zwierzaków
+//         for (int i = 0; i < 10; i++) { // ten for powinien obejmowac wszystkie metody,
+//             // ale dopoki ich nie ma to rusza tylko zwierzakami.
+//             for (Animal animal : animals) {
+//                 map.move(animal);
+//                 try {
+//                     Thread.sleep(1000);
+//                 } catch (InterruptedException e) {
+//                     throw new RuntimeException(e);
+//                 }
+//             }
+//         }
 
         // 3 zjadzanie roślin
             // aktualizowanie energi

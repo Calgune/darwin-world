@@ -9,12 +9,16 @@ public class Animal implements WorldElement {
     private int energy = 1;
     private int age;
     private int kidsCount;
-    private ArrayList<Integer> genomes;
+    private final Genotype genotype;
 
-    public Animal(Vector2d position){
+    public Animal(Vector2d position, Genotype genes){
         this.position = position;
-        direction = MapDirection.NORTH; // nieuzywane pole. zwierzaki przed ruchem i tak obracaja sie
-        // o nowa wartosc
+        direction = MapDirection.NORTH; // zwierzak przed kaxdym ruchem i tak najpierw
+        // sie obraca. moze byc tutaj dowolna wartosc
+
+//        this.direction = MapDirection.values()[(int) (Math.random() * 8)];
+
+        this.genotype = genes;
     }
 
     @Override
@@ -35,8 +39,9 @@ public class Animal implements WorldElement {
         return Objects.equals(this.position, position);
     }
 
-    public void move(MoveDirection direction, MoveValidator moveValidator) {
-        this.direction = this.direction.changeDirection(direction.getValue());
+    public void move(MoveValidator moveValidator) {
+        int rotation = this.genotype.todaysMove();
+        this.direction = this.direction.changeDirection(rotation);
         Vector2d moveVector = this.direction.toUnitVector();
         Vector2d positionAfterMove = this.position.add(moveVector);
 
@@ -63,7 +68,6 @@ public class Animal implements WorldElement {
         return direction;
     }
 
-
     public boolean hasStarved(){
         return energy <= 0;
     }
@@ -78,9 +82,5 @@ public class Animal implements WorldElement {
 
     public int getKidsCount() {
         return kidsCount;
-    }
-
-    public ArrayList<Integer> getGenomes() {
-        return genomes;
     }
 }

@@ -88,14 +88,13 @@ public abstract class AbstractWorldMap implements WorldMap{
         mapChanged(String.format("zwierze zostalo umieszczone na %s", animal.getPosition()));
     }
 
-    @Override
     public void place(Grass grass){
         grasses.put(grass.getPosition(), grass);
         mapChanged(String.format("trawa zostala umieszczone na %s", grass.getPosition()));
     }
 
     @Override
-    public void move(Animal animal, MoveDirection direction) {
+    public void move(Animal animal) {
         if(animals.containsKey(animal.getPosition())){
             List<Animal> fromCellList = animals.get(animal.getPosition());
 
@@ -103,7 +102,7 @@ public abstract class AbstractWorldMap implements WorldMap{
             MapDirection previousDirection = animal.getDirection();
 
             fromCellList.remove(animal);
-            animal.move(direction, this);
+            animal.move(this);
             animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
                     .add(animal);
 
