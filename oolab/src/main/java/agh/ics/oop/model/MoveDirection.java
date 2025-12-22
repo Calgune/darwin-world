@@ -1,14 +1,18 @@
 package agh.ics.oop.model;
 
 public enum MoveDirection {
-    N,
-    NE,
-    E,
-    SE,
-    S,
-    SW,
-    W,
-    NW;
+    N(0), NE(1), E(2), SE(3),
+    S(4), SW(5), W(6), NW(7);
+
+    private final int value;
+
+    MoveDirection(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 
     public static MoveDirection fromString(String s) {
         return switch (s) {
@@ -20,7 +24,7 @@ public enum MoveDirection {
             case "5" -> SW;
             case "6" -> W;
             case "7" -> NW;
-            default -> throw new IllegalStateException("Incorrect value. Please use 0-7");
-        }; //trzeba to potem zlapac
+            default -> throw new IllegalStateException("Niepoprawna wartosc. Prosze uzyc 0-7");
+        };
     }
 }

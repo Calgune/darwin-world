@@ -1,25 +1,35 @@
 package agh.ics.oop.model;
 
 public enum MapDirection {
-    NORTH,
-    NORTH_EAST,
-    EAST,
-    SOUTH_EAST,
-    SOUTH,
-    SOUTH_WEST,
-    WEST,
-    NORTH_WEST;
+    NORTH(0), NORTH_EAST(1), EAST(2), SOUTH_EAST(3),
+    SOUTH(4), SOUTH_WEST(5), WEST(6), NORTH_WEST(7);
+
+    private final int value;
+
+    MapDirection(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public MapDirection changeDirection(int steps) {
+        MapDirection[] values = MapDirection.values();
+        int nextIndex = (this.getValue() + steps) % 8;
+        return values[nextIndex];
+    }
 
     public String toString(){
         return switch (this) {
-            case NORTH -> "Polnoc";
-            case NORTH_EAST -> "Polnocny-wschod";
-            case EAST -> "Wschod";
-            case SOUTH_EAST -> "Poludniowy-wschod";
-            case SOUTH -> "Poludnie";
-            case SOUTH_WEST -> "Poludniowy-zachod";
-            case WEST -> "Zachod";
-            case NORTH_WEST -> "Polnocny-zachod";
+            case NORTH -> "polnoc";
+            case NORTH_EAST -> "polnocny-wschod";
+            case EAST -> "wschod";
+            case SOUTH_EAST -> "poludniowy-wschod";
+            case SOUTH -> "poludnie";
+            case SOUTH_WEST -> "poludniowy-zachod";
+            case WEST -> "zachod";
+            case NORTH_WEST -> "polnocny-zachod";
         };
     }
 
@@ -36,29 +46,16 @@ public enum MapDirection {
         };
     }
 
-//    public MapDirection next() {
-//        return switch (this) {
-//            case NORTH -> NORTH_EAST;
-//            case NORTH_EAST -> EAST;
-//            case EAST -> SOUTH_EAST;
-//            case SOUTH_EAST -> SOUTH;
-//            case SOUTH -> SOUTH_WEST;
-//            case SOUTH_WEST -> WEST;
-//            case WEST -> NORTH_WEST;
-//            case NORTH_WEST -> NORTH;
-//        };
-//    }
-//
-//    public MapDirection previous() {
-//        return switch (this) {
-//            case NORTH -> NORTH_WEST;
-//            case NORTH_WEST -> WEST;
-//            case WEST -> SOUTH_WEST;
-//            case SOUTH_WEST -> SOUTH;
-//            case SOUTH -> SOUTH_EAST;
-//            case SOUTH_EAST -> EAST;
-//            case EAST -> NORTH_EAST;
-//            case NORTH_EAST -> NORTH;
-//        };
-//    }
+    public MapDirection bounceOfTheWall() {
+        return switch (this) {
+            case NORTH -> SOUTH;
+            case NORTH_EAST -> SOUTH_EAST;
+            case EAST -> EAST;
+            case SOUTH_EAST -> NORTH_EAST;
+            case SOUTH -> NORTH;
+            case SOUTH_WEST -> NORTH_WEST;
+            case WEST -> WEST;
+            case NORTH_WEST -> SOUTH_WEST;
+        };
+    }
 }
