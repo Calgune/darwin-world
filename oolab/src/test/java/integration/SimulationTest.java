@@ -2,7 +2,6 @@ package integration;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.RectangularMap;
 import agh.ics.oop.model.Vector2d;
 
 import org.junit.jupiter.api.Test;

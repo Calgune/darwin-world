@@ -21,7 +21,7 @@ public class OptionsParser {
                 MoveDirection direction = MoveDirection.fromString(arg);
                 moveDirectionList.add(direction);
             } catch (IllegalStateException e) {
-                System.err.println("We just caught an error [" + arg + "]. " + e.getMessage());
+                System.err.println("Zlapano blad [" + arg + "]. " + e.getMessage());
             }
         }
 
