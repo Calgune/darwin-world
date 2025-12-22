@@ -53,7 +53,6 @@ public class Simulation implements  Runnable {
         // ruch wszystkich zwierzaków
         // bedzie trzeba to zamienic na while True. Na razie dam tutaj po
         // prostu jakas stala.
-
         for (int i = 0; i < 30; i++) { // ten for powinien obejmowac wszystkie metody,
             // ale dopoki ich nie ma to rusza tylko zwierzakami.
             for (Animal animal : animals) {
@@ -74,9 +73,6 @@ public class Simulation implements  Runnable {
 //
 //     4 rozmnażanie
 //     aktualizowanie energi
-//
-//     usunięcie rośliny
-//
 //
 //     5 wzrost nowych roślin
 //

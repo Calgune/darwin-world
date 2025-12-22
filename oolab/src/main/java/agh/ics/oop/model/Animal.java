@@ -13,11 +13,7 @@ public class Animal implements WorldElement {
 
     public Animal(Vector2d position, Genotype genes){
         this.position = position;
-        direction = MapDirection.NORTH; // zwierzak przed kaxdym ruchem i tak najpierw
-        // sie obraca. moze byc tutaj dowolna wartosc
-
-//        this.direction = MapDirection.values()[(int) (Math.random() * 8)];
-
+        this.direction = MapDirection.values()[(int) (Math.random() * 8)];
         this.genotype = genes;
     }
 
