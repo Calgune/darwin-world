@@ -58,7 +58,7 @@ public abstract class AbstractWorldMap implements WorldMap{
     }
 
     @Override
-    public void move(Animal animal, MoveDirection direction) {
+    public void move(Animal animal) {
         if(animals.containsKey(animal.getPosition())){
             List<Animal> fromCellList = animals.get(animal.getPosition());
 
@@ -66,7 +66,7 @@ public abstract class AbstractWorldMap implements WorldMap{
             MapDirection previousDirection = animal.getDirection();
 
             fromCellList.remove(animal);
-            animal.move(direction, this);
+            animal.move(this);
             animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
                     .add(animal);
 

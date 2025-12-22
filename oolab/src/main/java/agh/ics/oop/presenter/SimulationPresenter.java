@@ -129,17 +129,18 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
         startButton.setDisable(true);
-        String moves = movementsTextField.getText();
+        int genomeLength = Integer.parseInt(movementsTextField.getText()); // wyrzucamy bledy
+        // uzytkownikowi?
 
         List<Vector2d> positions = List.of(new Vector2d(0,0), new Vector2d(0,0));
-        List<MoveDirection> directions = OptionsParser.parse(moves.split(""));
+//        List<MoveDirection> directions = OptionsParser.parse(moves.split(""));
 
         MapSettings settings = new MapSettings.Builder()
                 .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 11)))
                 .build();
         setWorldMap(new CylindricalMap(settings));
 
-        Simulation simulation = new Simulation(positions, map, directions);
+        Simulation simulation = new Simulation(positions, map, genomeLength);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
 

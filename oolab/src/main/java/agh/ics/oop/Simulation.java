@@ -9,15 +9,14 @@ import java.util.stream.Collectors;
 
 public class Simulation implements  Runnable{
     private List<Animal> animals = new ArrayList<>();
-    private final List<MoveDirection> moves;
     private final WorldMap map;
 
-    public Simulation(List<Vector2d> positions, WorldMap map, List<MoveDirection> moves){
-        this.moves = moves;
+    public Simulation(List<Vector2d> positions, WorldMap map, int genomeLength){
         this.map = map;
 
         for (Vector2d position : positions) {
-            Animal animal = new Animal(position);
+            Genotype genes = Genotype.generateRandom(genomeLength);
+            Animal animal = new Animal(position, genes);
             try {
                 map.place(animal);
                 animals.add(animal);
@@ -28,21 +27,25 @@ public class Simulation implements  Runnable{
     }
 
     @Override
-    public void run(){
+    public void run(){ // bedzie trzeba to zamienic na while True. Na razie dam tutaj po
+        // prostu jakas stala.
+
         // usunięcie martwych zwierzaków
         animals = animals.stream()
             .filter(animal -> !animal.hasStarved())
             .collect(Collectors.toList());
 
         // ruch wszystkich zwierzaków
-        for (int i = 0; i < moves.size(); i++) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        for (int i = 0; i < 10; i++) { // ten for powinien obejmowac wszystkie metody,
+            // ale dopoki ich nie ma to rusza tylko zwierzakami.
+            for (Animal animal : animals) {
+                map.move(animal);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            Animal animal = animals.get(i % animals.size());
-            map.move(animal, moves.get(i));
         }
 
         // zjadzanie roślin
