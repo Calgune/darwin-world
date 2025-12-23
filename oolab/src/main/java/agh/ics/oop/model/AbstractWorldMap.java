@@ -1,11 +1,10 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.util.MapVisualizer;
 import agh.ics.oop.model.util.MapSettings;
 
-import javax.swing.text.Position;
 import java.util.*;
-import java.util.stream.Stream;
 
 public abstract class AbstractWorldMap implements WorldMap{
     protected final Map<Vector2d, List<Animal>> animals = new HashMap<>();
@@ -17,6 +16,7 @@ public abstract class AbstractWorldMap implements WorldMap{
     private final Boundary jungleBoundary;
     private final Boundary northSteppes;
     private final Boundary southSteppes;
+    private int day;
 
     public AbstractWorldMap(MapSettings settings){
         this.settings = settings;
@@ -24,6 +24,7 @@ public abstract class AbstractWorldMap implements WorldMap{
         this.jungleBoundary = calculateJungleBoundary();
         this.northSteppes = calculateNorthSteppes();
         this.southSteppes = calculateSouthSteppes();
+        this.day = 0;
     }
 
     @Override
@@ -178,8 +179,8 @@ public abstract class AbstractWorldMap implements WorldMap{
         }
         
         return animalList.stream().
-                max(Comparator.comparingInt(Animal::getEnergy)).
-                get();
+                max(Comparator.comparingInt(Animal::getEnergy))
+                    .orElse(null);
     }
 
     @Override
@@ -210,9 +211,34 @@ public abstract class AbstractWorldMap implements WorldMap{
                         .filter(animal -> animal.getEnergy() > settings.getReproductionEnergyThreshold())
                         .toList()
                 )
-                .filter(animalsList -> !animalsList.isEmpty())
+                .filter(animalsList -> animalsList.size() >= 2)
                 .toList();
     }
+
+    @Override
+    public int getAnimalsCount() {
+        return getAnimalsList().size();
+    }
+
+    @Override
+    public int getGrassesCount() {
+        return getGrassesList().size();
+    }
+
+    @Override
+    public int getEmptySpacesCount() {
+        return Math.toIntExact(animals.values().stream()
+                .filter(animalsList ->
+                        !animalsList.isEmpty() &&
+                                !isOccupiedByGrass(animalsList.getFirst().getPosition()))
+                .count() + grasses.size());
+    }
+
+    @Override
+    public void advanceDay() {
+        day++;
+    }
+
 
     @Override
     public Collection<Grass> getGrassesList(){

@@ -2,6 +2,8 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
