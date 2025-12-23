@@ -3,7 +3,6 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.MapChangeListener;
-import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -25,6 +24,8 @@ import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
     private StatisticsTracker statisticsTracker;
+    private WorldMap map;
+    private Simulation simulation;
     private final static int CELL_SIZE = 25;
     private final static Font FONT = new Font(14);
 
@@ -53,6 +54,27 @@ public class SimulationPresenter implements MapChangeListener {
     public Canvas canvas;
 
     @FXML
+    private TextField dailyEnergyDecay;
+
+    @FXML
+    private TextField breedingTreshold;
+
+    @FXML
+    private TextField breedingCost;
+
+    @FXML
+    private TextField fromGrassEnergy;
+
+    @FXML
+    private TextField mapWidthTextField;
+
+    @FXML
+    private TextField mapHeightTextField;
+
+    @FXML
+    private TextField refreshTimeTextField;
+
+    @FXML
     private TextField animalsCntTextField;
 
     @FXML
@@ -79,6 +101,17 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void setStatisticsTracker(StatisticsTracker statisticsTracker) {
         this.statisticsTracker = statisticsTracker;
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+    }
+
+    @FXML
+    private void pauseButtonClicked() {
+        if (this.simulation != null) {
+            this.simulation.startStop();
+        }
     }
 
     private void drawTextInTheMiddleOfRectangle(GraphicsContext graphicsContext2d, String string, int x, int y){
@@ -205,13 +238,32 @@ public class SimulationPresenter implements MapChangeListener {
 
         SimulationPresenter presenter = loader.getController();
 
+        int mapWidth = Integer.parseInt(mapWidthTextField.getText());
+        int mapHeight = Integer.parseInt(mapHeightTextField.getText());
+        int maxFields = (mapWidth + 1) * (mapHeight + 1);
+        int initialGrasses = Integer.parseInt(initialGrassesTextField.getText());
+        int initialEnergy = Integer.parseInt(initialEnergyTextField.getText());
+        int genomesLength = Integer.parseInt(genomesTextField.getText());
+        int animalsCnt = Integer.parseInt(animalsCntTextField.getText());
+        int dailyGrasses = Integer.parseInt(dailyGrassesTextField.getText());
+        int energyDecay = Integer.parseInt(dailyEnergyDecay.getText());
+        int reproductionThreshold = Integer.parseInt(breedingTreshold.getText());
+        int reproductionCost = Integer.parseInt(breedingCost.getText());
+        int grassEnergy = Integer.parseInt(fromGrassEnergy.getText());
+        int refreshTime = Integer.parseInt(refreshTimeTextField.getText());
+
         MapSettings settings = new MapSettings.Builder()
-                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
-                .initialGrassCount(Integer.parseInt(initialGrassesTextField.getText()))
-                .initialAnimalEnergy(Integer.parseInt(initialEnergyTextField.getText()))
-                .genomeLength(Integer.parseInt(genomesTextField.getText()))
-                .initialAnimalCount(Integer.parseInt(animalsCntTextField.getText()))
-                .newDailyGrasses(Integer.parseInt(dailyGrassesTextField.getText()))
+                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(mapWidth, mapHeight)))
+                .initialGrassCount(initialGrasses)
+                .initialAnimalEnergy(initialEnergy)
+                .genomeLength(genomesLength)
+                .initialAnimalCount(animalsCnt)
+                .newDailyGrasses(dailyGrasses)
+                .dailyEnergyDecay(energyDecay)
+                .energyFromGrass(grassEnergy)
+                .reproductionEnergyCost(reproductionCost)
+                .reproductionEnergyThreshold(reproductionThreshold)
+                .refreshSpeed(refreshTime)
                 .build();
 
         // jak stworzymy nowa mape to mozemy miec kilka okien.
@@ -227,6 +279,7 @@ public class SimulationPresenter implements MapChangeListener {
         simulation.addObserver(tracker);
         presenter.setStatisticsTracker(tracker);
 
+        presenter.setSimulation(simulation);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
 

@@ -1,7 +1,6 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.observers.SimulationObserver;
 import agh.ics.oop.model.util.MapSettings;
 
@@ -13,7 +12,12 @@ import java.util.stream.IntStream;
 public class Simulation implements Runnable {
     private final WorldMap map;
     private final MapSettings settings;
-    private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();;
+    private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();
+    private volatile boolean paused = false;
+
+    public void startStop() {
+        paused = !paused;
+    }
 
     public void addObserver(SimulationObserver observer){
         simulationObservers.add(observer);
@@ -73,64 +77,72 @@ public class Simulation implements Runnable {
     @Override
     public void run(){
         while (true) {
-            // 1 usunięcie martwych zwierzaków
-            map.getAnimalsList().
-                    stream().
-                    filter(Animal::hasStarved).
-                    forEach(animal -> {
-                        simulationObservers.forEach(obs ->obs.registerDeath(animal));
-                        map.removeAnimal(animal);
-                    });
+            if (!paused) {
+                // 1 usunięcie martwych zwierzaków
+                map.getAnimalsList().
+                        stream().
+                        filter(Animal::hasStarved).
+                        forEach(animal -> {
+                            simulationObservers.forEach(obs -> obs.registerDeath(animal));
+                            map.removeAnimal(animal);
+                        });
 
-            // 2 ruch wszystkich zwierzaków
-            map.getAnimalsList().forEach(animal -> {
-                map.move(animal);
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+                // 2 ruch wszystkich zwierzaków
+                map.getAnimalsList().forEach(animal -> {
+                    map.move(animal);
+                    try {
+                        Thread.sleep(settings.getRefreshSpeed());
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
-           // 3 zjadzanie roślin (aktualizowanie energi, usunięcie rośliny
-            List<Grass> toRemove = map.getGrassesList().
-                    stream().
-                    filter(grass -> map.isOccupiedByAnimal(grass.getPosition())).
-                    toList();
+                // 3 zjadzanie roślin (aktualizowanie energi, usunięcie rośliny
+                List<Grass> toRemove = map.getGrassesList().
+                        stream().
+                        filter(grass -> map.isOccupiedByAnimal(grass.getPosition())).
+                        toList();
 
-            toRemove.forEach(grass -> {
-                map.removeGrass(grass);
-                List<Animal> animals = map.getAnimalsAt(grass.getPosition());
-                Animal animal = PriorityHandler.whoEats(animals);
-                animal.eat(settings.getEnergyFromGrass());
-            });
+                toRemove.forEach(grass -> {
+                    map.removeGrass(grass);
+                    List<Animal> animals = map.getAnimalsAt(grass.getPosition());
+                    Animal animal = PriorityHandler.whoEats(animals);
+                    animal.eat(settings.getEnergyFromGrass());
+                });
 
-           // 4 rozmnażanie
-            map.getReproductionCells().forEach(animals -> {
-                List<Animal> parents = PriorityHandler.whoBreeds(animals);
-                if (parents.size() == 2){
-                    Animal child = parents
-                            .getFirst()
-                            .breed(parents.get(1), settings.getReproductionEnergyCost());
-                    map.placeAnimal(child);
-                }
-            });
+                // 4 rozmnażanie
+                map.getReproductionCells().forEach(animals -> {
+                    List<Animal> parents = PriorityHandler.whoBreeds(animals);
+                    if (parents.size() == 2) {
+                        Animal child = parents
+                                .getFirst()
+                                .breed(parents.get(1), settings.getReproductionEnergyCost());
+                        map.placeAnimal(child);
+                    }
+                });
 
-           // 5 wzrost nowych roślin
-            spawnGrasses(settings.getNewDailyGrasses());
+                // 5 wzrost nowych roślin
+                spawnGrasses(settings.getNewDailyGrasses());
 
-           // 6 utrata energi zewzględu na przeminięcie dnia
-            map.getAnimalsList().forEach(animal -> {
-                animal.loseEnergy(settings.getDailyEnergyDecay());
-                animal.age();
-            });
+                // 6 utrata energi zewzględu na przeminięcie dnia
+                map.getAnimalsList().forEach(animal -> {
+                    animal.loseEnergy(settings.getDailyEnergyDecay());
+                    animal.age();
+                });
 
-            // 7 przeminiecie dnia
-            map.advanceDay();
-            simulationChanged();
+                // 7 przeminiecie dnia
+                map.advanceDay();
+                simulationChanged();
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                break;
+            }
         }
     }
 }
+
 
 
 
