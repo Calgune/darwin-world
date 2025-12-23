@@ -86,7 +86,7 @@ public class Simulation implements Runnable {
             map.getAnimalsList().forEach(animal -> {
                 map.move(animal);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

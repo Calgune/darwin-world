@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StatisticsTracker implements SimulationObserver {
-    private WorldMap map;
-
     private int animalsOnMap;
     private int grassesOnMap;
     private int emptyCells;
@@ -22,7 +20,7 @@ public class StatisticsTracker implements SimulationObserver {
     private int deadAnimalsCount = 0;
     private int deadAnimalsAgeSum = 0;
 
-    private int getMostPopularGenotype(){
+    private int calculateMostPopularGenotype(WorldMap map){
         List<Integer> genotypes = map.getAnimalsList().stream()
                 .map(animal -> animal.getGenome().getGenes())
                 .flatMap(List::stream)
@@ -44,15 +42,15 @@ public class StatisticsTracker implements SimulationObserver {
         return maxGenotype;
     }
 
-    private double getAnimalsOnMapAverageEnergy(){
+    private double calculateAnimalsOnMapAverageEnergy(WorldMap map){
         return map.getAnimalsList().stream().mapToInt(Animal::getEnergy).average().orElse(0);
     }
 
-    private double getAnimalsOnMapAverageKidsCount(){
+    private double calculateAnimalsOnMapAverageKidsCount(WorldMap map){
         return map.getAnimalsList().stream().mapToInt(Animal::getKidsCount).average().orElse(0);
     }
 
-    private double getDeadAnimalsAverageLifespan(){
+    public double calculateDeadAnimalsAverageLifespan(WorldMap map){
         return deadAnimalsCount == 0 ? 0 :
                 (double) deadAnimalsAgeSum / deadAnimalsCount;
     }
@@ -68,22 +66,51 @@ public class StatisticsTracker implements SimulationObserver {
     // czytelność lepsza niż mikrooptymalizacja
     @Override
     public void updateStats(WorldMap map) {
-        this.map = map;
-
         animalsOnMap = map.getAnimalsCount();
         grassesOnMap = map.getGrassesCount();
         emptyCells = map.getEmptySpacesCount();
 
-        mostPopularGenotype = getMostPopularGenotype();
+        mostPopularGenotype = calculateMostPopularGenotype(map);
 
-        deadAnimalsAverageLifespan = getDeadAnimalsAverageLifespan();
-        animalsOnMapAverageEnergy = getAnimalsOnMapAverageEnergy();
-        animalsOnMapAverageKidsCount = getAnimalsOnMapAverageKidsCount();
-
-        IO.println("%d, %d, %d, %d, %f, %f, %f".formatted(animalsOnMap, grassesOnMap, emptyCells, mostPopularGenotype,
-                deadAnimalsAverageLifespan, animalsOnMapAverageEnergy, animalsOnMapAverageKidsCount));
+        deadAnimalsAverageLifespan = calculateDeadAnimalsAverageLifespan(map);
+        animalsOnMapAverageEnergy = calculateAnimalsOnMapAverageEnergy(map);
+        animalsOnMapAverageKidsCount = calculateAnimalsOnMapAverageKidsCount(map);
     }
 
 
+    public int getDeadAnimalsAgeSum() {
+        return deadAnimalsAgeSum;
+    }
 
+    public int getDeadAnimalsCount() {
+        return deadAnimalsCount;
+    }
+
+    public int getEmptyCells() {
+        return emptyCells;
+    }
+
+    public int getGrassesOnMap() {
+        return grassesOnMap;
+    }
+
+    public int getAnimalsOnMap() {
+        return animalsOnMap;
+    }
+
+    public int getMostPopularGenotype() {
+        return mostPopularGenotype;
+    }
+
+    public double getDeadAnimalsAverageLifespan() {
+        return deadAnimalsAverageLifespan;
+    }
+
+    public double getAnimalsOnMapAverageEnergy() {
+        return animalsOnMapAverageEnergy;
+    }
+
+    public double getAnimalsOnMapAverageKidsCount() {
+        return animalsOnMapAverageKidsCount;
+    }
 }

@@ -24,9 +24,30 @@ import javafx.stage.Stage;
 import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
-    private WorldMap map;
+    private StatisticsTracker statisticsTracker;
     private final static int CELL_SIZE = 25;
     private final static Font FONT = new Font(14);
+
+    @FXML
+    public Label animalsOnMapLabel;
+
+    @FXML
+    public Label grassesOnMapLabel;
+
+    @FXML
+    public Label emptyCellsLabel;
+
+    @FXML
+    public Label mostPopularGenotypeLabel;
+
+    @FXML
+    public Label deadAnimalsAverageLifespanLabel;
+
+    @FXML
+    public Label animalsOnMapAverageEnergyLabel;
+
+    @FXML
+    public Label animalsOnMapAverageKidsCountLabel;
 
     @FXML
     public Canvas canvas;
@@ -53,8 +74,11 @@ public class SimulationPresenter implements MapChangeListener {
     private Button startButton;
 
     public void setWorldMap(WorldMap map){
-        this.map = map;
-        this.map.addObserver(this);
+        map.addObserver(this);
+    }
+
+    public void setStatisticsTracker(StatisticsTracker statisticsTracker) {
+        this.statisticsTracker = statisticsTracker;
     }
 
     private void drawTextInTheMiddleOfRectangle(GraphicsContext graphicsContext2d, String string, int x, int y){
@@ -123,16 +147,16 @@ public class SimulationPresenter implements MapChangeListener {
                 int y = (boundary.upperRight().getY() - i + 1) * CELL_SIZE;
 
                 Vector2d position = new Vector2d(j, i);
-                if(position.precedes(map.getJungleBoundary().upperRight()) &&
-                        position.follows(map.getJungleBoundary().lowerLeft())){
+                if(position.precedes(worldMap.getJungleBoundary().upperRight()) &&
+                        position.follows(worldMap.getJungleBoundary().lowerLeft())){
                     drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, Color.rgb(34, 139, 34));
                 }
                 else {
                     drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, Color.rgb(144, 238, 144));
                 }
 
-                if(map.isOccupied(position)){
-                    drawTextInTheMiddleOfRectangle(graphicsContext2d, map.objectAt(position).toString(), x, y);
+                if(worldMap.isOccupied(position)){
+                    drawTextInTheMiddleOfRectangle(graphicsContext2d, worldMap.objectAt(position).toString(), x, y);
                 }
             }
         }
@@ -155,11 +179,22 @@ public class SimulationPresenter implements MapChangeListener {
         drawAxis(graphicsContext2d, boundary.upperRight().getY(), boundary.lowerLeft().getY(), false);
     }
 
+    private void updateStatistics(){
+        animalsOnMapLabel.setText("liczba zwierzaków: %d".formatted(statisticsTracker.getAnimalsOnMap()));
+        grassesOnMapLabel.setText("liczba traw: %d".formatted(statisticsTracker.getGrassesOnMap()));
+        emptyCellsLabel.setText("liczba pustych komórek: %d".formatted(statisticsTracker.getEmptyCells()));
+        mostPopularGenotypeLabel.setText("najpopulajniejszy genotyp: %d".formatted(statisticsTracker.getMostPopularGenotype()));
+        deadAnimalsAverageLifespanLabel.setText("śr. dł. życia martwych zwierzaków: %.2f".formatted(statisticsTracker.getDeadAnimalsAverageLifespan()));
+        animalsOnMapAverageEnergyLabel.setText("śr. energia zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageEnergy()));
+        animalsOnMapAverageKidsCountLabel.setText("śr. liczba dzieci zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageKidsCount()));
+    }
+
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             animalMovementLabel.setText(message);
             drawMap(worldMap);
+            updateStatistics();
         });
     }
 
@@ -184,14 +219,20 @@ public class SimulationPresenter implements MapChangeListener {
         // po usunieciu tego zaczelo dzialac wielokrotne otwieranie
         WorldMap newMap = new CylindricalMap(settings);
         presenter.setWorldMap(newMap);
+
+        Simulation simulation = new Simulation(newMap, settings);
+        StatisticsTracker tracker = new StatisticsTracker();
+        tracker.updateStats(newMap);
+
+        simulation.addObserver(tracker);
+        presenter.setStatisticsTracker(tracker);
+
+        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
+        simulationEngine.runAsync();
+
         Stage stage = new Stage();
         configureStage(stage, viewRoot);
         stage.show();
-        presenter.drawMap(newMap);
-
-        Simulation simulation = new Simulation(newMap, settings);
-        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
-        simulationEngine.runAsync();
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
@@ -207,33 +248,3 @@ public class SimulationPresenter implements MapChangeListener {
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
 }
-
-
-
-//    public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
-//        startButton.setDisable(true);
-//
-//        MapSettings settings = new MapSettings.Builder()
-//                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
-//                .initialGrassCount(30)
-//                .initialAnimalEnergy(200)
-//                .genomeLength(Integer.parseInt(movementsTextField.getText()))
-//                .initialAnimalCount(15)
-//                .newDailyGrasses(8)
-//                .build();
-//
-//        setWorldMap(new CylindricalMap(settings));
-//
-//        Simulation simulation = new Simulation(map, settings);
-//        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
-//        simulationEngine.runAsync();
-//
-//        new Thread(() -> {
-//            try {
-//                simulationEngine.awaitSimulationsEnd();
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//            startButton.setDisable(false);
-//        }).start();
-//    }

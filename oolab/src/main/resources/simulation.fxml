@@ -5,22 +5,38 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="550.0" minWidth="780.0" prefHeight="550.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+<BorderPane minHeight="550.0" minWidth="1000.0" prefHeight="550.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
    <top>
-      <HBox alignment="CENTER" prefHeight="56.0" prefWidth="506.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="40.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets top="5.0" />
          </BorderPane.margin>
       </HBox>
    </top>
    <center>
-      <Canvas fx:id="canvas" height="400.0" width="600.0" BorderPane.alignment="CENTER" />
+      <Canvas fx:id="canvas" height="400.0" width="560.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
-      <Label fx:id="animalMovementLabel" alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="390.0" text="aktualny ruch zwierzaka" BorderPane.alignment="CENTER">
+      <Label fx:id="animalMovementLabel" alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="19.0" prefWidth="390.0" text="aktualny ruch zwierzaka" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" />
          </BorderPane.margin>
       </Label>
    </bottom>
+   <left>
+      <VBox alignment="CENTER" fillWidth="false" maxHeight="280.0" minWidth="280.0" prefWidth="284.0" spacing="1.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="animalsOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba zwierzaków:" wrapText="true" />
+            <Label fx:id="grassesOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba traw:" wrapText="true" />
+            <Label fx:id="emptyCellsLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba pustych komórek:" wrapText="true" />
+            <Label fx:id="mostPopularGenotypeLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="najpopulajniejszy genotyp:" wrapText="true" />
+            <Label fx:id="deadAnimalsAverageLifespanLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. dł. życia martwych zwierzaków:" wrapText="true" />
+            <Label fx:id="animalsOnMapAverageEnergyLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. energia zwierzaków:" wrapText="true" />
+            <Label fx:id="animalsOnMapAverageKidsCountLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. liczba dzieci zwierzaków:" wrapText="true" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </VBox>
+   </left>
 </BorderPane>
