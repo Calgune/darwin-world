@@ -1,20 +1,23 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.OptionsParser;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.util.List;
 
@@ -27,7 +30,19 @@ public class SimulationPresenter implements MapChangeListener {
     public Canvas canvas;
 
     @FXML
-    private TextField movementsTextField;
+    private TextField animalsCntTextField;
+
+    @FXML
+    private TextField genomesTextField;
+
+    @FXML
+    private TextField initialEnergyTextField;
+
+    @FXML
+    private TextField dailyGrassesTextField;
+
+    @FXML
+    private TextField initialGrassesTextField;
 
     @FXML
     private Label animalMovementLabel;
@@ -147,30 +162,76 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
-        startButton.setDisable(true);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+        BorderPane viewRoot = loader.load();
+
+        SimulationPresenter presenter = loader.getController();
 
         MapSettings settings = new MapSettings.Builder()
                 .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
-                .initialGrassCount(30)
-                .initialAnimalEnergy(200)
-                .genomeLength(Integer.parseInt(movementsTextField.getText()))
-                .initialAnimalCount(15)
-                .newDailyGrasses(8)
+                .initialGrassCount(Integer.parseInt(initialGrassesTextField.getText()))
+                .initialAnimalEnergy(Integer.parseInt(initialEnergyTextField.getText()))
+                .genomeLength(Integer.parseInt(genomesTextField.getText()))
+                .initialAnimalCount(Integer.parseInt(animalsCntTextField.getText()))
+                .newDailyGrasses(Integer.parseInt(dailyGrassesTextField.getText()))
                 .build();
 
-        setWorldMap(new CylindricalMap(settings));
+        // jak stworzymy nowa mape to mozemy miec kilka okien.
+        // Nie ma juz threadow i disablowania przycisku,
+        // po usunieciu tego zaczelo dzialac wielokrotne otwieranie
+        WorldMap newMap = new CylindricalMap(settings);
+        presenter.setWorldMap(newMap);
+        Stage stage = new Stage();
+        configureStage(stage, viewRoot);
+        stage.show();
+        presenter.drawMap(newMap);
 
-        Simulation simulation = new Simulation(map, settings);
+        Simulation simulation = new Simulation(newMap, settings);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
+    }
 
-        new Thread(() -> {
-            try {
-                simulationEngine.awaitSimulationsEnd();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            startButton.setDisable(false);
-        }).start();
+    private void configureStage(Stage primaryStage, BorderPane viewRoot) {
+        // stworzenie sceny (panelu do wyświetlania wraz zawartością z FXML)
+        var scene = new Scene(viewRoot);
+
+        // ustawienie sceny w oknie
+        primaryStage.setScene(scene);
+
+        // konfiguracja okna
+        primaryStage.setTitle("Simulation app");
+        primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
+        primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
 }
+
+
+
+//    public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
+//        startButton.setDisable(true);
+//
+//        MapSettings settings = new MapSettings.Builder()
+//                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
+//                .initialGrassCount(30)
+//                .initialAnimalEnergy(200)
+//                .genomeLength(Integer.parseInt(movementsTextField.getText()))
+//                .initialAnimalCount(15)
+//                .newDailyGrasses(8)
+//                .build();
+//
+//        setWorldMap(new CylindricalMap(settings));
+//
+//        Simulation simulation = new Simulation(map, settings);
+//        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
+//        simulationEngine.runAsync();
+//
+//        new Thread(() -> {
+//            try {
+//                simulationEngine.awaitSimulationsEnd();
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//            startButton.setDisable(false);
+//        }).start();
+//    }
