@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.observers.MapChangeListener;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -75,4 +77,8 @@ public interface WorldMap extends MoveValidator {
     public boolean isOccupiedByGrass(Vector2d position);
     public int animalsCountOnCell(Vector2d position);
     Collection<List<Animal>> getReproductionCells();
+    public int getAnimalsCount();
+    public int getGrassesCount();
+    public int getEmptySpacesCount();
+    public void advanceDay();
 }

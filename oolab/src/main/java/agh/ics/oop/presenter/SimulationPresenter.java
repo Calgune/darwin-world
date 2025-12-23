@@ -1,8 +1,9 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.OptionsParser;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -161,6 +162,7 @@ public class SimulationPresenter implements MapChangeListener {
         setWorldMap(new CylindricalMap(settings));
 
         Simulation simulation = new Simulation(map, settings);
+        simulation.addObserver(new StatisticsTracker());
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
 

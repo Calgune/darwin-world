@@ -1,5 +1,4 @@
 package agh.ics.oop.model;
-import agh.ics.oop.model.util.MapSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +12,23 @@ public class Animal implements WorldElement {
     private int energy;
     private int age;
     private int kidsCount;
-    private final Genotype genotype;
+    private final Genome genome;
 
-    public Animal(Vector2d position, Genotype genes, int energy) {
+    public Genome getGenome() {
+        return genome;
+    }
+
+    public Animal(Vector2d position, Genome genes, int energy) {
         this.position = position;
         this.direction = MapDirection.values()[(int) (Math.random() * 8)];
         this.energy = energy;
-        ;
-        this.genotype = genes;
+        this.age = 0;
+        this.kidsCount = 0;
+        this.genome = genes;
+    }
+
+    public void age(){
+        age++;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class Animal implements WorldElement {
     }
 
     public void move(MoveValidator moveValidator) {
-        int rotation = this.genotype.todaysMove();
+        int rotation = this.genome.todaysMove();
         this.direction = this.direction.changeDirection(rotation);
         Vector2d moveVector = this.direction.toUnitVector();
         Vector2d positionAfterMove = this.position.add(moveVector);
@@ -67,7 +75,7 @@ public class Animal implements WorldElement {
         int energy1 = this.energy;
         int energy2 = partner.getEnergy();
 
-        int genomeLength = this.genotype.length();
+        int genomeLength = this.genome.length();
         int ourGenomeRatio = (genomeLength * energy1) / (energy1 + energy2);
         int partnersGenomeRatio = genomeLength - ourGenomeRatio;
         boolean ourOnLeft = Math.random() < 0.5;
@@ -77,10 +85,10 @@ public class Animal implements WorldElement {
         List<Integer> childGenes = new ArrayList<>();
 
         if (ourOnLeft) {
-            childGenes.addAll(this.genotype.getPart(0, ourGenomeRatio));
+            childGenes.addAll(this.genome.getPart(0, ourGenomeRatio));
             childGenes.addAll(partner.getGenotype().getPart(ourGenomeRatio, genomeLength));
         } else {
-            childGenes.addAll(this.genotype.getPart(partnersGenomeRatio, genomeLength));
+            childGenes.addAll(this.genome.getPart(partnersGenomeRatio, genomeLength));
             childGenes.addAll(partner.getGenotype().getPart(0, partnersGenomeRatio));
         }
 
@@ -91,7 +99,7 @@ public class Animal implements WorldElement {
             childGenes.set(mutationIndex, newValue);
         }
 
-        Genotype childGenome = new Genotype(childGenes);
+        Genome childGenome = new Genome(childGenes);
         this.kidsCount++;
         partner.kidsCount++;
         this.energy -= reproductionCost;
@@ -100,14 +108,13 @@ public class Animal implements WorldElement {
         return new Animal(this.position, childGenome, 2 * reproductionCost);
 }
 
-
     @Override
     public Vector2d getPosition(){
         return position;
     }
 
-    public Genotype getGenotype() {
-        return this.genotype;
+    public Genome getGenotype() {
+        return this.genome;
     }
 
     public void eat(int energyFromGrass){

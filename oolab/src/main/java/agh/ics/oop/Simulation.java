@@ -1,20 +1,31 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.observers.SimulationObserver;
 import agh.ics.oop.model.util.MapSettings;
-import com.sun.scenario.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Simulation implements  Runnable {
+public class Simulation implements Runnable {
     private final WorldMap map;
     private final MapSettings settings;
+    private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();;
+
+    public void addObserver(SimulationObserver observer){
+        simulationObservers.add(observer);
+    }
+
+    public void removeObserver(SimulationObserver observer){
+        simulationObservers.remove(observer);
+    }
+
+    public void simulationChanged(){
+        simulationObservers.forEach(simulationObserver -> {simulationObserver.updateStats(map);});
+    }
 
     public void spawnGrasses(int grassToSpawn){
         int grassInJungle = (int) (Math.ceil(grassToSpawn * 0.8f));
@@ -49,7 +60,7 @@ public class Simulation implements  Runnable {
         //spawnowanie zwierząt na początku
         Random random = new Random();
         IntStream.range(0, settings.getInitialAnimalCount()).forEach(i -> {
-            Genotype genes = Genotype.generateRandom(settings.getGenomeLength());
+            Genome genes = Genome.generateRandom(settings.getGenomeLength());
 
             Vector2d position = Vector2d.randomPositive(settings.getBoundary().upperRight().getX(),
                     settings.getBoundary().upperRight().getY());
@@ -61,18 +72,17 @@ public class Simulation implements  Runnable {
 
     @Override
     public void run(){
-        for (int i = 0; i < 1000; i++) { // ten for powinien obejmowac wszystkie metody,
+        while (true) {
             // 1 usunięcie martwych zwierzaków
-            // zwierzeta trzeba jeszcze z mapy usunąć
             map.getAnimalsList().
                     stream().
                     filter(Animal::hasStarved).
-                    forEach(map::removeAnimal);
+                    forEach(animal -> {
+                        simulationObservers.forEach(obs ->obs.registerDeath(animal));
+                        map.removeAnimal(animal);
+                    });
 
             // 2 ruch wszystkich zwierzaków
-            // bedzie trzeba to zamienic na while True. Na razie dam tutaj stałą
-            // ale dopoki ich nie ma to rusza tylko zwierzakami.
-
             map.getAnimalsList().forEach(animal -> {
                 map.move(animal);
                 try {
@@ -82,14 +92,12 @@ public class Simulation implements  Runnable {
                 }
             });
 
-           // 3 zjadzanie roślin
-           // aktualizowanie energi, usunięcie rośliny
+           // 3 zjadzanie roślin (aktualizowanie energi, usunięcie rośliny
             List<Grass> toRemove = map.getGrassesList().
                     stream().
                     filter(grass -> map.isOccupiedByAnimal(grass.getPosition())).
                     toList();
 
-            // usunięcie rośliny
             toRemove.forEach(grass -> {
                 map.removeGrass(grass);
                 List<Animal> animals = map.getAnimalsAt(grass.getPosition());
@@ -98,35 +106,28 @@ public class Simulation implements  Runnable {
             });
 
            // 4 rozmnażanie
-
-            map.getAnimalHashMap().entrySet().
-                    stream().
-                    filter(entry -> entry.getValue().size() >= 2).
-                    // szukamy tylko tych pol na ktorych sa co najmniej 2 zwierzaki
-                    forEach(entry -> {
-                        Vector2d position = entry.getKey();
-                        List<Animal> animals = entry.getValue();
-
-                        List<Animal> parents = PriorityHandler.whoBreeds(animals);
-                        Animal a = parents.get(0);
-                        Animal b = parents.get(1);
-
-                        if (a.getEnergy() >= settings.getReproductionEnergyThreshold() &&
-                                b.getEnergy() >= settings.getReproductionEnergyThreshold()) {
-
-                            Animal child = a.breed(b, settings.getReproductionEnergyCost());
-                            map.placeAnimal(child);
-                        }
-                    });
-
-
-           // aktualizowanie energi
+            map.getReproductionCells().forEach(animals -> {
+                List<Animal> parents = PriorityHandler.whoBreeds(animals);
+                if (parents.size() == 2){
+                    Animal child = parents
+                            .getFirst()
+                            .breed(parents.get(1), settings.getReproductionEnergyCost());
+                    map.placeAnimal(child);
+                }
+            });
 
            // 5 wzrost nowych roślin
             spawnGrasses(settings.getNewDailyGrasses());
 
            // 6 utrata energi zewzględu na przeminięcie dnia
-            map.getAnimalsList().forEach(animal -> animal.loseEnergy(settings.getDailyEnergyDecay()));
+            map.getAnimalsList().forEach(animal -> {
+                animal.loseEnergy(settings.getDailyEnergyDecay());
+                animal.age();
+            });
+
+            // 7 przeminiecie dnia
+            map.advanceDay();
+            simulationChanged();
         }
     }
 }

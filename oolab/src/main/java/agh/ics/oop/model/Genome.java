@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Genotype {
+public class Genome {
     private final List<Integer> genes;
     private int currGeneIndex = 0;
 
-    public Genotype(List<Integer> genes) {
+    public Genome(List<Integer> genes) {
         this.genes = genes;
     }
 
@@ -16,17 +16,21 @@ public class Genotype {
         return genes.size();
     }
 
+    public List<Integer> getGenes() {
+        return genes;
+    }
+
     public List<Integer> getPart(int start, int end) {
         return this.genes.subList(start, end);
     }
 
-    public static Genotype generateRandom(int length) {
+    public static Genome generateRandom(int length) {
         List<Integer> randomGenes = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < length; i++) {
             randomGenes.add(random.nextInt(8));
         }
-        return new Genotype(randomGenes);
+        return new Genome(randomGenes);
     }
 
     public int todaysMove() {
