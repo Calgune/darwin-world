@@ -16,7 +16,7 @@ public class AnimalMovementTest {
                 .build();
 
         MoveValidator map = new CylindricalMap(settings);
-        Genotype genes = new Genotype(List.of(0, 4, 2, 6, 1, 5));
+        Genome genes = new Genome(List.of(0, 4, 2, 6, 1, 5));
         Animal animal = new Animal(new Vector2d(2, 2), genes, settings.getInitialAnimalEnergy());
         animal.setDirection(MapDirection.NORTH);
 
