@@ -12,6 +12,14 @@ public class Genotype {
         this.genes = genes;
     }
 
+    public int length() {
+        return genes.size();
+    }
+
+    public List<Integer> getPart(int start, int end) {
+        return this.genes.subList(start, end);
+    }
+
     public static Genotype generateRandom(int length) {
         List<Integer> randomGenes = new ArrayList<>();
         Random random = new Random();

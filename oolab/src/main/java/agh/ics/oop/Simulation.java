@@ -97,8 +97,27 @@ public class Simulation implements  Runnable {
                 animal.eat(settings.getEnergyFromGrass());
             });
 
-
            // 4 rozmnażanie
+
+            map.getAnimalHashMap().entrySet().
+                    stream().
+                    filter(entry -> entry.getValue().size() >= 2).
+                    // szukamy tylko tych pol na ktorych sa co najmniej 2 zwierzaki
+                    forEach(entry -> {
+                        Vector2d position = entry.getKey();
+                        List<Animal> animals = entry.getValue();
+
+                        List<Animal> parents = PriorityHandler.whoBreeds(animals);
+                        Animal a = parents.get(0);
+                        Animal b = parents.get(1);
+
+                        if (a.getEnergy() >= settings.getReproductionEnergyThreshold() &&
+                                b.getEnergy() >= settings.getReproductionEnergyThreshold()) {
+
+                            Animal child = a.breed(b, settings.getReproductionEnergyCost());
+                            map.placeAnimal(child);
+                        }
+                    });
 
 
            // aktualizowanie energi

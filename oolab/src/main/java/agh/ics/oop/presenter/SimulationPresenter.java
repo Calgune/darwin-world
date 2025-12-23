@@ -160,8 +160,7 @@ public class SimulationPresenter implements MapChangeListener {
 
         setWorldMap(new CylindricalMap(settings));
 
-        Simulation simulation = new Simulation(map, settings); // POPRAWIC!
-//        Simulation simulation = new Simulation(positions, map, directions, settings);
+        Simulation simulation = new Simulation(map, settings);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
 

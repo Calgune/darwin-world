@@ -15,6 +15,8 @@ public interface WorldMap extends MoveValidator {
 
     public List<Animal> getAnimalsAt(Vector2d position);
 
+    public Map<Vector2d, List<Animal>> getAnimalHashMap();
+
     public Boundary getJungleBoundary();
     /**
      * Place a new animal on the map.
