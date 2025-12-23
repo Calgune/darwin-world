@@ -4,38 +4,94 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="400.0" minWidth="400.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+<BorderPane minHeight="600.0" minWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <center>
-        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
             <children>
-                <Label text="Panel parametrow" />
+                <Label text="Panel parametrów" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
 
-                <VBox alignment="CENTER">
-                    <Label text="Dlugosc genomu:" />
-                    <TextField fx:id="genomesTextField" maxWidth="100.0" text="7" />
-                </VBox>
+                <GridPane alignment="CENTER" hgap="30.0" vgap="15.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" minWidth="200.0" />
+                        <ColumnConstraints halignment="CENTER" minWidth="200.0" />
+                    </columnConstraints>
 
-                <VBox alignment="CENTER">
-                    <Label text="Poczatkowa ilosc zwierzat:" />
-                    <TextField fx:id="animalsCntTextField" maxWidth="100.0" text="15" />
-                </VBox>
+                    <children>
+                        <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Szerokość mapy:" />
+                            <TextField fx:id="mapWidthTextField" maxWidth="100.0" text="25" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 10-45)" />
+                        </VBox>
 
-                <VBox alignment="CENTER">
-                    <Label text="Poczatkowa energia:" />
-                    <TextField fx:id="initialEnergyTextField" maxWidth="100.0" text="100" />
-                </VBox>
+                        <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Wysokość mapy:" />
+                            <TextField fx:id="mapHeightTextField" maxWidth="100.0" text="12" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 5-20)" />
+                        </VBox>
 
-                <VBox alignment="CENTER">
-                    <Label text="Poczatkowa liczba roslin:" />
-                    <TextField fx:id="initialGrassesTextField" maxWidth="100.0" text="30" />
-                </VBox>
+                        <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Długość genomu:" />
+                            <TextField fx:id="genomesTextField" maxWidth="100.0" text="7" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: &gt;0)" />
+                        </VBox>
 
-                <VBox alignment="CENTER">
-                    <Label text="Ile dodawac roslin dziennie:" />
-                    <TextField fx:id="dailyGrassesTextField" maxWidth="100.0" text="5" />
-                </VBox>
+                        <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                            <Label text="Początkowa ilość zwierząt:" />
+                            <TextField fx:id="animalsCntTextField" maxWidth="100.0" text="15" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: &lt; 1/2 pól)" />
+                        </VBox>
 
-                <Button fx:id="startButton" onAction="#onSimulationStartClicked" text="Start" />
+                        <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                            <Label text="Początkowa energia:" />
+                            <TextField fx:id="initialEnergyTextField" maxWidth="100.0" text="100" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 50-200)" />
+                        </VBox>
+
+                        <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                            <Label text="Ile energii ubywa dziennie:" />
+                            <TextField fx:id="dailyEnergyDecay" maxWidth="100.0" text="12" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 1-5)" />
+                        </VBox>
+
+                        <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Początkowa liczba roślin:" />
+                            <TextField fx:id="initialGrassesTextField" maxWidth="100.0" text="30" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: &lt; 1/2 pól)" />
+                        </VBox>
+
+                        <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Ile dodawać roślin dziennie:" />
+                            <TextField fx:id="dailyGrassesTextField" maxWidth="100.0" text="7" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: &lt; 1/4 pól)" />
+                        </VBox>
+
+                        <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Label text="Próg energii do prokreacji:" />
+                            <TextField fx:id="breedingTreshold" maxWidth="100.0" text="12" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 15-30)" />
+                        </VBox>
+
+                        <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <Label text="Koszt prokreacji:" />
+                            <TextField fx:id="breedingCost" maxWidth="100.0" text="10" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 5-20)" />
+                        </VBox>
+
+                        <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                            <Label text="Energia z trawy:" />
+                            <TextField fx:id="fromGrassEnergy" maxWidth="100.0" text="2" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 1-5)" />
+                        </VBox>
+
+                        <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                            <Label text="Szybkość symulacji (ms):" />
+                            <TextField fx:id="refreshTimeTextField" maxWidth="100.0" text="200" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 100-1000)" />
+                        </VBox>
+                    </children>
+                </GridPane>
+
+                <Button fx:id="startButton" onAction="#onSimulationStartClicked" prefWidth="120.0" text="Start" />
             </children>
             <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
