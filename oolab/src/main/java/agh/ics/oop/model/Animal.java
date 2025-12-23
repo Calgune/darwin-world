@@ -49,6 +49,10 @@ public class Animal implements WorldElement {
         return Objects.equals(this.position, position);
     }
 
+    public void setDirection(MapDirection newDirection) {
+        this.direction = newDirection;
+    } // potrzebne do testow
+
     public void move(MoveValidator moveValidator) {
         int rotation = this.genome.todaysMove();
         this.direction = this.direction.changeDirection(rotation);

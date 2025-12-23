@@ -11,9 +11,10 @@ class OptionsParserTest {
 
     @Test
     void parse() {
-        String[] args = new String[] {"6", "2", "0", "6", "4"};
+        String[] args = new String[] {"1", "7", "6", "2", "0", "6", "4"};
 
         List<MoveDirection> moveDirections = List.of(
+                MoveDirection.NE, MoveDirection.NW,
                 MoveDirection.W, MoveDirection.E,
                 MoveDirection.N, MoveDirection.W,
                 MoveDirection.S);

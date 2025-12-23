@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane minHeight="400.0" minWidth="400.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+    <center>
+        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Panel parametrow" />
+
+                <VBox alignment="CENTER">
+                    <Label text="Dlugosc genomu:" />
+                    <TextField fx:id="genomesTextField" maxWidth="100.0" text="7" />
+                </VBox>
+
+                <VBox alignment="CENTER">
+                    <Label text="Poczatkowa ilosc zwierzat:" />
+                    <TextField fx:id="animalsCntTextField" maxWidth="100.0" text="15" />
+                </VBox>
+
+                <VBox alignment="CENTER">
+                    <Label text="Poczatkowa energia:" />
+                    <TextField fx:id="initialEnergyTextField" maxWidth="100.0" text="100" />
+                </VBox>
+
+                <VBox alignment="CENTER">
+                    <Label text="Poczatkowa liczba roslin:" />
+                    <TextField fx:id="initialGrassesTextField" maxWidth="100.0" text="30" />
+                </VBox>
+
+                <VBox alignment="CENTER">
+                    <Label text="Ile dodawac roslin dziennie:" />
+                    <TextField fx:id="dailyGrassesTextField" maxWidth="100.0" text="5" />
+                </VBox>
+
+                <Button fx:id="startButton" onAction="#onSimulationStartClicked" text="Start" />
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+    </center>
+</BorderPane>
