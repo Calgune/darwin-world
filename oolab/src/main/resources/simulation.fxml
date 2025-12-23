@@ -17,10 +17,14 @@
       <Canvas fx:id="canvas" height="400.0" width="600.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
-      <Label fx:id="animalMovementLabel" alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="390.0" text="aktualny ruch zwierzaka" BorderPane.alignment="CENTER">
+       <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+       <children>
+      <Label fx:id="animalMovementLabel" text="aktualny ruch zwierzaka"/>
+          <Button fx:id="pauseButton" text="Stop / Start" onAction="#pauseButtonClicked"/>
+           </children>
          <BorderPane.margin>
-            <Insets bottom="10.0" />
+            <Insets bottom="20.0" />
          </BorderPane.margin>
-      </Label>
+       </VBox>
    </bottom>
 </BorderPane>

@@ -16,6 +16,7 @@ public class MapSettings {
     private final int genomeLength;
     private final int mutationRange;
     private final int projectType;
+    private final int refreshSpeed;
 
     public MapSettings(Builder builder) {
         this.boundary = builder.boundary;
@@ -30,6 +31,7 @@ public class MapSettings {
         this.genomeLength = builder.genomeLength;
         this.mutationRange = builder.mutationRange;
         this.projectType = builder.projectType;
+        this.refreshSpeed = builder.refreshSpeed;
     }
 
     public Boundary getBoundary() {
@@ -38,6 +40,10 @@ public class MapSettings {
 
     public int getInitialGrassCount() {
         return initialGrassCount;
+    }
+
+    public int getRefreshSpeed() {
+        return refreshSpeed;
     }
 
     public int getEnergyFromGrass() {
@@ -93,6 +99,7 @@ public class MapSettings {
         private int genomeLength = 7;
         private int mutationRange = 2;
         private int projectType = 0;
+        private int refreshSpeed = 300;
 
         public Builder boundary(Boundary boundary){
             this.boundary = boundary;
@@ -106,6 +113,11 @@ public class MapSettings {
 
         public Builder energyFromGrass(int energyFromGrass){
             this.energyFromGrass = energyFromGrass;
+            return this;
+        }
+
+        public Builder refreshSpeed(int refreshSpeed){
+            this.refreshSpeed = refreshSpeed;
             return this;
         }
 
