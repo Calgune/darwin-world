@@ -19,8 +19,8 @@ public class SimulationApp extends Application {
         Scene scene = new Scene(menuRoot);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Panel parametrow");
-        // za kazdym razem tworzymy nowy stage, nowa scene. Viewroot niby ten sam,
-        // ale za kazdym razem i tak go wczytujemy na nowo.
+        // za kazdym razem tworzymy nowy stage, nowa scene, viewroot tez moze byc nowy
+        // jak zmienimy parametry
 
         primaryStage.show();
 

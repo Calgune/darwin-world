@@ -19,7 +19,6 @@ public class Animal implements WorldElement {
         this.position = position;
         this.direction = MapDirection.values()[(int) (Math.random() * 8)];
         this.energy = energy;
-        ;
         this.genotype = genes;
     }
 
@@ -40,6 +39,10 @@ public class Animal implements WorldElement {
     public boolean isAt(Vector2d position) {
         return Objects.equals(this.position, position);
     }
+
+    public void setDirection(MapDirection newDirection) {
+        this.direction = newDirection;
+    } // potrzebne do testow
 
     public void move(MoveValidator moveValidator) {
         int rotation = this.genotype.todaysMove();

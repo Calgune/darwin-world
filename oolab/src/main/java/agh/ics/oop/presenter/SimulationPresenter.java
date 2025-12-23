@@ -30,7 +30,19 @@ public class SimulationPresenter implements MapChangeListener {
     public Canvas canvas;
 
     @FXML
-    private TextField movementsTextField;
+    private TextField animalsCntTextField;
+
+    @FXML
+    private TextField genomesTextField;
+
+    @FXML
+    private TextField initialEnergyTextField;
+
+    @FXML
+    private TextField dailyGrassesTextField;
+
+    @FXML
+    private TextField initialGrassesTextField;
 
     @FXML
     private Label animalMovementLabel;
@@ -149,6 +161,53 @@ public class SimulationPresenter implements MapChangeListener {
         });
     }
 
+    public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+        BorderPane viewRoot = loader.load();
+
+        SimulationPresenter presenter = loader.getController();
+
+        MapSettings settings = new MapSettings.Builder()
+                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
+                .initialGrassCount(Integer.parseInt(initialGrassesTextField.getText()))
+                .initialAnimalEnergy(Integer.parseInt(initialEnergyTextField.getText()))
+                .genomeLength(Integer.parseInt(genomesTextField.getText()))
+                .initialAnimalCount(Integer.parseInt(animalsCntTextField.getText()))
+                .newDailyGrasses(Integer.parseInt(dailyGrassesTextField.getText()))
+                .build();
+
+        // jak stworzymy nowa mape to mozemy miec kilka okien.
+        // Nie ma juz threadow i disablowania przycisku,
+        // po usunieciu tego zaczelo dzialac wielokrotne otwieranie
+        WorldMap newMap = new CylindricalMap(settings);
+        presenter.setWorldMap(newMap);
+        Stage stage = new Stage();
+        configureStage(stage, viewRoot);
+        stage.show();
+        presenter.drawMap(newMap);
+
+        Simulation simulation = new Simulation(newMap, settings);
+        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
+        simulationEngine.runAsync();
+    }
+
+    private void configureStage(Stage primaryStage, BorderPane viewRoot) {
+        // stworzenie sceny (panelu do wyświetlania wraz zawartością z FXML)
+        var scene = new Scene(viewRoot);
+
+        // ustawienie sceny w oknie
+        primaryStage.setScene(scene);
+
+        // konfiguracja okna
+        primaryStage.setTitle("Simulation app");
+        primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
+        primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
+    }
+}
+
+
+
 //    public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
 //        startButton.setDisable(true);
 //
@@ -176,48 +235,3 @@ public class SimulationPresenter implements MapChangeListener {
 //            startButton.setDisable(false);
 //        }).start();
 //    }
-
-    public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-        BorderPane viewRoot = loader.load();
-
-        SimulationPresenter presenter = loader.getController();
-
-        MapSettings settings = new MapSettings.Builder()
-                .boundary(new Boundary(new Vector2d(0,0), new Vector2d(25, 12)))
-                .initialGrassCount(30)
-                .initialAnimalEnergy(200)
-                .genomeLength(Integer.parseInt(movementsTextField.getText()))
-                .initialAnimalCount(15)
-                .newDailyGrasses(8)
-                .build();
-
-        // jak stworzymy nowa mape to mozemy miec kilka okien.
-        // Nie ma juz threatow i disablowania przycisku,
-        // po usunieciu tego zaczelo dzialac wielokrotne otwieranie
-        WorldMap newMap = new CylindricalMap(settings);
-        presenter.setWorldMap(newMap);
-        Stage stage = new Stage();
-        configureStage(stage, viewRoot);
-        stage.show();
-        presenter.drawMap(newMap);
-
-        Simulation simulation = new Simulation(newMap, settings);
-        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
-        simulationEngine.runAsync();
-    }
-
-    private void configureStage(Stage primaryStage, BorderPane viewRoot) {
-        // stworzenie sceny (panelu do wyświetlania wraz zawartością z FXML)
-        var scene = new Scene(viewRoot);
-
-        // ustawienie sceny w oknie
-        primaryStage.setScene(scene);
-
-        // konfiguracja okna
-        primaryStage.setTitle("Simulation app");
-        primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
-        primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
-    }
-}
