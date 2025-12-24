@@ -107,7 +107,9 @@ public class Simulation implements Runnable {
                     map.removeGrass(grass);
                     List<Animal> animals = map.getAnimalsAt(grass.getPosition());
                     Animal animal = PriorityHandler.whoEats(animals);
-                    animal.eat(settings.getEnergyFromGrass());
+                    if (animal != null) {
+                        animal.eat(settings.getEnergyFromGrass());
+                    }
                 });
 
                 // 4 rozmnażanie
