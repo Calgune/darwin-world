@@ -49,7 +49,7 @@
 
                         <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5">
                             <Label text="Ile energii ubywa dziennie:" />
-                            <TextField fx:id="dailyEnergyDecay" maxWidth="100.0" text="12" />
+                            <TextField fx:id="dailyEnergyDecay" maxWidth="100.0" text="2" />
                             <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 1-5)" />
                         </VBox>
 
@@ -84,14 +84,19 @@
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                            <Label text="Szybkość symulacji (ms):" />
-                            <TextField fx:id="refreshTimeTextField" maxWidth="100.0" text="200" />
+                            <Label text="Ile trwa ruch zwierzaka (ms):" />
+                            <TextField fx:id="refreshTimeTextField" maxWidth="100.0" text="100" />
                             <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 100-1000)" />
                         </VBox>
                     </children>
                 </GridPane>
 
-                <Button fx:id="startButton" onAction="#onSimulationStartClicked" prefWidth="120.0" text="Start" />
+                <HBox alignment="CENTER" spacing="15.0">
+                    <ComboBox fx:id="presetComboBox" onAction="#selectPresets" promptText="Presety" prefWidth="150.0" />
+                    <Button onAction="#saveConfiguration" text="Zapisz do pliku" />
+                    <Button onAction="#loadConfiguration" text="Wczytaj z pliku" />
+                    <Button fx:id="startButton" onAction="#onSimulationStartClicked" prefWidth="120.0" text="Start" />
+                </HBox>
             </children>
             <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

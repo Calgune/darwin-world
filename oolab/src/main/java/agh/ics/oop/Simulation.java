@@ -87,6 +87,7 @@ public class Simulation implements Runnable {
                             map.removeAnimal(animal);
                         });
 
+
                 // 2 ruch wszystkich zwierzaków
                 map.getAnimalsList().forEach(animal -> {
                     map.move(animal);
@@ -137,7 +138,7 @@ public class Simulation implements Runnable {
                 simulationChanged();
             }
             try {
-                Thread.sleep(100);
+                Thread.sleep(settings.getRefreshSpeed() * 3L);
             } catch (InterruptedException e) {
                 break;
             }

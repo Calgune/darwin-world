@@ -4,6 +4,7 @@ import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.observers.StatisticsTracker;
+import agh.ics.oop.model.util.ConfigurationHandler;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -13,15 +14,20 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 public class SimulationPresenter implements MapChangeListener {
     private StatisticsTracker statisticsTracker;
@@ -29,6 +35,9 @@ public class SimulationPresenter implements MapChangeListener {
     private Simulation simulation;
     private final static int CELL_SIZE = 25;
     private final static Font FONT = new Font(14);
+
+    @FXML
+    private ComboBox<String> presetComboBox;
 
     @FXML
     public Label animalsOnMapLabel;
@@ -112,6 +121,119 @@ public class SimulationPresenter implements MapChangeListener {
     private void pauseButtonClicked() {
         if (this.simulation != null) {
             this.simulation.startStop();
+        }
+    }
+
+    @FXML
+    private void selectPresets() {
+        String selected = presetComboBox.getValue();
+        if (selected == null) return;
+
+        switch (selected) {
+            case "Bezpłodni" -> {
+                mapWidthTextField.setText("25");
+                mapHeightTextField.setText("12");
+                animalsCntTextField.setText("15");
+                initialGrassesTextField.setText("15");
+                initialEnergyTextField.setText("40");
+                dailyGrassesTextField.setText("2");
+                dailyEnergyDecay.setText("5");
+                breedingTreshold.setText("200");
+                breedingCost.setText("200");
+            }
+            case "Indie" -> {
+                mapWidthTextField.setText("25");
+                mapHeightTextField.setText("12");
+                animalsCntTextField.setText("200");
+                initialGrassesTextField.setText("70");
+                dailyGrassesTextField.setText("20");
+                initialEnergyTextField.setText("50");
+                breedingCost.setText("3");
+                breedingTreshold.setText("3");
+                refreshTimeTextField.setText("10");
+            }
+            case "Postapo" -> {
+                mapWidthTextField.setText("25");
+                mapHeightTextField.setText("12");
+                animalsCntTextField.setText("6");
+                initialGrassesTextField.setText("10");
+                dailyGrassesTextField.setText("1");
+                dailyEnergyDecay.setText("3");
+                initialEnergyTextField.setText("30");
+                breedingCost.setText("10");
+                breedingTreshold.setText("10");
+                refreshTimeTextField.setText("50");
+            }
+        }
+    }
+
+    @FXML
+    public void initialize() {
+        if (presetComboBox != null) {
+            presetComboBox.getItems().clear();
+            presetComboBox.getItems().addAll("Bezpłodni", "Indie", "Postapo");
+        }
+    }
+
+    @FXML
+    private void saveConfiguration() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Zapisz konfigurację");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik tesktowy", "*.txt"));
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                MapSettings settings = new MapSettings.Builder()
+                        .boundary(new Boundary(new Vector2d(0, 0), new Vector2d(
+                                Integer.parseInt(mapWidthTextField.getText()),
+                                Integer.parseInt(mapHeightTextField.getText()))))
+                        .initialAnimalCount(Integer.parseInt(animalsCntTextField.getText()))
+                        .initialAnimalEnergy(Integer.parseInt(initialEnergyTextField.getText()))
+                        .genomeLength(Integer.parseInt(genomesTextField.getText()))
+                        .initialGrassCount(Integer.parseInt(initialGrassesTextField.getText()))
+                        .newDailyGrasses(Integer.parseInt(dailyGrassesTextField.getText()))
+                        .refreshSpeed(Integer.parseInt(refreshTimeTextField.getText()))
+                        .energyFromGrass(Integer.parseInt(fromGrassEnergy.getText()))
+                        .dailyEnergyDecay(Integer.parseInt(dailyEnergyDecay.getText()))
+                        .reproductionEnergyCost(Integer.parseInt(breedingCost.getText()))
+                        .reproductionEnergyThreshold(Integer.parseInt(breedingTreshold.getText()))
+                        .build();
+
+                ConfigurationHandler.saveConfiguration(file, settings);
+            } catch (Exception e) {
+                System.err.println("Błąd - złe dane");
+            }
+        }
+    }
+
+    @FXML
+    private void loadConfiguration() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Wczytaj konfigurację");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki tekstowe (*.txt)", "*.txt"));
+        File file = fileChooser.showOpenDialog(null);
+
+        if (file != null) {
+            try {
+                Properties config = ConfigurationHandler.loadConfiguration(file);
+
+                mapWidthTextField.setText(config.getProperty("width", "25"));
+                mapHeightTextField.setText(config.getProperty("height", "12"));
+                animalsCntTextField.setText(config.getProperty("initialAnimals", "15"));
+                initialEnergyTextField.setText(config.getProperty("initialEnergy", "100"));
+                genomesTextField.setText(config.getProperty("genomeLength", "7"));
+                initialGrassesTextField.setText(config.getProperty("initialGrass", "30"));
+                dailyGrassesTextField.setText(config.getProperty("dailyGrass", "7"));
+                refreshTimeTextField.setText(config.getProperty("refreshSpeed", "100"));
+                fromGrassEnergy.setText(config.getProperty("energyFromGrass", "2"));
+                dailyEnergyDecay.setText(config.getProperty("dailyEnergyDecay", "2"));
+                breedingCost.setText(config.getProperty("reproductionCost", "10"));
+                breedingTreshold.setText(config.getProperty("reproductionThreshold", "12"));
+
+            } catch (IOException e) {
+                System.err.println("Błąd wczytywania pliku");
+            }
         }
     }
 
