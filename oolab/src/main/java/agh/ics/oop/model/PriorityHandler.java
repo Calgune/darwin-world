@@ -24,10 +24,6 @@ public class PriorityHandler {
             return new ArrayList<>();
         }
 
-        if (animals.size() == 1) {
-            return new ArrayList<>(animals);
-        }
-
         Animal a = animals.get(0);
         Animal b = animals.get(1);
 
@@ -54,7 +50,20 @@ public class PriorityHandler {
     }
 
     public static Animal whoEats(List<Animal> animals) {
-        List<Animal> bestTwo = whoBreeds(animals);
-        return bestTwo.getFirst();
+
+        if (animals == null || animals.isEmpty()) {
+            return null;
+        }
+
+        Animal a = animals.get(0);
+
+        for (int i = 1; i < animals.size(); i++) {
+            Animal b = animals.get(i);
+            if (compareAnimals(b, a)) {
+                a = b;
+            }
+        }
+
+        return a;
     }
 }
