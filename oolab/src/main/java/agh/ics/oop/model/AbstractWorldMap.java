@@ -16,7 +16,7 @@ public abstract class AbstractWorldMap implements WorldMap{
     private final Boundary jungleBoundary;
     private final Boundary northSteppes;
     private final Boundary southSteppes;
-    private int day;
+    // private int day;
 
     public AbstractWorldMap(MapSettings settings){
         this.settings = settings;
@@ -24,7 +24,7 @@ public abstract class AbstractWorldMap implements WorldMap{
         this.jungleBoundary = calculateJungleBoundary();
         this.northSteppes = calculateNorthSteppes();
         this.southSteppes = calculateSouthSteppes();
-        this.day = 0;
+        // this.day = 0;
     }
 
     @Override
@@ -234,10 +234,10 @@ public abstract class AbstractWorldMap implements WorldMap{
                 .count() + grasses.size());
     }
 
-    @Override
-    public void advanceDay() {
-        day++;
-    }
+//    @Override
+//    public void advanceDay() {
+//        day++;
+//    }
 
 
     @Override

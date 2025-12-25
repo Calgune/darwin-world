@@ -1,5 +1,7 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.AbstractSimulation;
+import agh.ics.oop.SeasonalSimulation;
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.MapChangeListener;
@@ -26,7 +28,7 @@ import java.util.List;
 public class SimulationPresenter implements MapChangeListener {
     private StatisticsTracker statisticsTracker;
     private WorldMap map;
-    private Simulation simulation;
+    private AbstractSimulation simulation;
     private final static int CELL_SIZE = 25;
     private final static Font FONT = new Font(14);
 
@@ -104,7 +106,7 @@ public class SimulationPresenter implements MapChangeListener {
         this.statisticsTracker = statisticsTracker;
     }
 
-    public void setSimulation(Simulation simulation) {
+    public void setSimulation(AbstractSimulation simulation) {
         this.simulation = simulation;
     }
 
@@ -265,6 +267,7 @@ public class SimulationPresenter implements MapChangeListener {
                 .reproductionEnergyCost(reproductionCost)
                 .reproductionEnergyThreshold(reproductionThreshold)
                 .refreshSpeed(refreshTime)
+                .simulationType(SimulationType.Normal)
                 .build();
 
         // jak stworzymy nowa mape to mozemy miec kilka okien.
@@ -273,7 +276,11 @@ public class SimulationPresenter implements MapChangeListener {
         WorldMap newMap = new CylindricalMap(settings);
         presenter.setWorldMap(newMap);
 
-        Simulation simulation = new Simulation(newMap, settings);
+        AbstractSimulation simulation;
+        if(settings.getSimulationType() == SimulationType.Normal)
+            simulation = new Simulation(newMap, settings);
+        else simulation = new SeasonalSimulation(newMap, settings);
+
         StatisticsTracker tracker = new StatisticsTracker();
         tracker.updateStats(newMap);
 
@@ -281,7 +288,7 @@ public class SimulationPresenter implements MapChangeListener {
         presenter.setStatisticsTracker(tracker);
 
         presenter.setSimulation(simulation);
-        SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
+        SimulationEngine simulationEngine = new SimulationEngine(List.of((Simulation) simulation));
         simulationEngine.runAsync();
 
         Stage stage = new Stage();

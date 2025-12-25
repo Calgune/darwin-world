@@ -80,5 +80,5 @@ public interface WorldMap extends MoveValidator {
     public int getAnimalsCount();
     public int getGrassesCount();
     public int getEmptySpacesCount();
-    public void advanceDay();
+    //public void advanceDay();
 }
