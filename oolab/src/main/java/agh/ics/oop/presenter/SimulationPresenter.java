@@ -311,8 +311,15 @@ public class SimulationPresenter implements MapChangeListener {
                     drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, Color.rgb(144, 238, 144));
                 }
 
-                if(worldMap.isOccupied(position)){
-                    drawTextInTheMiddleOfRectangle(graphicsContext2d, worldMap.objectAt(position).toString(), x, y);
+                if (worldMap.isOccupied(position)) {
+                    Object object = worldMap.objectAt(position);
+                    if (object instanceof Animal animal) {
+                        graphicsContext2d.setFill(animal.getColor(statisticsTracker.getMostPopularGenotype()));
+                        drawTextInTheMiddleOfRectangle(graphicsContext2d, animal.toString(), x, y);
+                    } else {
+                        graphicsContext2d.setFill(Color.rgb(0,0,0));
+                        drawTextInTheMiddleOfRectangle(graphicsContext2d, worldMap.objectAt(position).toString(), x, y);
+                    }
                 }
             }
         }
@@ -329,6 +336,7 @@ public class SimulationPresenter implements MapChangeListener {
         }
 
         // rysowanie opisu osi x
+        graphicsContext2d.setFill(Color.rgb(0,0,0));
         drawAxis(graphicsContext2d, boundary.lowerLeft().getX(), boundary.upperRight().getX(), true);
 
         // rysowanie opisu osi y
@@ -408,6 +416,10 @@ public class SimulationPresenter implements MapChangeListener {
 
         Stage stage = new Stage();
         configureStage(stage, viewRoot);
+
+        stage.setOnCloseRequest(event -> {
+            simulation.killSimulation();
+        });
         stage.show();
     }
 

@@ -14,6 +14,11 @@ public class Simulation implements Runnable {
     private final MapSettings settings;
     private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();
     private volatile boolean paused = false;
+    private volatile boolean running = true;
+
+    public void killSimulation() {
+        this.running = false;
+    }
 
     public void startStop() {
         paused = !paused;
@@ -76,7 +81,7 @@ public class Simulation implements Runnable {
 
     @Override
     public void run(){
-        while (true) {
+        while (running) {
             if (!paused) {
                 // 1 usunięcie martwych zwierzaków
                 map.getAnimalsList().
@@ -143,6 +148,7 @@ public class Simulation implements Runnable {
                 break;
             }
         }
+        System.out.println("ZAMKNIETO SYMULACJE");
     }
 }
 
