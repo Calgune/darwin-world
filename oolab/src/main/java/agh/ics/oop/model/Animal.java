@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import javafx.scene.paint.Color;
 
 public class Animal implements WorldElement {
     private MapDirection direction;
@@ -13,10 +14,6 @@ public class Animal implements WorldElement {
     private int age;
     private int kidsCount;
     private final Genome genome;
-
-    public Genome getGenome() {
-        return genome;
-    }
 
     public Animal(Vector2d position, Genome genes, int energy) {
         this.position = position;
@@ -33,20 +30,22 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-        return switch (direction) {
-            case NORTH -> "N";
-            case SOUTH -> "S";
-            case NORTH_EAST -> "NE";
-            case EAST -> "E";
-            case WEST -> "W";
-            case SOUTH_EAST -> "SE";
-            case SOUTH_WEST -> "SW";
-            case NORTH_WEST -> "NW";
-        };
+        return "\uD83D\uDC3A";
+    }
+
+    public Color getColor(int dominantGenotype) {
+        if (this.getGenome().todaysMove() == dominantGenotype) {
+            return Color.rgb(211, 175, 55);
+        }
+        return Color.rgb(102, 51, 0);
     }
 
     public boolean isAt(Vector2d position) {
         return Objects.equals(this.position, position);
+    }
+
+    public void setPosition(Vector2d newPosition) {
+        this.position = newPosition;
     }
 
     public void setDirection(MapDirection newDirection) {
@@ -58,19 +57,11 @@ public class Animal implements WorldElement {
         this.direction = this.direction.changeDirection(rotation);
         Vector2d moveVector = this.direction.toUnitVector();
         Vector2d positionAfterMove = this.position.add(moveVector);
-        Vector2d targetPosition = moveValidator.nextPosition(positionAfterMove);
 
         if (moveValidator.canMoveTo(positionAfterMove)) {
-            this.position = targetPosition;
+            this.position = moveValidator.wrapAround(positionAfterMove);
         } else {
             this.direction = this.direction.bounceOfTheWall();
-            moveVector = this.direction.toUnitVector();
-            positionAfterMove = this.position.add(moveVector);
-            targetPosition = moveValidator.nextPosition(positionAfterMove);
-
-            if (moveValidator.canMoveTo(positionAfterMove)) {
-                this.position = targetPosition;
-            }
         }
     }
 
@@ -90,10 +81,10 @@ public class Animal implements WorldElement {
 
         if (ourOnLeft) {
             childGenes.addAll(this.genome.getPart(0, ourGenomeRatio));
-            childGenes.addAll(partner.getGenotype().getPart(ourGenomeRatio, genomeLength));
+            childGenes.addAll(partner.getGenome().getPart(ourGenomeRatio, genomeLength));
         } else {
             childGenes.addAll(this.genome.getPart(partnersGenomeRatio, genomeLength));
-            childGenes.addAll(partner.getGenotype().getPart(0, partnersGenomeRatio));
+            childGenes.addAll(partner.getGenome().getPart(0, partnersGenomeRatio));
         }
 
         for (int i = 0; i < randomAmount; i++) {
@@ -117,7 +108,7 @@ public class Animal implements WorldElement {
         return position;
     }
 
-    public Genome getGenotype() {
+    public Genome getGenome() {
         return this.genome;
     }
 
