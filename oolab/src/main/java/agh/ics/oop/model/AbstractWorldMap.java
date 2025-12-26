@@ -16,7 +16,7 @@ public abstract class AbstractWorldMap implements WorldMap{
     private final Boundary jungleBoundary;
     private final Boundary northSteppes;
     private final Boundary southSteppes;
-    private int day;
+    // private int day;
 
     public AbstractWorldMap(MapSettings settings){
         this.settings = settings;
@@ -24,7 +24,7 @@ public abstract class AbstractWorldMap implements WorldMap{
         this.jungleBoundary = calculateJungleBoundary();
         this.northSteppes = calculateNorthSteppes();
         this.southSteppes = calculateSouthSteppes();
-        this.day = 0;
+        // this.day = 0;
     }
 
     @Override
@@ -93,6 +93,7 @@ public abstract class AbstractWorldMap implements WorldMap{
         observers.remove(observer);
     }
 
+    @Override
     public void mapChanged(String message){
         for(MapChangeListener observer : observers){
             observer.mapChanged(this, message);
@@ -227,16 +228,34 @@ public abstract class AbstractWorldMap implements WorldMap{
 
     @Override
     public int getEmptySpacesCount() {
-        return Math.toIntExact(animals.values().stream()
+        return Math.toIntExact(settings.getBoundary().getCellsCount() - (animals.values().stream()
                 .filter(animalsList ->
                         !animalsList.isEmpty() &&
                                 !isOccupiedByGrass(animalsList.getFirst().getPosition()))
-                .count() + grasses.size());
+                .count() + grasses.size()));
     }
 
     @Override
-    public void advanceDay() {
-        day++;
+    public Map<Vector2d, Integer> getNeighborsDensityMap(){
+        Map<Vector2d, Integer> neighborsDensity = new HashMap<>();
+
+        getAnimalsList().forEach(animal -> {
+            Boundary boundary = settings.getBoundary();
+            int R = settings.getDistanceToTransferHeat();
+            int x = animal.getPosition().getX();
+            int y = animal.getPosition().getY();
+
+            for (int i = x - R; i < x + R + 1; i++){
+                for (int j = y - R; j < y + R + 1; j++){
+                    Vector2d position = new Vector2d(i, j);
+                    //IO.println(position);
+                    if (i == x && j == y && canMoveTo(position)) continue;
+                    neighborsDensity.put(position,
+                            neighborsDensity.getOrDefault(position, 0) + 1);
+                }
+            }
+        });
+        return neighborsDensity;
     }
 
 

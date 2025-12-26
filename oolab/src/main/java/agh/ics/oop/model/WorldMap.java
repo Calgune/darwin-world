@@ -46,6 +46,8 @@ public interface WorldMap extends MoveValidator {
      */
     boolean isOccupied(Vector2d position);
 
+
+    void mapChanged(String message);
     /**
      * Return an animal at a given position.
      *
@@ -72,6 +74,9 @@ public interface WorldMap extends MoveValidator {
     public Collection<Animal> getAnimalsList();
     public void removeAnimal(Animal animal);
     public void removeGrass(Grass grass);
+
+    Map<Vector2d, Integer> getNeighborsDensityMap();
+
     public Collection<Grass> getGrassesList();
     public boolean isOccupiedByAnimal(Vector2d position);
     public boolean isOccupiedByGrass(Vector2d position);
@@ -80,5 +85,5 @@ public interface WorldMap extends MoveValidator {
     public int getAnimalsCount();
     public int getGrassesCount();
     public int getEmptySpacesCount();
-    public void advanceDay();
+    //public void advanceDay();
 }

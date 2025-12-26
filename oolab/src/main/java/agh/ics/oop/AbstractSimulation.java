@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class Simulation implements Runnable {
-    private final WorldMap map;
-    private final MapSettings settings;
+abstract public class AbstractSimulation implements Simulation {
+    protected final WorldMap map;
+    protected final MapSettings settings;
     private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();
     private volatile boolean paused = false;
+    protected int day;
     private volatile boolean running = true;
 
+    @Override
     public void killSimulation() {
         this.running = false;
     }
@@ -24,16 +26,26 @@ public class Simulation implements Runnable {
         paused = !paused;
     }
 
+    @Override
+    abstract public MapVisualState getMapVisualState();
+
+    @Override
+    public int getDay(){
+        return day;
+    }
+
+    @Override
     public void addObserver(SimulationObserver observer){
         simulationObservers.add(observer);
     }
 
+    @Override
     public void removeObserver(SimulationObserver observer){
         simulationObservers.remove(observer);
     }
 
     public void simulationChanged(){
-        simulationObservers.forEach(simulationObserver -> {simulationObserver.updateStats(map);});
+        simulationObservers.forEach(simulationObserver -> {map.mapChanged(""); simulationObserver.updateStats(map);});
     }
 
     public void spawnGrasses(int grassToSpawn){
@@ -60,9 +72,10 @@ public class Simulation implements Runnable {
         southGen.forEach(pos -> map.placeGrass(new Grass(pos)));
     }
 
-    public Simulation(WorldMap map, MapSettings settings) { //POPRAWIC
+    public AbstractSimulation(WorldMap map, MapSettings settings) {
         this.map = map;
         this.settings = settings;
+        day = 0;
 
         spawnGrasses(settings.getInitialGrassCount());
 
@@ -79,67 +92,94 @@ public class Simulation implements Runnable {
         });
     }
 
+    public void deleteDeadAnimals(){
+        map.getAnimalsList().
+                stream().
+                filter(Animal::hasStarved).
+                forEach(animal -> {
+                    simulationObservers.forEach(obs -> obs.registerDeath(animal));
+                    map.removeAnimal(animal);
+                });
+    }
+
+    public void moveAnimals(){
+        map.getAnimalsList().forEach(animal -> {
+            map.move(animal);
+            try {
+                Thread.sleep(settings.getRefreshSpeed());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public void handleGrasses(){
+        List<Grass> toRemove = map.getGrassesList().
+                stream().
+                filter(grass -> map.isOccupiedByAnimal(grass.getPosition())).
+                toList();
+
+        toRemove.forEach(grass -> {
+            map.removeGrass(grass);
+            List<Animal> animals = map.getAnimalsAt(grass.getPosition());
+            Animal animal = PriorityHandler.whoEats(animals);
+            if (animal != null)
+                animal.eat(settings.getEnergyFromGrass());
+        });
+    }
+
+    public void breedAnimals(){
+        map.getReproductionCells().forEach(animals -> {
+            List<Animal> parents = PriorityHandler.whoBreeds(animals);
+            if (parents.size() == 2) {
+                Animal child = parents
+                        .getFirst()
+                        .breed(parents.get(1), settings.getReproductionEnergyCost());
+                map.placeAnimal(child);
+            }
+        });
+    }
+
+    public void growGrasses(){
+        spawnGrasses(settings.getNewDailyGrasses());
+    }
+
+    public void loseEnergy(){
+        map.getAnimalsList().forEach(animal -> {
+            animal.loseEnergy(settings.getDailyEnergyDecay());
+            animal.age();
+        });
+    }
+
+    public void advanceDay(){
+        day++;
+    }
+
     @Override
     public void run(){
         while (running) {
             if (!paused) {
                 // 1 usunięcie martwych zwierzaków
-                map.getAnimalsList().
-                        stream().
-                        filter(Animal::hasStarved).
-                        forEach(animal -> {
-                            simulationObservers.forEach(obs -> obs.registerDeath(animal));
-                            map.removeAnimal(animal);
-                        });
-
+                deleteDeadAnimals();
 
                 // 2 ruch wszystkich zwierzaków
-                map.getAnimalsList().forEach(animal -> {
-                    map.move(animal);
-                    try {
-                        Thread.sleep(settings.getRefreshSpeed());
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                moveAnimals();
 
                 // 3 zjadzanie roślin (aktualizowanie energi, usunięcie rośliny
-                List<Grass> toRemove = map.getGrassesList().
-                        stream().
-                        filter(grass -> map.isOccupiedByAnimal(grass.getPosition())).
-                        toList();
-
-                toRemove.forEach(grass -> {
-                    map.removeGrass(grass);
-                    List<Animal> animals = map.getAnimalsAt(grass.getPosition());
-                    Animal animal = PriorityHandler.whoEats(animals);
-                    if (animal != null) {
-                        animal.eat(settings.getEnergyFromGrass());
-                    }
-                });
+                handleGrasses();
 
                 // 4 rozmnażanie
-                map.getReproductionCells().forEach(animals -> {
-                    List<Animal> parents = PriorityHandler.whoBreeds(animals);
-                    if (parents.size() == 2) {
-                        Animal child = parents
-                                .getFirst()
-                                .breed(parents.get(1), settings.getReproductionEnergyCost());
-                        map.placeAnimal(child);
-                    }
-                });
+                breedAnimals();
 
                 // 5 wzrost nowych roślin
-                spawnGrasses(settings.getNewDailyGrasses());
+                growGrasses();
 
                 // 6 utrata energi zewzględu na przeminięcie dnia
-                map.getAnimalsList().forEach(animal -> {
-                    animal.loseEnergy(settings.getDailyEnergyDecay());
-                    animal.age();
-                });
+                loseEnergy();
 
                 // 7 przeminiecie dnia
-                map.advanceDay();
+                advanceDay();
+
                 simulationChanged();
             }
             try {
@@ -151,7 +191,3 @@ public class Simulation implements Runnable {
         System.out.println("ZAMKNIETO SYMULACJE");
     }
 }
-
-
-
-

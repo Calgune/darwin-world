@@ -1,6 +1,7 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.Simulation;
+import agh.ics.oop.SeasonalSimulation;
+import agh.ics.oop.NormalSimulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.observers.StatisticsTracker;
@@ -15,6 +16,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -30,11 +32,33 @@ import java.util.List;
 import java.util.Properties;
 
 public class SimulationPresenter implements MapChangeListener {
+    public Label dayLabel;
     private StatisticsTracker statisticsTracker;
     private WorldMap map;
     private Simulation simulation;
     private final static int CELL_SIZE = 25;
     private final static Font FONT = new Font(14);
+
+    @FXML
+    public TextField distanceToTransferHeatTextField;
+
+    @FXML
+    public CheckBox simulationTypeCheckButton;
+
+    @FXML
+    public TextField minimalTemperatureTextField;
+
+    @FXML
+    public TextField summerLengthTextField;
+
+    @FXML
+    public TextField winterLengthTextField;
+
+    @FXML
+    public Label temperatureLabel;
+
+    @FXML
+    public Label seasonLabel;
 
     @FXML
     private ComboBox<String> presetComboBox;
@@ -67,7 +91,7 @@ public class SimulationPresenter implements MapChangeListener {
     private TextField dailyEnergyDecay;
 
     @FXML
-    private TextField breedingTreshold;
+    private TextField breedingThreshold;
 
     @FXML
     private TextField breedingCost;
@@ -138,7 +162,7 @@ public class SimulationPresenter implements MapChangeListener {
                 initialEnergyTextField.setText("40");
                 dailyGrassesTextField.setText("2");
                 dailyEnergyDecay.setText("5");
-                breedingTreshold.setText("200");
+                breedingThreshold.setText("200");
                 breedingCost.setText("200");
             }
             case "Indie" -> {
@@ -149,7 +173,7 @@ public class SimulationPresenter implements MapChangeListener {
                 dailyGrassesTextField.setText("20");
                 initialEnergyTextField.setText("50");
                 breedingCost.setText("3");
-                breedingTreshold.setText("3");
+                breedingThreshold.setText("3");
                 refreshTimeTextField.setText("10");
             }
             case "Postapo" -> {
@@ -161,7 +185,7 @@ public class SimulationPresenter implements MapChangeListener {
                 dailyEnergyDecay.setText("3");
                 initialEnergyTextField.setText("30");
                 breedingCost.setText("10");
-                breedingTreshold.setText("10");
+                breedingThreshold.setText("10");
                 refreshTimeTextField.setText("50");
             }
         }
@@ -197,7 +221,7 @@ public class SimulationPresenter implements MapChangeListener {
                         .energyFromGrass(Integer.parseInt(fromGrassEnergy.getText()))
                         .dailyEnergyDecay(Integer.parseInt(dailyEnergyDecay.getText()))
                         .reproductionEnergyCost(Integer.parseInt(breedingCost.getText()))
-                        .reproductionEnergyThreshold(Integer.parseInt(breedingTreshold.getText()))
+                        .reproductionEnergyThreshold(Integer.parseInt(breedingThreshold.getText()))
                         .build();
 
                 ConfigurationHandler.saveConfiguration(file, settings);
@@ -229,7 +253,7 @@ public class SimulationPresenter implements MapChangeListener {
                 fromGrassEnergy.setText(config.getProperty("energyFromGrass", "2"));
                 dailyEnergyDecay.setText(config.getProperty("dailyEnergyDecay", "2"));
                 breedingCost.setText(config.getProperty("reproductionCost", "10"));
-                breedingTreshold.setText(config.getProperty("reproductionThreshold", "12"));
+                breedingThreshold.setText(config.getProperty("reproductionThreshold", "12"));
 
             } catch (IOException e) {
                 System.err.println("Błąd wczytywania pliku");
@@ -305,10 +329,10 @@ public class SimulationPresenter implements MapChangeListener {
                 Vector2d position = new Vector2d(j, i);
                 if(position.precedes(worldMap.getJungleBoundary().upperRight()) &&
                         position.follows(worldMap.getJungleBoundary().lowerLeft())){
-                    drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, Color.rgb(34, 139, 34));
+                    drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, simulation.getMapVisualState().getJungleColor());
                 }
                 else {
-                    drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, Color.rgb(144, 238, 144));
+                    drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, simulation.getMapVisualState().getSteppesColor());
                 }
 
                 if (worldMap.isOccupied(position)) {
@@ -336,7 +360,6 @@ public class SimulationPresenter implements MapChangeListener {
         }
 
         // rysowanie opisu osi x
-        graphicsContext2d.setFill(Color.rgb(0,0,0));
         drawAxis(graphicsContext2d, boundary.lowerLeft().getX(), boundary.upperRight().getX(), true);
 
         // rysowanie opisu osi y
@@ -351,6 +374,12 @@ public class SimulationPresenter implements MapChangeListener {
         deadAnimalsAverageLifespanLabel.setText("śr. dł. życia martwych zwierzaków: %.2f".formatted(statisticsTracker.getDeadAnimalsAverageLifespan()));
         animalsOnMapAverageEnergyLabel.setText("śr. energia zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageEnergy()));
         animalsOnMapAverageKidsCountLabel.setText("śr. liczba dzieci zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageKidsCount()));
+        dayLabel.setText("dzień: %d".formatted(simulation.getDay()));
+
+        if (simulation instanceof SeasonalSimulation){
+            temperatureLabel.setText("temperatura: %.2f °C".formatted(((SeasonalSimulation) simulation).getTemperature()));
+            seasonLabel.setText("pora roku: %s".formatted(((SeasonalSimulation) simulation).getSeason()));
+        }
     }
 
     @Override
@@ -360,6 +389,27 @@ public class SimulationPresenter implements MapChangeListener {
             drawMap(worldMap);
             updateStatistics();
         });
+    }
+
+    public void enableSeasonalLabels(){
+        temperatureLabel.setManaged(true);
+        temperatureLabel.setVisible(true);
+        seasonLabel.setManaged(true);
+        seasonLabel.setVisible(true);
+    }
+
+    public void simulationTypeCheckButtonClicked(){
+        boolean disable = !simulationTypeCheckButton.isSelected();
+        minimalTemperatureTextField.setDisable(disable);
+        summerLengthTextField.setDisable(disable);
+        winterLengthTextField.setDisable(disable);
+        distanceToTransferHeatTextField.setDisable(disable);
+    }
+
+    public SimulationType getSimulationType(){
+        if (simulationTypeCheckButton.isSelected())
+            return SimulationType.Seasonal;
+        return SimulationType.Normal;
     }
 
     public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
@@ -378,7 +428,7 @@ public class SimulationPresenter implements MapChangeListener {
         int animalsCnt = Integer.parseInt(animalsCntTextField.getText());
         int dailyGrasses = Integer.parseInt(dailyGrassesTextField.getText());
         int energyDecay = Integer.parseInt(dailyEnergyDecay.getText());
-        int reproductionThreshold = Integer.parseInt(breedingTreshold.getText());
+        int reproductionThreshold = Integer.parseInt(breedingThreshold.getText());
         int reproductionCost = Integer.parseInt(breedingCost.getText());
         int grassEnergy = Integer.parseInt(fromGrassEnergy.getText());
         int refreshTime = Integer.parseInt(refreshTimeTextField.getText());
@@ -395,6 +445,11 @@ public class SimulationPresenter implements MapChangeListener {
                 .reproductionEnergyCost(reproductionCost)
                 .reproductionEnergyThreshold(reproductionThreshold)
                 .refreshSpeed(refreshTime)
+                .simulationType(getSimulationType())
+                .minimalTemperatureInWinter(Integer.parseInt(minimalTemperatureTextField.getText()))
+                .distanceToTransferHeat(Integer.parseInt(distanceToTransferHeatTextField.getText()))
+                .winterLengthInDays(Integer.parseInt(winterLengthTextField.getText()))
+                .summerLengthInDays(Integer.parseInt(summerLengthTextField.getText()))
                 .build();
 
         // jak stworzymy nowa mape to mozemy miec kilka okien.
@@ -403,7 +458,13 @@ public class SimulationPresenter implements MapChangeListener {
         WorldMap newMap = new CylindricalMap(settings);
         presenter.setWorldMap(newMap);
 
-        Simulation simulation = new Simulation(newMap, settings);
+        Simulation simulation;
+        if(settings.getSimulationType() == SimulationType.Normal)
+            simulation = new NormalSimulation(newMap, settings);
+        else{
+            simulation = new SeasonalSimulation(newMap, settings);
+        }
+
         StatisticsTracker tracker = new StatisticsTracker();
         tracker.updateStats(newMap);
 
@@ -421,6 +482,9 @@ public class SimulationPresenter implements MapChangeListener {
             simulation.killSimulation();
         });
         stage.show();
+
+        if(settings.getSimulationType() == SimulationType.Seasonal)
+            presenter.enableSeasonalLabels();
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
