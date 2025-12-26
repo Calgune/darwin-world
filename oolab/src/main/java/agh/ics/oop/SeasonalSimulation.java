@@ -1,16 +1,25 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.Grass;
-import agh.ics.oop.model.PriorityHandler;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.*;
 import agh.ics.oop.model.util.MapSettings;
+import agh.ics.oop.model.util.Season;
 import com.sun.scenario.Settings;
 
 import java.util.List;
+import java.util.Map;
 
-public class SeasonalSimulation extends AbstractSimulation{
+public class SeasonalSimulation extends AbstractSimulation implements SeasonalInfo{
     private SeasonManager seasonManager;
+
+    @Override
+    public MapVisualState getMapVisualState() {
+        if(seasonManager.getSeason(day) == Season.Winter){
+            double y = seasonManager.getTemperatureToColdnessFactor(day);
+            IO.println(y);
+            return new SeasonalVisualState(y);
+        }
+        return new NormalVisualState();
+    }
 
     public SeasonalSimulation(WorldMap map, MapSettings settings){
         super(map, settings);
@@ -32,30 +41,42 @@ public class SeasonalSimulation extends AbstractSimulation{
         });
     }
 
-//    @Override
-//    public void breedAnimals(){
-//        map.getReproductionCells().forEach(animals -> {
-//            List<Animal> parents = PriorityHandler.whoBreeds(animals);
-//            if (parents.size() == 2) {
-//                Animal child = parents
-//                        .getFirst()
-//                        .breed(parents.get(1), settings.getReproductionEnergyCost());
-//                map.placeAnimal(child);
-//            }
-//        });
-//    }
-
     @Override
     public void growGrasses(){
-        spawnGrasses((int) (settings.getNewDailyGrasses()*seasonManager.getGrassSpawnModifier(day)));
+        spawnGrasses((int)(settings.getNewDailyGrasses()*seasonManager.getGrassSpawnModifier(day)));
     }
 
     @Override
     public void loseEnergy(){
+        Map<Vector2d, Integer> neighborsDensity = map.getNeighborsDensityMap();
+
         map.getAnimalsList().forEach(animal -> {
-            animal.loseEnergy((int) (settings.getDailyEnergyDecay()*seasonManager.getEnergyDecayModifier(day)));
+            // zakładam, że im więcej zwierzaków tym więcej ciepła więc mniej tracą energi
+            // odpowiednia liczba zwierzaków jest wstanie zrekompensować straty energi spowodowane zimą
+            // każdy zwierzak dodatkowy, ponad bazowy warunek odpowiednio zwiększa ciepło o stałą wartość
+            int animalsCountingToDrainReduction = Math.max(0, neighborsDensity.getOrDefault(animal.getPosition(), 0)
+                    -settings.getMinimalAnimalCountInRangeToTransferHeat() + 1);
+
+            double potentialEnergyDrain = settings.getDailyEnergyDecay()*seasonManager.getEnergyDecayModifier(day)
+                    -settings.getEnergyDrainReduction()*animalsCountingToDrainReduction;
+
+            double minimalEnergyDrain = settings.getDailyEnergyDecay();
+
+            animal.loseEnergy((int) (Math.max(potentialEnergyDrain, minimalEnergyDrain)));
             animal.age();
         });
     }
+
+    @Override
+    public double getTemperature() {
+        return seasonManager.getTemperature(day);
+    }
+
+    @Override
+    public Season getSeason() {
+        return seasonManager.getSeason(day);
+    }
+
+
 
 }

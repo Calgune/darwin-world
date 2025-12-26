@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-abstract public class AbstractSimulation implements Runnable {
+abstract public class AbstractSimulation implements Simulation {
     protected final WorldMap map;
     protected final MapSettings settings;
     private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();
@@ -20,16 +20,26 @@ abstract public class AbstractSimulation implements Runnable {
         paused = !paused;
     }
 
+    @Override
+    abstract public MapVisualState getMapVisualState();
+
+    @Override
+    public int getDay(){
+        return day;
+    }
+
+    @Override
     public void addObserver(SimulationObserver observer){
         simulationObservers.add(observer);
     }
 
+    @Override
     public void removeObserver(SimulationObserver observer){
         simulationObservers.remove(observer);
     }
 
     public void simulationChanged(){
-        simulationObservers.forEach(simulationObserver -> {simulationObserver.updateStats(map);});
+        simulationObservers.forEach(simulationObserver -> {map.mapChanged(""); simulationObserver.updateStats(map);});
     }
 
     public void spawnGrasses(int grassToSpawn){
@@ -97,7 +107,6 @@ abstract public class AbstractSimulation implements Runnable {
         });
     }
 
-
     public void handleGrasses(){
         List<Grass> toRemove = map.getGrassesList().
                 stream().
@@ -137,7 +146,7 @@ abstract public class AbstractSimulation implements Runnable {
 
     public void advanceDay(){
         day++;
-        //map.advanceDay();
+
     }
 
     @Override

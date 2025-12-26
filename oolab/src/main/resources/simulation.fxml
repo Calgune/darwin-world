@@ -19,8 +19,8 @@
    <bottom>
        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
        <children>
-      <Label fx:id="animalMovementLabel" text="aktualny ruch zwierzaka"/>
-          <Button fx:id="pauseButton" text="Stop / Start" onAction="#pauseButtonClicked"/>
+      <Label fx:id="animalMovementLabel" text="aktualny ruch zwierzaka" />
+          <Button fx:id="pauseButton" onAction="#pauseButtonClicked" text="Stop / Start" />
            </children>
 
          <BorderPane.margin>
@@ -38,6 +38,9 @@
             <Label fx:id="deadAnimalsAverageLifespanLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. dł. życia martwych zwierzaków:" wrapText="true" />
             <Label fx:id="animalsOnMapAverageEnergyLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. energia zwierzaków:" wrapText="true" />
             <Label fx:id="animalsOnMapAverageKidsCountLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. liczba dzieci zwierzaków:" wrapText="true" />
+            <Label fx:id="dayLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="dzień:" wrapText="true"/>
+            <Label fx:id="temperatureLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="temperatura:" wrapText="true" visible="false" managed="false"/>
+            <Label fx:id="seasonLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="pora roku:" wrapText="true"  visible="false" managed="false"/> <!-- visible="false" managed="false" -->
          </children>
          <opaqueInsets>
             <Insets />
