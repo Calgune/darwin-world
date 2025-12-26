@@ -5,6 +5,7 @@ import agh.ics.oop.NormalSimulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.observers.StatisticsTracker;
+import agh.ics.oop.model.util.ConfigurationHandler;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -21,9 +23,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 public class SimulationPresenter implements MapChangeListener {
     public Label dayLabel;
@@ -53,6 +59,9 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML
     public Label seasonLabel;
+
+    @FXML
+    private ComboBox<String> presetComboBox;
 
     @FXML
     public Label animalsOnMapLabel;
@@ -139,6 +148,119 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
+    @FXML
+    private void selectPresets() {
+        String selected = presetComboBox.getValue();
+        if (selected == null) return;
+
+        switch (selected) {
+            case "Bezpłodni" -> {
+                mapWidthTextField.setText("25");
+                mapHeightTextField.setText("12");
+                animalsCntTextField.setText("15");
+                initialGrassesTextField.setText("15");
+                initialEnergyTextField.setText("40");
+                dailyGrassesTextField.setText("2");
+                dailyEnergyDecay.setText("5");
+                breedingThreshold.setText("200");
+                breedingCost.setText("200");
+            }
+            case "Indie" -> {
+                mapWidthTextField.setText("25");
+                mapHeightTextField.setText("12");
+                animalsCntTextField.setText("200");
+                initialGrassesTextField.setText("70");
+                dailyGrassesTextField.setText("20");
+                initialEnergyTextField.setText("50");
+                breedingCost.setText("3");
+                breedingThreshold.setText("3");
+                refreshTimeTextField.setText("10");
+            }
+            case "Postapo" -> {
+                mapWidthTextField.setText("25");
+                mapHeightTextField.setText("12");
+                animalsCntTextField.setText("6");
+                initialGrassesTextField.setText("10");
+                dailyGrassesTextField.setText("1");
+                dailyEnergyDecay.setText("3");
+                initialEnergyTextField.setText("30");
+                breedingCost.setText("10");
+                breedingThreshold.setText("10");
+                refreshTimeTextField.setText("50");
+            }
+        }
+    }
+
+    @FXML
+    public void initialize() {
+        if (presetComboBox != null) {
+            presetComboBox.getItems().clear();
+            presetComboBox.getItems().addAll("Bezpłodni", "Indie", "Postapo");
+        }
+    }
+
+    @FXML
+    private void saveConfiguration() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Zapisz konfigurację");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik tesktowy", "*.txt"));
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                MapSettings settings = new MapSettings.Builder()
+                        .boundary(new Boundary(new Vector2d(0, 0), new Vector2d(
+                                Integer.parseInt(mapWidthTextField.getText()),
+                                Integer.parseInt(mapHeightTextField.getText()))))
+                        .initialAnimalCount(Integer.parseInt(animalsCntTextField.getText()))
+                        .initialAnimalEnergy(Integer.parseInt(initialEnergyTextField.getText()))
+                        .genomeLength(Integer.parseInt(genomesTextField.getText()))
+                        .initialGrassCount(Integer.parseInt(initialGrassesTextField.getText()))
+                        .newDailyGrasses(Integer.parseInt(dailyGrassesTextField.getText()))
+                        .refreshSpeed(Integer.parseInt(refreshTimeTextField.getText()))
+                        .energyFromGrass(Integer.parseInt(fromGrassEnergy.getText()))
+                        .dailyEnergyDecay(Integer.parseInt(dailyEnergyDecay.getText()))
+                        .reproductionEnergyCost(Integer.parseInt(breedingCost.getText()))
+                        .reproductionEnergyThreshold(Integer.parseInt(breedingThreshold.getText()))
+                        .build();
+
+                ConfigurationHandler.saveConfiguration(file, settings);
+            } catch (Exception e) {
+                System.err.println("Błąd - złe dane");
+            }
+        }
+    }
+
+    @FXML
+    private void loadConfiguration() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Wczytaj konfigurację");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki tekstowe (*.txt)", "*.txt"));
+        File file = fileChooser.showOpenDialog(null);
+
+        if (file != null) {
+            try {
+                Properties config = ConfigurationHandler.loadConfiguration(file);
+
+                mapWidthTextField.setText(config.getProperty("width", "25"));
+                mapHeightTextField.setText(config.getProperty("height", "12"));
+                animalsCntTextField.setText(config.getProperty("initialAnimals", "15"));
+                initialEnergyTextField.setText(config.getProperty("initialEnergy", "100"));
+                genomesTextField.setText(config.getProperty("genomeLength", "7"));
+                initialGrassesTextField.setText(config.getProperty("initialGrass", "30"));
+                dailyGrassesTextField.setText(config.getProperty("dailyGrass", "7"));
+                refreshTimeTextField.setText(config.getProperty("refreshSpeed", "100"));
+                fromGrassEnergy.setText(config.getProperty("energyFromGrass", "2"));
+                dailyEnergyDecay.setText(config.getProperty("dailyEnergyDecay", "2"));
+                breedingCost.setText(config.getProperty("reproductionCost", "10"));
+                breedingThreshold.setText(config.getProperty("reproductionThreshold", "12"));
+
+            } catch (IOException e) {
+                System.err.println("Błąd wczytywania pliku");
+            }
+        }
+    }
+
     private void drawTextInTheMiddleOfRectangle(GraphicsContext graphicsContext2d, String string, int x, int y){
         Text text = new Text(string);
         text.setFont(FONT);
@@ -213,8 +335,15 @@ public class SimulationPresenter implements MapChangeListener {
                     drawRectangle(graphicsContext2d, x, y, CELL_SIZE, CELL_SIZE, simulation.getMapVisualState().getSteppesColor());
                 }
 
-                if(worldMap.isOccupied(position)){
-                    drawTextInTheMiddleOfRectangle(graphicsContext2d, worldMap.objectAt(position).toString(), x, y);
+                if (worldMap.isOccupied(position)) {
+                    Object object = worldMap.objectAt(position);
+                    if (object instanceof Animal animal) {
+                        graphicsContext2d.setFill(animal.getColor(statisticsTracker.getMostPopularGenotype()));
+                        drawTextInTheMiddleOfRectangle(graphicsContext2d, animal.toString(), x, y);
+                    } else {
+                        graphicsContext2d.setFill(Color.rgb(0,0,0));
+                        drawTextInTheMiddleOfRectangle(graphicsContext2d, worldMap.objectAt(position).toString(), x, y);
+                    }
                 }
             }
         }
@@ -348,6 +477,10 @@ public class SimulationPresenter implements MapChangeListener {
 
         Stage stage = new Stage();
         configureStage(stage, viewRoot);
+
+        stage.setOnCloseRequest(event -> {
+            simulation.killSimulation();
+        });
         stage.show();
 
         if(settings.getSimulationType() == SimulationType.Seasonal)

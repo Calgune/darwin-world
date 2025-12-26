@@ -152,7 +152,7 @@ public abstract class AbstractWorldMap implements WorldMap{
     }
 
     @Override
-    public Vector2d nextPosition(Vector2d position) {
+    public Vector2d wrapAround(Vector2d position) {
         int newX = position.getX();
         int width = getBoundary().upperRight().getX();
 

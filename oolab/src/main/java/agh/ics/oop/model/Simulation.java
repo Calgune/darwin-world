@@ -8,6 +8,9 @@ import javafx.scene.paint.Color;
 public interface Simulation extends  Runnable{
     void addObserver(SimulationObserver observer);
     void removeObserver(SimulationObserver observer);
+
+    void killSimulation();
+
     void startStop();
     int getDay();
     MapVisualState getMapVisualState();

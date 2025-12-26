@@ -15,6 +15,12 @@ abstract public class AbstractSimulation implements Simulation {
     private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();
     private volatile boolean paused = false;
     protected int day;
+    private volatile boolean running = true;
+
+    @Override
+    public void killSimulation() {
+        this.running = false;
+    }
 
     public void startStop() {
         paused = !paused;
@@ -117,7 +123,8 @@ abstract public class AbstractSimulation implements Simulation {
             map.removeGrass(grass);
             List<Animal> animals = map.getAnimalsAt(grass.getPosition());
             Animal animal = PriorityHandler.whoEats(animals);
-            animal.eat(settings.getEnergyFromGrass());
+            if (animal != null)
+                animal.eat(settings.getEnergyFromGrass());
         });
     }
 
@@ -146,12 +153,11 @@ abstract public class AbstractSimulation implements Simulation {
 
     public void advanceDay(){
         day++;
-
     }
 
     @Override
     public void run(){
-        while (true) {
+        while (running) {
             if (!paused) {
                 // 1 usunięcie martwych zwierzaków
                 deleteDeadAnimals();
@@ -177,10 +183,11 @@ abstract public class AbstractSimulation implements Simulation {
                 simulationChanged();
             }
             try {
-                Thread.sleep(100);
+                Thread.sleep(settings.getRefreshSpeed() * 3L);
             } catch (InterruptedException e) {
                 break;
             }
         }
+        System.out.println("ZAMKNIETO SYMULACJE");
     }
 }
