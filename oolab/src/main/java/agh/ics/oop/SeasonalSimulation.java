@@ -15,7 +15,6 @@ public class SeasonalSimulation extends AbstractSimulation implements SeasonalIn
     public MapVisualState getMapVisualState() {
         if(seasonManager.getSeason(day) == Season.Winter){
             double y = seasonManager.getTemperatureToColdnessFactor(day);
-            IO.println(y);
             return new SeasonalVisualState(y);
         }
         return new NormalVisualState();
