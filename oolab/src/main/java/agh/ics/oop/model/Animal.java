@@ -1,9 +1,9 @@
 package agh.ics.oop.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
+
+import agh.ics.oop.model.maps.MoveValidator;
+import agh.ics.oop.model.util.MapSettings;
 import javafx.scene.paint.Color;
 
 public class Animal implements WorldElement {
@@ -14,14 +14,22 @@ public class Animal implements WorldElement {
     private int age;
     private int kidsCount;
     private final Genome genome;
+    private int plantsEaten;
+    private Integer deathDay = null;
+    private final List<Animal> children = new ArrayList<>();
 
     public Animal(Vector2d position, Genome genes, int energy) {
         this.position = position;
         this.direction = MapDirection.values()[(int) (Math.random() * 8)];
         this.energy = energy;
         this.age = 0;
+        this.plantsEaten = 0;
         this.kidsCount = 0;
         this.genome = genes;
+    }
+
+    public void addChildren(Animal child) {
+        this.children.add(child);
     }
 
     public void age(){
@@ -65,17 +73,20 @@ public class Animal implements WorldElement {
         }
     }
 
-    public Animal breed(Animal partner, int reproductionCost) {
+    public Animal breed(Animal partner, MapSettings settings) {
         //zawsze this.animal silniejszy od partner dzieki filozofii w PriorityHandler
         int energy1 = this.energy;
         int energy2 = partner.getEnergy();
 
+        int reproductionCost = settings.getReproductionEnergyCost();
+        int minMutationLength = settings.getMinMutationLength();
+        int maxMutationLength = settings.getMaxMutationLength();
         int genomeLength = this.genome.length();
         int ourGenomeRatio = (genomeLength * energy1) / (energy1 + energy2);
         int partnersGenomeRatio = genomeLength - ourGenomeRatio;
         boolean ourOnLeft = Math.random() < 0.5;
         Random random = new Random();
-        int randomAmount = random.nextInt(genomeLength+1);
+        int randomAmount = random.nextInt(minMutationLength, maxMutationLength);
 
         List<Integer> childGenes = new ArrayList<>();
 
@@ -100,8 +111,30 @@ public class Animal implements WorldElement {
         this.energy -= reproductionCost;
         partner.energy -= reproductionCost;
 
-        return new Animal(this.position, childGenome, 2 * reproductionCost);
+        Animal child = new Animal(this.position, childGenome, 2 * reproductionCost);
+        this.addChildren(child);
+        partner.addChildren(child);
+
+        return child;
 }
+
+    public int countDescendants() {
+        Set<Animal> allDescendants = new HashSet<>();
+        List<Animal> q = new ArrayList<>(this.children);
+
+        int index = 0;
+        while (index < q.size()) {
+            Animal curr = q.get(index);
+            index++;
+
+            if (!allDescendants.contains(curr)) {
+                allDescendants.add(curr);
+                q.addAll(curr.children);
+            }
+        }
+        return allDescendants.size();
+    }
+
 
     @Override
     public Vector2d getPosition(){
@@ -112,7 +145,20 @@ public class Animal implements WorldElement {
         return this.genome;
     }
 
+    public Integer getDeathDay() {
+        return deathDay;
+    }
+
+    public int getPlantsEaten() {
+        return plantsEaten;
+    }
+
+    public int getDescendantsCount() {
+        return this.countDescendants();
+    }
+
     public void eat(int energyFromGrass){
+        plantsEaten += 1;
         energy += energyFromGrass;
     }
 
@@ -124,8 +170,12 @@ public class Animal implements WorldElement {
         return direction;
     }
 
-    public boolean hasStarved(){
-        return energy <= 0;
+    public boolean hasStarved(int currDay){
+        if (energy <= 0 && deathDay == null) {
+            this.deathDay = currDay;
+            return true;
+        }
+        return this.energy <= 0;
     }
 
     public int getEnergy() {

@@ -1,9 +1,7 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.simulation;
 
 import agh.ics.oop.MapVisualState;
 import agh.ics.oop.model.observers.SimulationObserver;
-import agh.ics.oop.model.observers.StatisticsTracker;
-import javafx.scene.paint.Color;
 
 public interface Simulation extends  Runnable{
     void addObserver(SimulationObserver observer);
@@ -17,4 +15,6 @@ public interface Simulation extends  Runnable{
 
     @Override
     void run();
+
+    boolean isPaused();
 }

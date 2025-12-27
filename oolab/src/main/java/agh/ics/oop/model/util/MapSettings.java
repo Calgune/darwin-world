@@ -1,7 +1,7 @@
 package agh.ics.oop.model.util;
 
 import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.SimulationType;
+import agh.ics.oop.model.simulation.SimulationType;
 import agh.ics.oop.model.Vector2d;
 
 public class MapSettings {
@@ -18,6 +18,8 @@ public class MapSettings {
     private final int mutationRange;
     private final SimulationType simulationType;
     private final int refreshSpeed;
+    private final int minMutationLength;
+    private final int maxMutationLength;
 
     private final int summerLengthInDays;
     private final int winterLengthInDays;
@@ -40,6 +42,8 @@ public class MapSettings {
         this.mutationRange = builder.mutationRange;
         this.simulationType = builder.simulationType;
         this.refreshSpeed = builder.refreshSpeed;
+        this.minMutationLength = builder.minMutationLength;
+        this.maxMutationLength = builder.maxMutationLength;
 
         this.summerLengthInDays = builder.summerLengthInDays;
         this.winterLengthInDays = builder.winterLengthInDays;
@@ -55,6 +59,14 @@ public class MapSettings {
 
     public int getInitialGrassCount() {
         return initialGrassCount;
+    }
+
+    public int getMinMutationLength() {
+        return minMutationLength;
+    }
+
+    public int getMaxMutationLength() {
+        return maxMutationLength;
     }
 
     public int getRefreshSpeed() {
@@ -139,6 +151,8 @@ public class MapSettings {
         private int mutationRange = 2;
         private SimulationType simulationType = SimulationType.Normal;
         private int refreshSpeed = 300;
+        private int minMutationLength = 0;
+        private int maxMutationLength = genomeLength;
 
         private int summerLengthInDays = 30;
         private int winterLengthInDays = 30;
@@ -239,6 +253,16 @@ public class MapSettings {
 
         public Builder simulationType(SimulationType simulationType){
             this.simulationType = simulationType;
+            return this;
+        }
+
+        public Builder minMutationLength(int minMutationLength) {
+            this.minMutationLength = minMutationLength;
+            return this;
+        }
+
+        public Builder maxMutationLength(int maxMutationLength) {
+            this.maxMutationLength = maxMutationLength;
             return this;
         }
 

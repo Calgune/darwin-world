@@ -1,8 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.util;
+
+import agh.ics.oop.model.Animal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PriorityHandler {
 // handler dostaje pozycje na mapie i zwraca,

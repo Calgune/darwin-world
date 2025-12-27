@@ -1,8 +1,8 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.util.RandomPositionGenerator;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.text.Position;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;

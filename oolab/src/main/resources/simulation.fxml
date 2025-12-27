@@ -5,46 +5,72 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="550.0" minWidth="1000.0" prefHeight="550.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
-   <top>
-      <HBox alignment="CENTER" prefHeight="40.0" prefWidth="800.0" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets top="5.0" />
-         </BorderPane.margin>
-      </HBox>
-   </top>
-   <center>
-      <Canvas fx:id="canvas" height="400.0" width="560.0" BorderPane.alignment="CENTER" />
-   </center>
-   <bottom>
-       <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-       <children>
-      <Label fx:id="animalMovementLabel" text="aktualny ruch zwierzaka" />
-          <Button fx:id="pauseButton" onAction="#pauseButtonClicked" text="Stop / Start" />
-           </children>
+<BorderPane minHeight="550.0" minWidth="1000.0" prefHeight="550.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+    <top>
+        <HBox alignment="CENTER" prefHeight="40.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets top="5.0" />
+            </BorderPane.margin>
+        </HBox>
+    </top>
 
-         <BorderPane.margin>
-            <Insets bottom="20.0" />
-         </BorderPane.margin>
-       </VBox>
-   </bottom>
-   <left>
-      <VBox alignment="CENTER" fillWidth="false" maxHeight="280.0" minWidth="280.0" prefWidth="284.0" spacing="1.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="animalsOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba zwierzaków:" wrapText="true" />
-            <Label fx:id="grassesOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba traw:" wrapText="true" />
-            <Label fx:id="emptyCellsLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba pustych komórek:" wrapText="true" />
-            <Label fx:id="mostPopularGenotypeLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="najpopulajniejszy genotyp:" wrapText="true" />
-            <Label fx:id="deadAnimalsAverageLifespanLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. dł. życia martwych zwierzaków:" wrapText="true" />
-            <Label fx:id="animalsOnMapAverageEnergyLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. energia zwierzaków:" wrapText="true" />
-            <Label fx:id="animalsOnMapAverageKidsCountLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. liczba dzieci zwierzaków:" wrapText="true" />
-            <Label fx:id="dayLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="dzień:" wrapText="true"/>
-            <Label fx:id="temperatureLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="temperatura:" wrapText="true" visible="false" managed="false"/>
-            <Label fx:id="seasonLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="pora roku:" wrapText="true"  visible="false" managed="false"/> <!-- visible="false" managed="false" -->
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </VBox>
-   </left>
+    <center>
+        <ScrollPane BorderPane.alignment="CENTER">
+            <content>
+                <Canvas fx:id="canvas" height="400.0" width="560.0" />
+            </content>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="animalMovementLabel" text="aktualny ruch zwierzaka" />
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Button fx:id="pauseButton" onAction="#pauseButtonClicked" text="Start/Stop" />
+                    <Label style="-fx-font-size: 9px; -fx-text-fill: gray;" text="Uwaga: symulacja zatrzyma się po zakończeniu dnia" />
+                </VBox>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="20.0" />
+            </BorderPane.margin>
+        </VBox>
+    </bottom>
+
+    <left>
+        <VBox alignment="TOP_LEFT" fillWidth="true" maxWidth="300.0" minWidth="300.0" spacing="15.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets left="15.0" right="15.0" top="10.0" />
+            </padding>
+            <children>
+                <VBox spacing="5.0">
+                    <Label style="-fx-font-weight: bold;" text="Statystyki Ogólne" />
+                    <Separator />
+                    <Label fx:id="animalsOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba zwierzaków:" wrapText="true" />
+                    <Label fx:id="grassesOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba traw:" wrapText="true" />
+                    <Label fx:id="emptyCellsLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba pustych komórek:" wrapText="true" />
+                    <Label fx:id="mostPopularGenotypeLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="najpopulajniejszy genotyp:" wrapText="true" />
+                    <Label fx:id="deadAnimalsAverageLifespanLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. dł. życia martwych zwierzaków:" wrapText="true" />
+                    <Label fx:id="animalsOnMapAverageEnergyLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. energia zwierzaków:" wrapText="true" />
+                    <Label fx:id="animalsOnMapAverageKidsCountLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. liczba dzieci zwierzaków:" wrapText="true" />
+                    <Label fx:id="dayLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="dzień:" wrapText="true"/>
+                    <Label fx:id="temperatureLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="temperatura:" wrapText="true" visible="false" managed="false"/>
+                    <Label fx:id="seasonLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="pora roku:" wrapText="true"  visible="false" managed="false"/> <!-- visible="false" managed="false" -->
+                </VBox>
+
+                <VBox fx:id="trackedAnimalBox" spacing="5.0" style="-fx-background-color: #eef7ff; -fx-padding: 10; -fx-background-radius: 5;" visible="false" managed="false">
+                    <Label style="-fx-font-weight: bold;" text="Śledzony Zwierzak" />
+                    <Separator />
+                    <Label fx:id="individualGenomeLabel" text="Genom: -" wrapText="true" />
+                    <Label fx:id="individualGenotypeLabel" text="Genotyp: -" />
+                    <Label fx:id="individualEnergyLabel" text="Energia: -" />
+                    <Label fx:id="individualPlantsEatenLabel" text="Zjedzone rośliny: -" />
+                    <Label fx:id="individualKidsLabel" text="Liczba dzieci: -" />
+                    <Label fx:id="individualDescendantsLabel" text="Liczba potomków: -" />
+                    <Label fx:id="individualAgeLabel" text="Wiek: -" />
+                    <Label fx:id="individualDeathDayLabel" text="Status: -" wrapText="true" />
+                </VBox>
+            </children>
+        </VBox>
+    </left>
 </BorderPane>

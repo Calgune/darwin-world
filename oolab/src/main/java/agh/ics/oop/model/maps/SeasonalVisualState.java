@@ -1,7 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
 import agh.ics.oop.MapVisualState;
-import agh.ics.oop.SeasonManager;
 import javafx.scene.paint.Color;
 
 public class SeasonalVisualState implements MapVisualState {

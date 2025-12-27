@@ -2,7 +2,10 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.SimulationObserver;
+import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.util.MapSettings;
+import agh.ics.oop.model.util.PriorityHandler;
+import agh.ics.oop.model.util.RandomPositionGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +26,11 @@ abstract public class AbstractSimulation implements Simulation {
     }
 
     public void startStop() {
-        paused = !paused;
+        this.paused = !this.paused;
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 
     @Override
@@ -95,7 +102,7 @@ abstract public class AbstractSimulation implements Simulation {
     public void deleteDeadAnimals(){
         map.getAnimalsList().
                 stream().
-                filter(Animal::hasStarved).
+                filter(animal -> animal.hasStarved(day)).
                 forEach(animal -> {
                     simulationObservers.forEach(obs -> obs.registerDeath(animal));
                     map.removeAnimal(animal);
@@ -134,7 +141,7 @@ abstract public class AbstractSimulation implements Simulation {
             if (parents.size() == 2) {
                 Animal child = parents
                         .getFirst()
-                        .breed(parents.get(1), settings.getReproductionEnergyCost());
+                        .breed(parents.get(1), this.settings);
                 map.placeAnimal(child);
             }
         });

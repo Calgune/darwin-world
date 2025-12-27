@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.maps.NormalVisualState;
 import agh.ics.oop.model.util.MapSettings;
 
 public class NormalSimulation extends AbstractSimulation {
