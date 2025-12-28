@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -29,8 +30,61 @@
        </VBox>
    </bottom>
    <left>
-      <VBox alignment="CENTER" fillWidth="false" maxHeight="280.0" minWidth="280.0" prefWidth="284.0" spacing="1.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" fillWidth="false" maxHeight="358.0" minWidth="280.0" prefHeight="358.0" prefWidth="284.0" spacing="1.0" BorderPane.alignment="CENTER">
          <children>
+
+            <LineChart fx:id="animalsPerDayLineChart" prefHeight="174.0" prefWidth="284.0" createSymbols="false" managed="false" visible="false">
+              <xAxis>
+                <NumberAxis side="BOTTOM" tickUnit="1" animated="true" autoRanging="false" minorTickVisible="false"/>
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+
+             <LineChart fx:id="grassesPerDayLineChart" prefHeight="174.0" prefWidth="284.0" createSymbols="false" managed="false" visible="false">
+              <xAxis>
+                <NumberAxis side="BOTTOM" tickUnit="1" animated="true" autoRanging="false" minorTickVisible="false"/>
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+
+             <LineChart fx:id="averageEnergyPerDayLineChart" prefHeight="174.0" prefWidth="284.0" createSymbols="false" managed="false" visible="false">
+              <xAxis>
+                <NumberAxis side="BOTTOM" tickUnit="1" animated="true" autoRanging="false" minorTickVisible="false"/>
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+
+          <LineChart fx:id="averageLifeSpanPerDayLineChart" prefHeight="174.0" prefWidth="284.0" createSymbols="false" managed="false" visible="false">
+              <xAxis>
+                <NumberAxis side="BOTTOM" tickUnit="1" animated="true" autoRanging="false" minorTickVisible="false"/>
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+
+             <LineChart fx:id="averageKidsCountPerDayLineChart" prefHeight="174.0" prefWidth="284.0" createSymbols="false" managed="false" visible="false">
+              <xAxis>
+                <NumberAxis side="BOTTOM" tickUnit="1" animated="true" autoRanging="false" minorTickVisible="false"/>
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+
+
+            <ComboBox fx:id="chartsComboBox" onAction="#selectChart" promptText="wybierz wykres..." prefWidth="150.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </ComboBox>
+
             <Label fx:id="animalsOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba zwierzaków:" wrapText="true" />
             <Label fx:id="grassesOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba traw:" wrapText="true" />
             <Label fx:id="emptyCellsLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba pustych komórek:" wrapText="true" />
@@ -38,9 +92,9 @@
             <Label fx:id="deadAnimalsAverageLifespanLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. dł. życia martwych zwierzaków:" wrapText="true" />
             <Label fx:id="animalsOnMapAverageEnergyLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. energia zwierzaków:" wrapText="true" />
             <Label fx:id="animalsOnMapAverageKidsCountLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. liczba dzieci zwierzaków:" wrapText="true" />
-            <Label fx:id="dayLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="dzień:" wrapText="true"/>
-            <Label fx:id="temperatureLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="temperatura:" wrapText="true" visible="false" managed="false"/>
-            <Label fx:id="seasonLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="pora roku:" wrapText="true"  visible="false" managed="false"/> <!-- visible="false" managed="false" -->
+            <Label fx:id="dayLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="dzień:" wrapText="true" />
+            <Label fx:id="temperatureLabel" managed="false" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="temperatura:" visible="false" wrapText="true" />
+            <Label fx:id="seasonLabel" managed="false" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="pora roku:" visible="false" wrapText="true" /> <!-- visible="false" managed="false" -->
          </children>
          <opaqueInsets>
             <Insets />

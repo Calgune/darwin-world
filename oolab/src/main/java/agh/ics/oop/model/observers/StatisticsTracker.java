@@ -1,14 +1,13 @@
 package agh.ics.oop.model.observers;
 
 import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.Genome;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.util.ChartData;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class StatisticsTracker implements SimulationObserver {
+public class StatisticsTracker {
     private int animalsOnMap;
     private int grassesOnMap;
     private int emptyCells;
@@ -19,6 +18,8 @@ public class StatisticsTracker implements SimulationObserver {
 
     private int deadAnimalsCount = 0;
     private int deadAnimalsAgeSum = 0;
+
+    private ChartData chartData;
 
     private int calculateMostPopularGenotype(WorldMap map){
         List<Integer> genotypes = map.getAnimalsList().stream()
@@ -55,17 +56,19 @@ public class StatisticsTracker implements SimulationObserver {
                 (double) deadAnimalsAgeSum / deadAnimalsCount;
     }
 
-    @Override
     public void registerDeath(Animal animal){
         deadAnimalsAgeSum += animal.getAge();
         deadAnimalsCount++;
     }
 
+    public ChartData getChartData(){
+        return chartData;
+    }
+
     // skala projektu jest zbyt mała, aby aktualizować statystyki dopiero po
     // konkretnym wydarzeniu lepiej jeden raz zawsze wszystkie
     // czytelność lepsza niż mikrooptymalizacja
-    @Override
-    public void updateStats(WorldMap map) {
+    public void updateStats(WorldMap map, int day) {
         animalsOnMap = map.getAnimalsCount();
         grassesOnMap = map.getGrassesCount();
         emptyCells = map.getEmptySpacesCount();
@@ -75,8 +78,10 @@ public class StatisticsTracker implements SimulationObserver {
         deadAnimalsAverageLifespan = calculateDeadAnimalsAverageLifespan(map);
         animalsOnMapAverageEnergy = calculateAnimalsOnMapAverageEnergy(map);
         animalsOnMapAverageKidsCount = calculateAnimalsOnMapAverageKidsCount(map);
-    }
 
+        chartData = new ChartData(day, animalsOnMap,
+                grassesOnMap, animalsOnMapAverageEnergy, deadAnimalsAverageLifespan, animalsOnMapAverageKidsCount);
+    }
 
     public int getDeadAnimalsAgeSum() {
         return deadAnimalsAgeSum;

@@ -4,6 +4,7 @@ import agh.ics.oop.SeasonalSimulation;
 import agh.ics.oop.NormalSimulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.observers.SimulationChangeListener;
 import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.util.ConfigurationHandler;
 import agh.ics.oop.model.util.MapSettings;
@@ -14,6 +15,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.CheckBox;
@@ -31,61 +35,82 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-public class SimulationPresenter implements MapChangeListener {
-    public Label dayLabel;
-    private StatisticsTracker statisticsTracker;
+public class SimulationPresenter implements MapChangeListener, SimulationChangeListener {
+    private final ChartsDataHandler chartsDataHandler = new ChartsDataHandler();
     private WorldMap map;
     private Simulation simulation;
+
     private final static int CELL_SIZE = 25;
     private final static Font FONT = new Font(14);
 
     @FXML
-    public TextField distanceToTransferHeatTextField;
+    private ComboBox chartsComboBox;
 
     @FXML
-    public CheckBox simulationTypeCheckButton;
+    private Label dayLabel;
 
     @FXML
-    public TextField minimalTemperatureTextField;
+    private LineChart<Number, Number> averageLifeSpanPerDayLineChart;
 
     @FXML
-    public TextField summerLengthTextField;
+    private LineChart<Number, Number> averageEnergyPerDayLineChart;
 
     @FXML
-    public TextField winterLengthTextField;
+    private LineChart<Number, Number> grassesPerDayLineChart;
 
     @FXML
-    public Label temperatureLabel;
+    private LineChart<Number, Number> animalsPerDayLineChart;
 
     @FXML
-    public Label seasonLabel;
+    private LineChart<Number, Number> averageKidsCountPerDayLineChart;
+
+    @FXML
+    private TextField distanceToTransferHeatTextField;
+
+    @FXML
+    private CheckBox simulationTypeCheckButton;
+
+    @FXML
+    private TextField minimalTemperatureTextField;
+
+    @FXML
+    private TextField summerLengthTextField;
+
+    @FXML
+    private TextField winterLengthTextField;
+
+    @FXML
+    private Label temperatureLabel;
+
+    @FXML
+    private Label seasonLabel;
 
     @FXML
     private ComboBox<String> presetComboBox;
 
     @FXML
-    public Label animalsOnMapLabel;
+    private Label animalsOnMapLabel;
 
     @FXML
-    public Label grassesOnMapLabel;
+    private Label grassesOnMapLabel;
 
     @FXML
-    public Label emptyCellsLabel;
+    private Label emptyCellsLabel;
 
     @FXML
-    public Label mostPopularGenotypeLabel;
+    private Label mostPopularGenotypeLabel;
 
     @FXML
-    public Label deadAnimalsAverageLifespanLabel;
+    private Label deadAnimalsAverageLifespanLabel;
 
     @FXML
-    public Label animalsOnMapAverageEnergyLabel;
+    private Label animalsOnMapAverageEnergyLabel;
 
     @FXML
-    public Label animalsOnMapAverageKidsCountLabel;
+    private Label animalsOnMapAverageKidsCountLabel;
 
     @FXML
-    public Canvas canvas;
+    private Canvas canvas;
 
     @FXML
     private TextField dailyEnergyDecay;
@@ -129,12 +154,92 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Button startButton;
 
-    public void setWorldMap(WorldMap map){
-        map.addObserver(this);
+    @FXML
+    void selectChart(){
+        String selected = chartsComboBox.getValue().toString();
+        hideCharts();
+        if (selected.equals("liczba zwierząt od dnia"))
+            showAnimalsPerDayLineChart();
+        else if (selected.equals("liczba traw od dnia"))
+            showGrassesPerDayLineChart();
+        else if (selected.equals("średnia liczba energia od dnia"))
+            showAverageEnergyPerDayLineChart();
+        else if (selected.equals("średnia długość życia"))
+            showAverageLifeSpanPerDayLineChart();
+        else if (selected.equals("średnia liczba dzieci"))
+            showAverageKidsCount();
     }
 
-    public void setStatisticsTracker(StatisticsTracker statisticsTracker) {
-        this.statisticsTracker = statisticsTracker;
+    void initChartsComboBox(){
+        chartsComboBox.getItems().clear();
+        chartsComboBox.getItems().addAll("liczba zwierząt od dnia",
+                "liczba traw od dnia",
+                "średnia liczba energia od dnia",
+                "średnia długość życia",
+                "średnia liczba dzieci");
+    }
+
+//    void setChartsDataHandler(ChartsDataHandler chartsDataHandler){
+//        this.chartsDataHandler = chartsDataHandler;
+//    }
+
+    private void connectChartsDataWithCharts(){
+        animalsPerDayLineChart.getData().add(chartsDataHandler.getAnimalsPerDay());
+        grassesPerDayLineChart.getData().add(chartsDataHandler.getGrassesPerDay());
+        averageEnergyPerDayLineChart.getData().add(chartsDataHandler.getAverageEnergyPerDay());
+        averageLifeSpanPerDayLineChart.getData().add(chartsDataHandler.getAverageLifeSpanPerDay());
+        averageKidsCountPerDayLineChart.getData().add(chartsDataHandler.getAverageKidsCountPerDay());
+    }
+
+    public void showAnimalsPerDayLineChart(){
+        hideCharts();
+        animalsPerDayLineChart.setManaged(true);
+        animalsPerDayLineChart.setVisible(true);
+    }
+
+    public void showGrassesPerDayLineChart(){
+        hideCharts();
+        grassesPerDayLineChart.setManaged(true);
+        grassesPerDayLineChart.setVisible(true);
+    }
+
+    public void showAverageEnergyPerDayLineChart(){
+        hideCharts();
+        averageEnergyPerDayLineChart.setManaged(true);
+        averageEnergyPerDayLineChart.setVisible(true);
+    }
+
+    public void showAverageLifeSpanPerDayLineChart(){
+        hideCharts();
+        averageLifeSpanPerDayLineChart.setManaged(true);
+        averageLifeSpanPerDayLineChart.setVisible(true);
+    }
+
+    public void showAverageKidsCount(){
+        hideCharts();
+        averageKidsCountPerDayLineChart.setManaged(true);
+        averageKidsCountPerDayLineChart.setVisible(true);
+    }
+
+    private void hideCharts(){
+        animalsPerDayLineChart.setManaged(false);
+        animalsPerDayLineChart.setVisible(false);
+
+        grassesPerDayLineChart.setManaged(false);
+        grassesPerDayLineChart.setVisible(false);
+
+        averageEnergyPerDayLineChart.setManaged(false);
+        averageEnergyPerDayLineChart.setVisible(false);
+
+        averageLifeSpanPerDayLineChart.setManaged(false);
+        averageLifeSpanPerDayLineChart.setVisible(false);
+
+        averageKidsCountPerDayLineChart.setManaged(false);
+        averageKidsCountPerDayLineChart.setVisible(false);
+    }
+
+    public void setWorldMap(WorldMap map){
+        map.addObserver(this);
     }
 
     public void setSimulation(Simulation simulation) {
@@ -297,7 +402,6 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     public void drawMap(WorldMap worldMap){
-
         int rows = worldMap.getRowsCount();
         int columns = worldMap.getColumnsCount();
 
@@ -338,7 +442,7 @@ public class SimulationPresenter implements MapChangeListener {
                 if (worldMap.isOccupied(position)) {
                     Object object = worldMap.objectAt(position);
                     if (object instanceof Animal animal) {
-                        graphicsContext2d.setFill(animal.getColor(statisticsTracker.getMostPopularGenotype()));
+                        graphicsContext2d.setFill(animal.getColor(simulation.getStatistics().getMostPopularGenotype()));
                         drawTextInTheMiddleOfRectangle(graphicsContext2d, animal.toString(), x, y);
                     } else {
                         graphicsContext2d.setFill(Color.rgb(0,0,0));
@@ -366,14 +470,36 @@ public class SimulationPresenter implements MapChangeListener {
         drawAxis(graphicsContext2d, boundary.upperRight().getY(), boundary.lowerLeft().getY(), false);
     }
 
-    private void updateStatistics(){
-        animalsOnMapLabel.setText("liczba zwierzaków: %d".formatted(statisticsTracker.getAnimalsOnMap()));
-        grassesOnMapLabel.setText("liczba traw: %d".formatted(statisticsTracker.getGrassesOnMap()));
-        emptyCellsLabel.setText("liczba pustych komórek: %d".formatted(statisticsTracker.getEmptyCells()));
-        mostPopularGenotypeLabel.setText("najpopulajniejszy genotyp: %d".formatted(statisticsTracker.getMostPopularGenotype()));
-        deadAnimalsAverageLifespanLabel.setText("śr. dł. życia martwych zwierzaków: %.2f".formatted(statisticsTracker.getDeadAnimalsAverageLifespan()));
-        animalsOnMapAverageEnergyLabel.setText("śr. energia zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageEnergy()));
-        animalsOnMapAverageKidsCountLabel.setText("śr. liczba dzieci zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageKidsCount()));
+    private void updateChartsRange(){
+        NumberAxis xAxisAnimalsPerDayLineChart = (NumberAxis) animalsPerDayLineChart.getXAxis();
+        xAxisAnimalsPerDayLineChart.setLowerBound(chartsDataHandler.getAnimalsPerDay().getData().getFirst().getXValue().intValue());
+        xAxisAnimalsPerDayLineChart.setUpperBound(chartsDataHandler.getAnimalsPerDay().getData().getLast().getXValue().intValue());
+
+        NumberAxis xAxisGrassesPerDayLineChart = (NumberAxis) grassesPerDayLineChart.getXAxis();
+        xAxisGrassesPerDayLineChart.setLowerBound(chartsDataHandler.getGrassesPerDay().getData().getFirst().getXValue().intValue());
+        xAxisGrassesPerDayLineChart.setUpperBound(chartsDataHandler.getGrassesPerDay().getData().getLast().getXValue().intValue());
+
+        NumberAxis xAxisAverageEnergyPerDayLineChart = (NumberAxis) averageEnergyPerDayLineChart.getXAxis();
+        xAxisAverageEnergyPerDayLineChart.setLowerBound(chartsDataHandler.getAverageEnergyPerDay().getData().getFirst().getXValue().intValue());
+        xAxisAverageEnergyPerDayLineChart.setUpperBound(chartsDataHandler.getAverageEnergyPerDay().getData().getLast().getXValue().intValue());
+
+        NumberAxis xAxisAverageKidsCountPerDayLineChart = (NumberAxis) averageKidsCountPerDayLineChart.getXAxis();
+        xAxisAverageKidsCountPerDayLineChart.setLowerBound(chartsDataHandler.getAverageKidsCountPerDay().getData().getFirst().getXValue().intValue());
+        xAxisAverageKidsCountPerDayLineChart.setUpperBound(chartsDataHandler.getAverageKidsCountPerDay().getData().getLast().getXValue().intValue());
+
+        NumberAxis xAxisAverageLifeSpanPerDayLineChart = (NumberAxis) averageLifeSpanPerDayLineChart.getXAxis();
+        xAxisAverageLifeSpanPerDayLineChart.setLowerBound(chartsDataHandler.getAverageLifeSpanPerDay().getData().getFirst().getXValue().intValue());
+        xAxisAverageLifeSpanPerDayLineChart.setUpperBound(chartsDataHandler.getAverageLifeSpanPerDay().getData().getLast().getXValue().intValue());
+    }
+
+    private void updateStatistics(StatisticsTracker statistics){
+        animalsOnMapLabel.setText("liczba zwierzaków: %d".formatted(statistics.getAnimalsOnMap()));
+        grassesOnMapLabel.setText("liczba traw: %d".formatted(statistics.getGrassesOnMap()));
+        emptyCellsLabel.setText("liczba pustych komórek: %d".formatted(statistics.getEmptyCells()));
+        mostPopularGenotypeLabel.setText("najpopulajniejszy genotyp: %d".formatted(statistics.getMostPopularGenotype()));
+        deadAnimalsAverageLifespanLabel.setText("śr. dł. życia martwych zwierzaków: %.2f".formatted(statistics.getDeadAnimalsAverageLifespan()));
+        animalsOnMapAverageEnergyLabel.setText("śr. energia zwierzaków: %.2f".formatted(statistics.getAnimalsOnMapAverageEnergy()));
+        animalsOnMapAverageKidsCountLabel.setText("śr. liczba dzieci zwierzaków: %.2f".formatted(statistics.getAnimalsOnMapAverageKidsCount()));
         dayLabel.setText("dzień: %d".formatted(simulation.getDay()));
 
         if (simulation instanceof SeasonalSimulation){
@@ -383,11 +509,25 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     @Override
+    public void simulationChartsChanged(StatisticsTracker statistics) {
+        Platform.runLater(() -> {
+            chartsDataHandler.updateChart(statistics.getChartData());
+            updateChartsRange();
+        });
+    }
+
+    @Override
+    public void simulationStatisticsChanged(StatisticsTracker statistics) {
+        Platform.runLater(() -> {
+            updateStatistics(statistics);
+        });
+    }
+
+    @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             animalMovementLabel.setText(message);
             drawMap(worldMap);
-            updateStatistics();
         });
     }
 
@@ -466,14 +606,18 @@ public class SimulationPresenter implements MapChangeListener {
         }
 
         StatisticsTracker tracker = new StatisticsTracker();
-        tracker.updateStats(newMap);
+        //ChartsDataHandler dataHandler = new ChartsDataHandler();
 
-        simulation.addObserver(tracker);
-        presenter.setStatisticsTracker(tracker);
+        tracker.updateStats(newMap, 0);
+        //presenter.setChartsDataHandler(dataHandler);
 
+        presenter.initChartsComboBox();
         presenter.setSimulation(simulation);
+
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
+
+        simulation.addObserver(presenter);
 
         Stage stage = new Stage();
         configureStage(stage, viewRoot);
@@ -483,6 +627,7 @@ public class SimulationPresenter implements MapChangeListener {
         });
         stage.show();
 
+        presenter.connectChartsDataWithCharts();
         if(settings.getSimulationType() == SimulationType.Seasonal)
             presenter.enableSeasonalLabels();
     }

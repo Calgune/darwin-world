@@ -1,7 +1,8 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.observers.SimulationObserver;
+import agh.ics.oop.model.observers.SimulationChangeListener;
+import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.util.MapSettings;
 
 import java.util.ArrayList;
@@ -12,10 +13,16 @@ import java.util.stream.IntStream;
 abstract public class AbstractSimulation implements Simulation {
     protected final WorldMap map;
     protected final MapSettings settings;
-    private final ArrayList<SimulationObserver> simulationObservers = new ArrayList<>();
+    private final ArrayList<SimulationChangeListener> simulationChangeListeners = new ArrayList<>();
+    private final StatisticsTracker statisticsTracker = new StatisticsTracker();
     private volatile boolean paused = false;
     protected int day;
     private volatile boolean running = true;
+
+    @Override
+    public StatisticsTracker getStatistics(){
+        return statisticsTracker;
+    }
 
     @Override
     public void killSimulation() {
@@ -35,17 +42,18 @@ abstract public class AbstractSimulation implements Simulation {
     }
 
     @Override
-    public void addObserver(SimulationObserver observer){
-        simulationObservers.add(observer);
+    public void addObserver(SimulationChangeListener observer){
+        simulationChangeListeners.add(observer);
     }
 
     @Override
-    public void removeObserver(SimulationObserver observer){
-        simulationObservers.remove(observer);
+    public void removeObserver(SimulationChangeListener observer){
+        simulationChangeListeners.remove(observer);
     }
 
-    public void simulationChanged(){
-        simulationObservers.forEach(simulationObserver -> {map.mapChanged(""); simulationObserver.updateStats(map);});
+    private void updateStatistics(){
+        statisticsTracker.updateStats(map, day);
+        simulationChangeListeners.forEach(observer -> observer.simulationStatisticsChanged(statisticsTracker));
     }
 
     public void spawnGrasses(int grassToSpawn){
@@ -97,7 +105,7 @@ abstract public class AbstractSimulation implements Simulation {
                 stream().
                 filter(Animal::hasStarved).
                 forEach(animal -> {
-                    simulationObservers.forEach(obs -> obs.registerDeath(animal));
+                    statisticsTracker.registerDeath(animal);
                     map.removeAnimal(animal);
                 });
     }
@@ -123,8 +131,9 @@ abstract public class AbstractSimulation implements Simulation {
             map.removeGrass(grass);
             List<Animal> animals = map.getAnimalsAt(grass.getPosition());
             Animal animal = PriorityHandler.whoEats(animals);
-            if (animal != null)
+            if (animal != null){
                 animal.eat(settings.getEnergyFromGrass());
+            }
         });
     }
 
@@ -151,12 +160,20 @@ abstract public class AbstractSimulation implements Simulation {
         });
     }
 
+    private void updateCharts() {
+        simulationChangeListeners.forEach(observer -> observer.simulationChartsChanged(statisticsTracker));
+    }
+
     public void advanceDay(){
+        updateCharts();
         day++;
     }
 
     @Override
     public void run(){
+        updateStatistics();
+        updateCharts();
+
         while (running) {
             if (!paused) {
                 // 1 usunięcie martwych zwierzaków
@@ -179,8 +196,7 @@ abstract public class AbstractSimulation implements Simulation {
 
                 // 7 przeminiecie dnia
                 advanceDay();
-
-                simulationChanged();
+                updateStatistics();
             }
             try {
                 Thread.sleep(settings.getRefreshSpeed() * 3L);
