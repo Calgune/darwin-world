@@ -3,12 +3,8 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.SeasonalSimulation;
 import agh.ics.oop.NormalSimulation;
 import agh.ics.oop.model.*;
-import agh.ics.oop.model.maps.CylindricalMap;
 import agh.ics.oop.model.observers.MapChangeListener;
 import agh.ics.oop.model.observers.StatisticsTracker;
-import agh.ics.oop.model.simulation.SimulationType;
-import agh.ics.oop.model.simulation.Simulation;
-import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.ConfigurationHandler;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;
@@ -24,7 +20,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -43,16 +38,9 @@ public class SimulationPresenter implements MapChangeListener {
     private Simulation simulation;
     private final static int CELL_SIZE = 25;
     private final static Font FONT = new Font(14);
-    private Animal trackedAnimal = null;
 
     @FXML
     public TextField distanceToTransferHeatTextField;
-
-    @FXML
-    public TextField minMutationLength;
-
-    @FXML
-    public TextField maxMutationLength;
 
     @FXML
     public CheckBox simulationTypeCheckButton;
@@ -141,20 +129,7 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Button startButton;
 
-    @FXML
-    private VBox trackedAnimalBox;
-
-    @FXML private Label individualGenomeLabel;
-    @FXML private Label individualGenotypeLabel;
-    @FXML private Label individualEnergyLabel;
-    @FXML private Label individualDescendantsLabel;
-    @FXML private Label individualAgeLabel;
-    @FXML private Label individualPlantsEatenLabel;
-    @FXML private Label individualKidsLabel;
-    @FXML private Label individualDeathDayLabel;
-
     public void setWorldMap(WorldMap map){
-        this.map = map;
         map.addObserver(this);
     }
 
@@ -221,31 +196,6 @@ public class SimulationPresenter implements MapChangeListener {
         if (presetComboBox != null) {
             presetComboBox.getItems().clear();
             presetComboBox.getItems().addAll("Bezpłodni", "Indie", "Postapo");
-        }
-
-        if (canvas != null) {
-            canvas.setOnMouseClicked(event -> {
-                if (simulation != null && simulation.isPaused() && map != null) {
-                    double mouseX = event.getX();
-                    double mouseY = event.getY();
-                    Boundary boundary = map.getBoundary();
-
-                    int x = (int) (mouseX / CELL_SIZE) - 1;
-                    int y = boundary.upperRight().getY() - ((int) (mouseY / CELL_SIZE) - 1);
-
-                    Vector2d clickedPosition = new Vector2d(x, y);
-                    Object object = map.objectAt(clickedPosition);
-                    if (object instanceof Animal animal) {
-                        this.trackedAnimal = animal;
-                        if (trackedAnimalBox != null) {
-                            trackedAnimalBox.setManaged(true);
-                            trackedAnimalBox.setVisible(true);;
-                        }
-                        updateTrackedAnimal();
-                        drawMap(map);
-                    }
-                }
-            });
         }
     }
 
@@ -365,6 +315,7 @@ public class SimulationPresenter implements MapChangeListener {
         drawTextInTheMiddleOfRectangle(graphicsContext2d, "x/y", 0, 0);
 
 
+
         // rysowanie elementów mapy (zwierzki i trawa w tym przypadku)
         // x i y w pętli tłumaczy wspołrzędne mapy na wspołrzędne canvasu
         for(int i = boundary.upperRight().getY(); i >= boundary.lowerLeft().getY(); i--){
@@ -389,10 +340,6 @@ public class SimulationPresenter implements MapChangeListener {
                     if (object instanceof Animal animal) {
                         graphicsContext2d.setFill(animal.getColor(statisticsTracker.getMostPopularGenotype()));
                         drawTextInTheMiddleOfRectangle(graphicsContext2d, animal.toString(), x, y);
-                        if (animal.equals(trackedAnimal)) {
-                            graphicsContext2d.setFill(Color.rgb(255,0,0));
-                            drawTextInTheMiddleOfRectangle(graphicsContext2d, animal.toString(), x, y);
-                        }
                     } else {
                         graphicsContext2d.setFill(Color.rgb(0,0,0));
                         drawTextInTheMiddleOfRectangle(graphicsContext2d, worldMap.objectAt(position).toString(), x, y);
@@ -413,7 +360,6 @@ public class SimulationPresenter implements MapChangeListener {
         }
 
         // rysowanie opisu osi x
-        graphicsContext2d.setFill(Color.rgb(0,0,0));
         drawAxis(graphicsContext2d, boundary.lowerLeft().getX(), boundary.upperRight().getX(), true);
 
         // rysowanie opisu osi y
@@ -436,34 +382,12 @@ public class SimulationPresenter implements MapChangeListener {
         }
     }
 
-
-    private void updateTrackedAnimal() {
-        if (trackedAnimal == null) return;
-
-        individualGenomeLabel.setText("Genom: " + trackedAnimal.getGenome().getGenes().toString());
-        individualGenotypeLabel.setText("Genotyp: " + trackedAnimal.getGenome().todaysMove());
-        individualEnergyLabel.setText("Energia: " + trackedAnimal.getEnergy());
-        individualDescendantsLabel.setText("Potomkowie: " + trackedAnimal.getDescendantsCount());
-        individualAgeLabel.setText("Wiek: " + trackedAnimal.getAge());
-        individualPlantsEatenLabel.setText("Zjedzone rośliny: " + trackedAnimal.getPlantsEaten());
-        individualKidsLabel.setText("Liczba dzieci: " + trackedAnimal.getKidsCount());
-
-        if (trackedAnimal.getDeathDay() != null) {
-            individualDeathDayLabel.setText("Zwierze zmarło w dniu: " + trackedAnimal.getDeathDay());
-        } else {
-            individualDeathDayLabel.setText("Zwierze żyje");
-        }
-    }
-
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             animalMovementLabel.setText(message);
             drawMap(worldMap);
             updateStatistics();
-            if (trackedAnimal != null) {
-                updateTrackedAnimal();
-            }
         });
     }
 
@@ -488,10 +412,6 @@ public class SimulationPresenter implements MapChangeListener {
         return SimulationType.Normal;
     }
 
-    private int boundaryGuard(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
     public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
@@ -499,25 +419,19 @@ public class SimulationPresenter implements MapChangeListener {
 
         SimulationPresenter presenter = loader.getController();
 
-        int mapWidth = boundaryGuard(Integer.parseInt(mapWidthTextField.getText()), 2, 50);
-        int mapHeight = boundaryGuard(Integer.parseInt(mapHeightTextField.getText()), 2, 50);
+        int mapWidth = Integer.parseInt(mapWidthTextField.getText());
+        int mapHeight = Integer.parseInt(mapHeightTextField.getText());
         int maxFields = (mapWidth + 1) * (mapHeight + 1);
-        int initialGrasses = boundaryGuard(Integer.parseInt(initialGrassesTextField.getText()), 0, maxFields);
-        int dailyGrasses = boundaryGuard(Integer.parseInt(dailyGrassesTextField.getText()), 0, maxFields / 2);
-        int animalsCnt = boundaryGuard(Integer.parseInt(animalsCntTextField.getText()), 1, maxFields*2);
-        int initialEnergy = boundaryGuard(Integer.parseInt(initialEnergyTextField.getText()), 1, 1000);
-        int genomesLength = boundaryGuard(Integer.parseInt(genomesTextField.getText()), 1, 100);
-        int energyDecay = boundaryGuard(Integer.parseInt(dailyEnergyDecay.getText()), 0, 100);
-        int reproductionThreshold = boundaryGuard(Integer.parseInt(breedingThreshold.getText()), 1, 1000);
-        int reproductionCost = boundaryGuard(Integer.parseInt(breedingCost.getText()), 0, 500);
-        int grassEnergy = boundaryGuard(Integer.parseInt(fromGrassEnergy.getText()), 0, 500);
-        int refreshTime = boundaryGuard(Integer.parseInt(refreshTimeTextField.getText()), 10, 1000);
-        int winterLength = boundaryGuard(Integer.parseInt(winterLengthTextField.getText()), 1, 100);
-        int summerLength = boundaryGuard(Integer.parseInt(summerLengthTextField.getText()), 1, 100);
-        int minTemp = boundaryGuard(Integer.parseInt(minimalTemperatureTextField.getText()), -50, 50);
-        int distanceToTransferHeat = boundaryGuard(Integer.parseInt(distanceToTransferHeatTextField.getText()), 0, 10);
-        int minMutation = boundaryGuard(Integer.parseInt(minMutationLength.getText()), 0, genomesLength);
-        int maxMutation = boundaryGuard(Integer.parseInt(maxMutationLength.getText()), minMutation, genomesLength);
+        int initialGrasses = Integer.parseInt(initialGrassesTextField.getText());
+        int initialEnergy = Integer.parseInt(initialEnergyTextField.getText());
+        int genomesLength = Integer.parseInt(genomesTextField.getText());
+        int animalsCnt = Integer.parseInt(animalsCntTextField.getText());
+        int dailyGrasses = Integer.parseInt(dailyGrassesTextField.getText());
+        int energyDecay = Integer.parseInt(dailyEnergyDecay.getText());
+        int reproductionThreshold = Integer.parseInt(breedingThreshold.getText());
+        int reproductionCost = Integer.parseInt(breedingCost.getText());
+        int grassEnergy = Integer.parseInt(fromGrassEnergy.getText());
+        int refreshTime = Integer.parseInt(refreshTimeTextField.getText());
 
         MapSettings settings = new MapSettings.Builder()
                 .boundary(new Boundary(new Vector2d(0,0), new Vector2d(mapWidth, mapHeight)))
@@ -532,12 +446,10 @@ public class SimulationPresenter implements MapChangeListener {
                 .reproductionEnergyThreshold(reproductionThreshold)
                 .refreshSpeed(refreshTime)
                 .simulationType(getSimulationType())
-                .minimalTemperatureInWinter(minTemp)
-                .distanceToTransferHeat(distanceToTransferHeat)
-                .winterLengthInDays(winterLength)
-                .summerLengthInDays(summerLength)
-                .minMutationLength(minMutation)
-                .maxMutationLength(maxMutation)
+                .minimalTemperatureInWinter(Integer.parseInt(minimalTemperatureTextField.getText()))
+                .distanceToTransferHeat(Integer.parseInt(distanceToTransferHeatTextField.getText()))
+                .winterLengthInDays(Integer.parseInt(winterLengthTextField.getText()))
+                .summerLengthInDays(Integer.parseInt(summerLengthTextField.getText()))
                 .build();
 
         // jak stworzymy nowa mape to mozemy miec kilka okien.
