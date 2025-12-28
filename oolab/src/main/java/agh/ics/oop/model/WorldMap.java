@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.maps.MoveValidator;
 import agh.ics.oop.model.observers.MapChangeListener;
 
 import java.util.Collection;

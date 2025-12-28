@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.maps.CylindricalMap;
 import agh.ics.oop.model.util.MapSettings;
 import org.junit.jupiter.api.Test;
 

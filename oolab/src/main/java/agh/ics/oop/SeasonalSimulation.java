@@ -1,14 +1,17 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.maps.NormalVisualState;
+import agh.ics.oop.model.maps.SeasonalVisualState;
+import agh.ics.oop.model.simulation.SeasonalInfo;
 import agh.ics.oop.model.util.MapSettings;
+import agh.ics.oop.model.util.PriorityHandler;
 import agh.ics.oop.model.util.Season;
-import com.sun.scenario.Settings;
 
 import java.util.List;
 import java.util.Map;
 
-public class SeasonalSimulation extends AbstractSimulation implements SeasonalInfo{
+public class SeasonalSimulation extends AbstractSimulation implements SeasonalInfo {
     private SeasonManager seasonManager;
 
     @Override

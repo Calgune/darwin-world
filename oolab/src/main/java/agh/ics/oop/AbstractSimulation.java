@@ -3,7 +3,10 @@ package agh.ics.oop;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.SimulationChangeListener;
 import agh.ics.oop.model.observers.StatisticsTracker;
+import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.util.MapSettings;
+import agh.ics.oop.model.util.PriorityHandler;
+import agh.ics.oop.model.util.RandomPositionGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +32,14 @@ abstract public class AbstractSimulation implements Simulation {
         this.running = false;
     }
 
+    @Override
     public void startStop() {
-        paused = !paused;
+        this.paused = !this.paused;
+    }
+
+    @Override
+    public boolean isPaused() {
+        return paused;
     }
 
     @Override
@@ -54,6 +63,10 @@ abstract public class AbstractSimulation implements Simulation {
     private void updateStatistics(){
         statisticsTracker.updateStats(map, day);
         simulationChangeListeners.forEach(observer -> observer.simulationStatisticsChanged(statisticsTracker));
+    }
+
+    private void updateCharts() {
+        simulationChangeListeners.forEach(observer -> observer.simulationChartsChanged(statisticsTracker));
     }
 
     public void spawnGrasses(int grassToSpawn){
@@ -87,8 +100,6 @@ abstract public class AbstractSimulation implements Simulation {
 
         spawnGrasses(settings.getInitialGrassCount());
 
-        //spawnowanie zwierząt na początku
-        Random random = new Random();
         IntStream.range(0, settings.getInitialAnimalCount()).forEach(i -> {
             Genome genes = Genome.generateRandom(settings.getGenomeLength());
 
@@ -103,7 +114,7 @@ abstract public class AbstractSimulation implements Simulation {
     public void deleteDeadAnimals(){
         map.getAnimalsList().
                 stream().
-                filter(Animal::hasStarved).
+                filter(animal -> animal.hasStarved(day)).
                 forEach(animal -> {
                     statisticsTracker.registerDeath(animal);
                     map.removeAnimal(animal);
@@ -143,7 +154,7 @@ abstract public class AbstractSimulation implements Simulation {
             if (parents.size() == 2) {
                 Animal child = parents
                         .getFirst()
-                        .breed(parents.get(1), settings.getReproductionEnergyCost());
+                        .breed(parents.get(1), this.settings);
                 map.placeAnimal(child);
             }
         });
@@ -158,10 +169,6 @@ abstract public class AbstractSimulation implements Simulation {
             animal.loseEnergy(settings.getDailyEnergyDecay());
             animal.age();
         });
-    }
-
-    private void updateCharts() {
-        simulationChangeListeners.forEach(observer -> observer.simulationChartsChanged(statisticsTracker));
     }
 
     public void advanceDay(){
@@ -182,7 +189,7 @@ abstract public class AbstractSimulation implements Simulation {
                 // 2 ruch wszystkich zwierzaków
                 moveAnimals();
 
-                // 3 zjadzanie roślin (aktualizowanie energi, usunięcie rośliny
+                // 3 zjadzanie roślin (aktualizowanie energii, usunięcie rośliny)
                 handleGrasses();
 
                 // 4 rozmnażanie
@@ -191,7 +198,7 @@ abstract public class AbstractSimulation implements Simulation {
                 // 5 wzrost nowych roślin
                 growGrasses();
 
-                // 6 utrata energi zewzględu na przeminięcie dnia
+                // 6 utrata energii ze względu na przeminięcie dnia
                 loseEnergy();
 
                 // 7 przeminiecie dnia
