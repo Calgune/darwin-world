@@ -45,7 +45,7 @@ abstract public class AbstractSimulation implements Simulation {
     }
 
     public void simulationChanged(){
-        simulationObservers.forEach(simulationObserver -> {map.mapChanged(""); simulationObserver.updateStats(map);});
+        simulationObservers.forEach(simulationObserver -> {map.mapChanged(""); simulationObserver.updateStats(map, day);});
     }
 
     public void spawnGrasses(int grassToSpawn){
@@ -152,6 +152,7 @@ abstract public class AbstractSimulation implements Simulation {
     }
 
     public void advanceDay(){
+        //simulationObservers.forEach(simulationObserver -> simulationObserver.);
         day++;
     }
 
