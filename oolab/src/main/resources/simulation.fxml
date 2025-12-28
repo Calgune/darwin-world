@@ -2,49 +2,104 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="550.0" minWidth="1000.0" prefHeight="550.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
-   <top>
-      <HBox alignment="CENTER" prefHeight="40.0" prefWidth="800.0" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets top="5.0" />
-         </BorderPane.margin>
-      </HBox>
-   </top>
-   <center>
-      <Canvas fx:id="canvas" height="400.0" width="560.0" BorderPane.alignment="CENTER" />
-   </center>
-   <bottom>
-       <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-       <children>
-      <Label fx:id="animalMovementLabel" text="aktualny ruch zwierzaka" />
-          <Button fx:id="pauseButton" onAction="#pauseButtonClicked" text="Stop / Start" />
-           </children>
+<BorderPane minHeight="600.0" minWidth="1100.0" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+    <top>
+        <HBox alignment="CENTER" prefHeight="40.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets top="5.0" />
+            </BorderPane.margin>
+        </HBox>
+    </top>
 
-         <BorderPane.margin>
-            <Insets bottom="20.0" />
-         </BorderPane.margin>
-       </VBox>
-   </bottom>
-   <left>
-      <VBox alignment="CENTER" fillWidth="false" maxHeight="280.0" minWidth="280.0" prefWidth="284.0" spacing="1.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="animalsOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba zwierzaków:" wrapText="true" />
-            <Label fx:id="grassesOnMapLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba traw:" wrapText="true" />
-            <Label fx:id="emptyCellsLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="liczba pustych komórek:" wrapText="true" />
-            <Label fx:id="mostPopularGenotypeLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="najpopulajniejszy genotyp:" wrapText="true" />
-            <Label fx:id="deadAnimalsAverageLifespanLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. dł. życia martwych zwierzaków:" wrapText="true" />
-            <Label fx:id="animalsOnMapAverageEnergyLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. energia zwierzaków:" wrapText="true" />
-            <Label fx:id="animalsOnMapAverageKidsCountLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="śr. liczba dzieci zwierzaków:" wrapText="true" />
-            <Label fx:id="dayLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="dzień:" wrapText="true"/>
-            <Label fx:id="temperatureLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="temperatura:" wrapText="true" visible="false" managed="false"/>
-            <Label fx:id="seasonLabel" minHeight="20.0" minWidth="180.0" prefHeight="20.0" prefWidth="260.0" text="pora roku:" wrapText="true"  visible="false" managed="false"/> <!-- visible="false" managed="false" -->
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </VBox>
-   </left>
+    <center>
+        <ScrollPane BorderPane.alignment="CENTER">
+            <content>
+                <Canvas fx:id="canvas" height="400.0" width="560.0" />
+            </content>
+        </ScrollPane>
+    </center>
+
+    <left>
+        <VBox alignment="TOP_LEFT" fillWidth="true" maxWidth="320.0" minWidth="300.0" spacing="10.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets left="15.0" right="15.0" top="10.0" />
+            </padding>
+            <children>
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Label style="-fx-font-weight: bold;" text="Wykresy" />
+                    <StackPane>
+                        <LineChart fx:id="animalsPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
+                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                        </LineChart>
+                        <LineChart fx:id="grassesPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
+                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                        </LineChart>
+                        <LineChart fx:id="averageEnergyPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
+                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                        </LineChart>
+                        <LineChart fx:id="averageLifeSpanPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
+                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                        </LineChart>
+                        <LineChart fx:id="averageKidsCountPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
+                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                        </LineChart>
+                    </StackPane>
+                    <ComboBox fx:id="chartsComboBox" onAction="#selectChart" prefWidth="200.0" promptText="wybierz wykres..." />
+                </VBox>
+
+                <Separator />
+
+                <VBox spacing="3.0">
+                    <Label style="-fx-font-weight: bold;" text="Statystyki Ogólne" />
+                    <Label fx:id="animalsOnMapLabel" text="liczba zwierzaków:" wrapText="true" />
+                    <Label fx:id="grassesOnMapLabel" text="liczba traw:" wrapText="true" />
+                    <Label fx:id="emptyCellsLabel" text="liczba pustych komórek:" wrapText="true" />
+                    <Label fx:id="mostPopularGenotypeLabel" text="najpopulajniejszy genotyp:" wrapText="true" />
+                    <Label fx:id="deadAnimalsAverageLifespanLabel" text="śr. dł. życia martwych zwierzaków:" wrapText="true" />
+                    <Label fx:id="animalsOnMapAverageEnergyLabel" text="śr. energia zwierzaków:" wrapText="true" />
+                    <Label fx:id="animalsOnMapAverageKidsCountLabel" text="śr. liczba dzieci zwierzaków:" wrapText="true" />
+                    <Label fx:id="dayLabel" text="dzień:" wrapText="true" />
+                    <Label fx:id="temperatureLabel" managed="false" text="temperatura:" visible="false" wrapText="true" />
+                    <Label fx:id="seasonLabel" managed="false" text="pora roku:" visible="false" wrapText="true" />
+                </VBox>
+
+                <VBox fx:id="trackedAnimalBox" managed="false" spacing="5.0" style="-fx-background-color: #eef7ff; -fx-padding: 10; -fx-background-radius: 5;" visible="false">
+                    <Label style="-fx-font-weight: bold;" text="Śledzony Zwierzak" />
+                    <Separator />
+                    <Label fx:id="individualGenomeLabel" text="Genom: -" wrapText="true" />
+                    <Label fx:id="individualGenotypeLabel" text="Genotyp: -" />
+                    <Label fx:id="individualEnergyLabel" text="Energia: -" />
+                    <Label fx:id="individualPlantsEatenLabel" text="Zjedzone rośliny: -" />
+                    <Label fx:id="individualKidsLabel" text="Liczba dzieci: -" />
+                    <Label fx:id="individualDescendantsLabel" text="Liczba potomków: -" />
+                    <Label fx:id="individualAgeLabel" text="Wiek: -" />
+                    <Label fx:id="individualDeathDayLabel" text="Status: -" wrapText="true" />
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <bottom>
+        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="animalMovementLabel" text="aktualny ruch zwierzaka" />
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Button fx:id="pauseButton" onAction="#pauseButtonClicked" text="Start/Stop" />
+                    <Label style="-fx-font-size: 9px; -fx-text-fill: gray;" text="Uwaga: symulacja zatrzyma się po zakończeniu dnia" />
+                </VBox>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="20.0" />
+            </BorderPane.margin>
+        </VBox>
+    </bottom>
 </BorderPane>
