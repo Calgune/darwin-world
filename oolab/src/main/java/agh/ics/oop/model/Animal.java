@@ -117,7 +117,7 @@ public class Animal implements WorldElement {
     }
 
     public void loseEnergy(int decay) {
-        energy -= decay;
+        energy = Math.max(0, energy - decay);
     }
 
     public MapDirection getDirection() {

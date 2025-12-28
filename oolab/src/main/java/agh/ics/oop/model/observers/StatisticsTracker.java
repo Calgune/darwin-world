@@ -7,7 +7,7 @@ import agh.ics.oop.model.util.ChartData;
 
 import java.util.*;
 
-public class StatisticsTracker implements SimulationObserver {
+public class StatisticsTracker {
     private int animalsOnMap;
     private int grassesOnMap;
     private int emptyCells;
@@ -56,13 +56,11 @@ public class StatisticsTracker implements SimulationObserver {
                 (double) deadAnimalsAgeSum / deadAnimalsCount;
     }
 
-    @Override
     public void registerDeath(Animal animal){
         deadAnimalsAgeSum += animal.getAge();
         deadAnimalsCount++;
     }
 
-    @Override
     public ChartData getChartData(){
         return chartData;
     }
@@ -70,7 +68,6 @@ public class StatisticsTracker implements SimulationObserver {
     // skala projektu jest zbyt mała, aby aktualizować statystyki dopiero po
     // konkretnym wydarzeniu lepiej jeden raz zawsze wszystkie
     // czytelność lepsza niż mikrooptymalizacja
-    @Override
     public void updateStats(WorldMap map, int day) {
         animalsOnMap = map.getAnimalsCount();
         grassesOnMap = map.getGrassesCount();

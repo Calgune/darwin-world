@@ -4,6 +4,7 @@ import agh.ics.oop.SeasonalSimulation;
 import agh.ics.oop.NormalSimulation;
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.observers.SimulationChangeListener;
 import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.util.ConfigurationHandler;
 import agh.ics.oop.model.util.MapSettings;
@@ -34,10 +35,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
-public class SimulationPresenter implements MapChangeListener {
-
-    private StatisticsTracker statisticsTracker;
-    private ChartsDataHandler chartsDataHandler;
+public class SimulationPresenter implements MapChangeListener, SimulationChangeListener {
+    private final ChartsDataHandler chartsDataHandler = new ChartsDataHandler();
     private WorldMap map;
     private Simulation simulation;
 
@@ -180,9 +179,9 @@ public class SimulationPresenter implements MapChangeListener {
                 "średnia liczba dzieci");
     }
 
-    void setChartsDataHandler(ChartsDataHandler chartsDataHandler){
-        this.chartsDataHandler = chartsDataHandler;
-    }
+//    void setChartsDataHandler(ChartsDataHandler chartsDataHandler){
+//        this.chartsDataHandler = chartsDataHandler;
+//    }
 
     private void connectChartsDataWithCharts(){
         animalsPerDayLineChart.getData().add(chartsDataHandler.getAnimalsPerDay());
@@ -241,10 +240,6 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void setWorldMap(WorldMap map){
         map.addObserver(this);
-    }
-
-    public void setStatisticsTracker(StatisticsTracker statisticsTracker) {
-        this.statisticsTracker = statisticsTracker;
     }
 
     public void setSimulation(Simulation simulation) {
@@ -447,7 +442,7 @@ public class SimulationPresenter implements MapChangeListener {
                 if (worldMap.isOccupied(position)) {
                     Object object = worldMap.objectAt(position);
                     if (object instanceof Animal animal) {
-                        graphicsContext2d.setFill(animal.getColor(statisticsTracker.getMostPopularGenotype()));
+                        graphicsContext2d.setFill(animal.getColor(simulation.getStatistics().getMostPopularGenotype()));
                         drawTextInTheMiddleOfRectangle(graphicsContext2d, animal.toString(), x, y);
                     } else {
                         graphicsContext2d.setFill(Color.rgb(0,0,0));
@@ -497,17 +492,14 @@ public class SimulationPresenter implements MapChangeListener {
         xAxisAverageLifeSpanPerDayLineChart.setUpperBound(chartsDataHandler.getAverageLifeSpanPerDay().getData().getLast().getXValue().intValue());
     }
 
-    private void updateStatistics(){
-        chartsDataHandler.updateChart(statisticsTracker.getChartData());
-        updateChartsRange();
-
-        animalsOnMapLabel.setText("liczba zwierzaków: %d".formatted(statisticsTracker.getAnimalsOnMap()));
-        grassesOnMapLabel.setText("liczba traw: %d".formatted(statisticsTracker.getGrassesOnMap()));
-        emptyCellsLabel.setText("liczba pustych komórek: %d".formatted(statisticsTracker.getEmptyCells()));
-        mostPopularGenotypeLabel.setText("najpopulajniejszy genotyp: %d".formatted(statisticsTracker.getMostPopularGenotype()));
-        deadAnimalsAverageLifespanLabel.setText("śr. dł. życia martwych zwierzaków: %.2f".formatted(statisticsTracker.getDeadAnimalsAverageLifespan()));
-        animalsOnMapAverageEnergyLabel.setText("śr. energia zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageEnergy()));
-        animalsOnMapAverageKidsCountLabel.setText("śr. liczba dzieci zwierzaków: %.2f".formatted(statisticsTracker.getAnimalsOnMapAverageKidsCount()));
+    private void updateStatistics(StatisticsTracker statistics){
+        animalsOnMapLabel.setText("liczba zwierzaków: %d".formatted(statistics.getAnimalsOnMap()));
+        grassesOnMapLabel.setText("liczba traw: %d".formatted(statistics.getGrassesOnMap()));
+        emptyCellsLabel.setText("liczba pustych komórek: %d".formatted(statistics.getEmptyCells()));
+        mostPopularGenotypeLabel.setText("najpopulajniejszy genotyp: %d".formatted(statistics.getMostPopularGenotype()));
+        deadAnimalsAverageLifespanLabel.setText("śr. dł. życia martwych zwierzaków: %.2f".formatted(statistics.getDeadAnimalsAverageLifespan()));
+        animalsOnMapAverageEnergyLabel.setText("śr. energia zwierzaków: %.2f".formatted(statistics.getAnimalsOnMapAverageEnergy()));
+        animalsOnMapAverageKidsCountLabel.setText("śr. liczba dzieci zwierzaków: %.2f".formatted(statistics.getAnimalsOnMapAverageKidsCount()));
         dayLabel.setText("dzień: %d".formatted(simulation.getDay()));
 
         if (simulation instanceof SeasonalSimulation){
@@ -517,11 +509,25 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     @Override
+    public void simulationChartsChanged(StatisticsTracker statistics) {
+        Platform.runLater(() -> {
+            chartsDataHandler.updateChart(statistics.getChartData());
+            updateChartsRange();
+        });
+    }
+
+    @Override
+    public void simulationStatisticsChanged(StatisticsTracker statistics) {
+        Platform.runLater(() -> {
+            updateStatistics(statistics);
+        });
+    }
+
+    @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             animalMovementLabel.setText(message);
             drawMap(worldMap);
-            updateStatistics();
         });
     }
 
@@ -600,22 +606,18 @@ public class SimulationPresenter implements MapChangeListener {
         }
 
         StatisticsTracker tracker = new StatisticsTracker();
-        ChartsDataHandler dataHandler = new ChartsDataHandler();
+        //ChartsDataHandler dataHandler = new ChartsDataHandler();
 
         tracker.updateStats(newMap, 0);
-        presenter.setChartsDataHandler(dataHandler);
+        //presenter.setChartsDataHandler(dataHandler);
 
         presenter.initChartsComboBox();
-
-        simulation.addObserver(tracker);
-        presenter.setStatisticsTracker(tracker);
-
         presenter.setSimulation(simulation);
 
-        presenter.updateStatistics();
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
 
+        simulation.addObserver(presenter);
 
         Stage stage = new Stage();
         configureStage(stage, viewRoot);

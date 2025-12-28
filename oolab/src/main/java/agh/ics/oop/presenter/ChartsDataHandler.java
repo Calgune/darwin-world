@@ -27,14 +27,13 @@ public class ChartsDataHandler {
             averageLifeSpanPerDay.getData().removeFirst();
             averageKidsCountPerDay.getData().removeFirst();
         }
-       if(prev != chartData.getDay()){
-            animalsPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAnimals()));
-            grassesPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getGrasses()));
-            averageEnergyPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageEnergy()));
-            averageLifeSpanPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageLifeSpan()));
-            averageKidsCountPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageKidsCount()));
-            prev = chartData.getDay();
-       }
+
+        animalsPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAnimals()));
+        grassesPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getGrasses()));
+        averageEnergyPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageEnergy()));
+        averageLifeSpanPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageLifeSpan()));
+        averageKidsCountPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageKidsCount()));
+        prev = chartData.getDay();
     }
 
 
