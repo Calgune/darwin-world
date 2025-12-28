@@ -10,6 +10,7 @@ import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.simulation.SimulationType;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
+import agh.ics.oop.model.util.ChartsDataHandler;
 import agh.ics.oop.model.util.ConfigurationHandler;
 import agh.ics.oop.model.util.MapSettings;
 import javafx.application.Platform;

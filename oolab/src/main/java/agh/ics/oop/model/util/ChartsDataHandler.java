@@ -1,6 +1,5 @@
-package agh.ics.oop.presenter;
+package agh.ics.oop.model.util;
 
-import agh.ics.oop.model.util.ChartData;
 import javafx.scene.chart.XYChart;
 
 public class ChartsDataHandler {
@@ -19,7 +18,7 @@ public class ChartsDataHandler {
         averageKidsCountPerDay = new XYChart.Series<>();
     }
 
-    void updateChart(ChartData chartData){
+    public void updateChart(ChartData chartData){
         if(animalsPerDay.getData().size() > 100){
             animalsPerDay.getData().removeFirst();
             grassesPerDay.getData().removeFirst();
