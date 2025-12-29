@@ -33,6 +33,10 @@ public class Genome {
         return new Genome(randomGenes);
     }
 
+    public int getGenotype() {
+        return genes.get(currGeneIndex);
+    }
+
     public int todaysMove() {
         int move = genes.get(currGeneIndex);
         currGeneIndex = (currGeneIndex+1) % genes.size();
