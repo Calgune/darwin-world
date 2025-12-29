@@ -2,6 +2,7 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.util.MapSettings;
 import agh.ics.oop.model.util.Season;
+import agh.ics.oop.model.util.Utility;
 
 // można poprawić potem aby była jedna fukcje licząca poprostu temperature, a na jej podstawie (mapując) liczyć modifikatory rośnięcia itp.
 public class SeasonManager {
@@ -33,19 +34,14 @@ public class SeasonManager {
         mappedDayParameter = 2 * Math.PI / (double) winterLengthInDays;
 
         // paramtry funkcji opisane w desmos
-        energyFromGrassPenaltyParameter = mapValue(minimalTemperatureInWinter, -40.f, 20, 0.75, 0.5); // k : (0,75 -  0.5)
+        energyFromGrassPenaltyParameter = Utility.mapValue(minimalTemperatureInWinter, -40.f, 20, 0.75, 0.5); // k : (0,75 -  0.5)
         temperatureParameter = energyFromGrassPenaltyParameter;
-        grassSpawnPenaltyParameter = mapValue(minimalTemperatureInWinter, 0.f, 20, 1, 0.5); // k : (1 -  0.5)
-        energyDecayPenaltyParameter = mapValue(minimalTemperatureInWinter, -40.f, 20, 4, 0); // T : (4 -  0)
+        grassSpawnPenaltyParameter = Utility.mapValue(minimalTemperatureInWinter, 0.f, 20, 1, 0.5); // k : (1 -  0.5)
+        energyDecayPenaltyParameter = Utility.mapValue(minimalTemperatureInWinter, -40.f, 20, 4, 0); // T : (4 -  0)
 
         IO.println(energyFromGrassPenaltyParameter);
         IO.println(grassSpawnPenaltyParameter);
         IO.println(energyDecayPenaltyParameter);
-    }
-
-    private static double mapValue(double val, double minIn, double maxIn, double minOut, double maxOut){
-        double clampedVal = Math.max(minIn, Math.min(val, maxIn));
-        return ((clampedVal - minIn) / (maxIn - minIn)) * (maxOut - minOut) + minOut;
     }
 
     // zwraca [0.25 - 1] mnoży energie pozyskaną z trawy
@@ -87,11 +83,11 @@ public class SeasonManager {
     }
 
     double getTemperature(int day){
-        return mapValue(getMinimalTemperatureInWinterNormalized(day), 0.f, 1.f, minimalTemperatureInWinter, baseTemperature);
+        return Utility.mapValue(getMinimalTemperatureInWinterNormalized(day), 0.f, 1.f, minimalTemperatureInWinter, baseTemperature);
     }
 
     double getTemperatureToColdnessFactor(int day){
-        return mapValue(getTemperature(day), -20, 20, 1.f, 0.f);
+        return Utility.mapValue(getTemperature(day), -20, 20, 1.f, 0.f);
     }
 
     Season getSeason(int day){
