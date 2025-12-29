@@ -42,7 +42,7 @@ public class Animal implements WorldElement {
     }
 
     public Color getColor(int dominantGenotype) {
-        if (this.getGenome().todaysMove() == dominantGenotype) {
+        if (this.getGenome().getGenotype() == dominantGenotype) {
             return Color.rgb(211, 175, 55);
         }
         return Color.rgb(102, 51, 0);

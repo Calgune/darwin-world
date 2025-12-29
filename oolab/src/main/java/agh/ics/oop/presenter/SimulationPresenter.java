@@ -295,8 +295,8 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                 dailyEnergyDecay.setText(config.getProperty("dailyEnergyDecay", "2"));
                 breedingCost.setText(config.getProperty("reproductionCost", "10"));
                 breedingThreshold.setText(config.getProperty("reproductionThreshold", "12"));
-                summerLengthTextField.setText(config.getProperty("summerLengthInDays", "10"));
-                winterLengthTextField.setText(config.getProperty("winterLengthInDays", "10"));
+                summerLengthTextField.setText(config.getProperty("summerLengthInDays", "30"));
+                winterLengthTextField.setText(config.getProperty("winterLengthInDays", "30"));
                 minimalTemperatureTextField.setText(config.getProperty("minimalTemperatureInWinter", "-20"));
                 distanceToTransferHeatTextField.setText(config.getProperty("distanceToTransferHeat", "2"));
             } catch (IOException e) { System.err.println("Błąd wczytywania pliku"); }
@@ -401,7 +401,7 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     private void updateTrackedAnimal() {
         if (trackedAnimal == null) return;
         individualGenomeLabel.setText("Genom: " + trackedAnimal.getGenome().getGenes().toString());
-        individualGenotypeLabel.setText("Genotyp: " + trackedAnimal.getGenome().todaysMove());
+        individualGenotypeLabel.setText("Genotyp: " + trackedAnimal.getGenome().getGenotype());
         individualEnergyLabel.setText("Energia: " + trackedAnimal.getEnergy());
         individualDescendantsLabel.setText("Potomkowie: " + trackedAnimal.getDescendantsCount());
         individualAgeLabel.setText("Wiek: " + trackedAnimal.getAge());
