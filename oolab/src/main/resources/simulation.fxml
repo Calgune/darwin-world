@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="600.0" minWidth="1100.0" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+<BorderPane minHeight="600.0" minWidth="1200.0" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <top>
         <HBox alignment="CENTER" prefHeight="40.0" prefWidth="800.0" BorderPane.alignment="CENTER">
             <BorderPane.margin>
@@ -15,16 +15,8 @@
         </HBox>
     </top>
 
-    <center>
-        <ScrollPane BorderPane.alignment="CENTER">
-            <content>
-                <Canvas fx:id="canvas" height="400.0" width="560.0" />
-            </content>
-        </ScrollPane>
-    </center>
-
     <left>
-        <VBox alignment="TOP_LEFT" fillWidth="true" maxWidth="320.0" minWidth="300.0" spacing="10.0" BorderPane.alignment="CENTER">
+        <VBox alignment="TOP_LEFT" fillWidth="true" maxWidth="320.0" minWidth="271.0" prefHeight="565.0" prefWidth="271.0" spacing="10.0" BorderPane.alignment="CENTER">
             <padding>
                 <Insets left="15.0" right="15.0" top="10.0" />
             </padding>
@@ -72,7 +64,7 @@
                     <Label fx:id="seasonLabel" managed="false" text="pora roku:" visible="false" wrapText="true" />
                 </VBox>
 
-                <VBox fx:id="trackedAnimalBox" managed="false" spacing="5.0" style="-fx-background-color: #eef7ff; -fx-padding: 10; -fx-background-radius: 5;" visible="false">
+                <VBox fx:id="trackedAnimalBox" managed="false" spacing="5.0" style="-fx-padding: 10; -fx-background-radius: 5;" visible="false">
                     <Label style="-fx-font-weight: bold;" text="Śledzony Zwierzak" />
                     <Separator />
                     <Label fx:id="individualGenomeLabel" text="Genom: -" wrapText="true" />
@@ -102,4 +94,14 @@
             </BorderPane.margin>
         </VBox>
     </bottom>
+   <right>
+      <Pane maxWidth="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </right>
+   <center>
+      <Pane BorderPane.alignment="CENTER">
+         <children>
+                <Canvas fx:id="canvas" height="500.0" layoutX="8.0" layoutY="33.0" nodeOrientation="INHERIT" width="653.0" />
+         </children>
+      </Pane>
+   </center>
 </BorderPane>
