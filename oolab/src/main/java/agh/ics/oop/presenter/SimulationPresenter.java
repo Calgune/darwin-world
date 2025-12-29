@@ -13,6 +13,7 @@ import agh.ics.oop.model.simulation.SimulationEngine;
 import agh.ics.oop.model.util.ChartsDataHandler;
 import agh.ics.oop.model.util.ConfigurationHandler;
 import agh.ics.oop.model.util.MapSettings;
+import agh.ics.oop.model.util.Utility;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -324,6 +325,14 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
         gc.save(); gc.setFill(color); gc.fillRect(v, v1, v2, v3); gc.restore();
     }
 
+    private void drawHealthBar(GraphicsContext gc, int x, int y, int energy){
+        int marginFromSides = 3;
+        int marginFromTop = 1;
+        drawRectangle(gc, x+marginFromSides, y+marginFromTop, CELL_SIZE-marginFromSides*2,2, Color.RED);
+        int blueLength = (int) Utility.mapValue(energy, 0, map.getMapSettings().getReproductionEnergyThreshold(), 0, CELL_SIZE-marginFromSides*2);
+        drawRectangle(gc, x+marginFromSides, y+marginFromTop, blueLength,2, Color.BLUE);
+    }
+
     public void drawMap(WorldMap worldMap){
         int rows = worldMap.getRowsCount(); int columns = worldMap.getColumnsCount();
         Boundary boundary = worldMap.getBoundary();
@@ -350,6 +359,7 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                     if (object instanceof Animal animal) {
                         gc.setFill(animal.getColor(simulation.getStatistics().getMostPopularGenotype()));
                         drawTextInTheMiddleOfRectangle(gc, animal.toString(), x, y);
+                        drawHealthBar(gc, x, y, animal.getEnergy());
                         if (animal.equals(trackedAnimal)) {
                             gc.setFill(Color.rgb(255,0,0));
                             drawTextInTheMiddleOfRectangle(gc, animal.toString(), x, y);

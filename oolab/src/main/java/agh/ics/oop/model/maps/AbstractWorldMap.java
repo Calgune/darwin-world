@@ -138,6 +138,11 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     @Override
+    public MapSettings getMapSettings() {
+        return settings;
+    }
+
+    @Override
     public boolean isOccupiedByAnimal(Vector2d position){
         return animals.containsKey(position) && !animals.get(position).isEmpty();
     }

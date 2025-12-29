@@ -2,6 +2,7 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.maps.MoveValidator;
 import agh.ics.oop.model.observers.MapChangeListener;
+import agh.ics.oop.model.util.MapSettings;
 
 import java.util.Collection;
 import java.util.List;
@@ -47,6 +48,7 @@ public interface WorldMap extends MoveValidator {
      */
     boolean isOccupied(Vector2d position);
 
+    MapSettings getMapSettings();
 
     void mapChanged(String message);
     /**
