@@ -46,9 +46,11 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     private WorldMap map;
     private Simulation simulation;
 
-    private final static int CELL_SIZE = 25;
-    private final static Font FONT = new Font(14);
+    private int cellSize = 25;
+    private Font font;
     private Animal trackedAnimal = null;
+    private int rows;
+    private int columns;
 
     @FXML private ComboBox chartsComboBox;
     @FXML private Label dayLabel;
@@ -222,8 +224,8 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                     double mouseX = event.getX();
                     double mouseY = event.getY();
                     Boundary boundary = map.getBoundary();
-                    int x = (int) (mouseX / CELL_SIZE) - 1;
-                    int y = boundary.upperRight().getY() - ((int) (mouseY / CELL_SIZE) - 1);
+                    int x = (int) (mouseX / cellSize) - 1;
+                    int y = boundary.upperRight().getY() - ((int) (mouseY / cellSize) - 1);
                     Vector2d clickedPosition = new Vector2d(x, y);
                     Object object = map.objectAt(clickedPosition);
                     if (object instanceof Animal animal) {
@@ -305,17 +307,17 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     }
 
     private void drawTextInTheMiddleOfRectangle(GraphicsContext gc, String string, int x, int y){
-        Text text = new Text(string); text.setFont(FONT);
+        Text text = new Text(string); text.setFont(font);
         double tw = text.getLayoutBounds().getWidth();
         double th = text.getLayoutBounds().getHeight();
-        gc.fillText(string, x + (CELL_SIZE - tw) / 2, y + (CELL_SIZE - th) / 2 + th * 0.7);
+        gc.fillText(string, x + (cellSize - tw) / 2, y + (cellSize - th) / 2 + th * 0.7);
     }
 
     private void drawAxis(GraphicsContext gc, int start, int end, boolean horizontal){
         int k = 1; int step = start <= end ? 1 : -1;
         for (int i = start; i != end + step; i += step){
-            int x = horizontal ? k * CELL_SIZE : 0;
-            int y = horizontal ? 0 : k * CELL_SIZE;
+            int x = horizontal ? k * cellSize : 0;
+            int y = horizontal ? 0 : k * cellSize;
             drawTextInTheMiddleOfRectangle(gc, String.valueOf(i), x, y);
             k++;
         }
@@ -328,17 +330,28 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     private void drawHealthBar(GraphicsContext gc, int x, int y, int energy){
         int marginFromSides = 3;
         int marginFromTop = 1;
-        drawRectangle(gc, x+marginFromSides, y+marginFromTop, CELL_SIZE-marginFromSides*2,2, Color.RED);
-        int blueLength = (int) Utility.mapValue(energy, 0, map.getMapSettings().getReproductionEnergyThreshold(), 0, CELL_SIZE-marginFromSides*2);
+        drawRectangle(gc, x+marginFromSides, y+marginFromTop, cellSize -marginFromSides*2,2, Color.RED);
+        int blueLength = (int) Utility.mapValue(energy, 0, map.getMapSettings().getReproductionEnergyThreshold(), 0, cellSize -marginFromSides*2);
         drawRectangle(gc, x+marginFromSides, y+marginFromTop, blueLength,2, Color.BLUE);
     }
 
+    private void initCanvas(WorldMap worldMap){
+        rows = worldMap.getRowsCount();
+        columns = worldMap.getColumnsCount();
+
+        cellSize = (int) Math.min(canvas.getWidth() / columns, canvas.getHeight() / rows);
+
+        canvas.setHeight(cellSize * rows);
+        canvas.setWidth(cellSize * columns);
+
+        font = new Font(Math.floor(cellSize * 0.7));
+    }
+
     public void drawMap(WorldMap worldMap){
-        int rows = worldMap.getRowsCount(); int columns = worldMap.getColumnsCount();
         Boundary boundary = worldMap.getBoundary();
-        canvas.setHeight(CELL_SIZE*(columns+1)); canvas.setWidth(CELL_SIZE*(rows+1));
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.valueOf("#3d3d3d")); gc.setLineWidth(0.2); gc.setFont(FONT);
+
+        gc.setStroke(Color.valueOf("#3d3d3d")); gc.setLineWidth(0.2); gc.setFont(font);
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         drawTextInTheMiddleOfRectangle(gc, "x/y", 0, 0);
 
@@ -346,13 +359,13 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
         // x i y w pętli tłumaczy wspołrzędne mapy na wspołrzędne canvasu
         for(int i = boundary.upperRight().getY(); i >= boundary.lowerLeft().getY(); i--){
             for (int j = boundary.lowerLeft().getX(); j <= boundary.upperRight().getX(); j++){
-                int x = (j - boundary.lowerLeft().getX() + 1) * CELL_SIZE;
-                int y = (boundary.upperRight().getY() - i + 1) * CELL_SIZE;
+                int x = (j - boundary.lowerLeft().getX() + 1) * cellSize;
+                int y = (boundary.upperRight().getY() - i + 1) * cellSize;
                 Vector2d position = new Vector2d(j, i);
                 if(position.precedes(worldMap.getJungleBoundary().upperRight()) && position.follows(worldMap.getJungleBoundary().lowerLeft())){
-                    drawRectangle(gc, x, y, CELL_SIZE, CELL_SIZE, simulation.getMapVisualState().getJungleColor());
+                    drawRectangle(gc, x, y, cellSize, cellSize, simulation.getMapVisualState().getJungleColor());
                 } else {
-                    drawRectangle(gc, x, y, CELL_SIZE, CELL_SIZE, simulation.getMapVisualState().getSteppesColor());
+                    drawRectangle(gc, x, y, cellSize, cellSize, simulation.getMapVisualState().getSteppesColor());
                 }
                 if (worldMap.isOccupied(position)) {
                     Object object = worldMap.objectAt(position);
@@ -371,11 +384,14 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                 }
             }
         }
-        for (int i = 0; i <= columns+1; i++) gc.strokeLine(0, i * CELL_SIZE, (rows+1) * CELL_SIZE, i * CELL_SIZE);
-        for (int j = 0; j <= rows+1; j++) gc.strokeLine(j * CELL_SIZE, 0, j * CELL_SIZE, (columns+1) * CELL_SIZE);
+        for (int i = 0; i <= columns + 1; i++) { gc.strokeLine(i * cellSize, 0, i * cellSize, canvas.getHeight());}
+        for (int j = 0; j <= rows + 1; j++) {gc.strokeLine(0, j * cellSize, canvas.getWidth(), j * cellSize);}
+
         gc.setFill(Color.rgb(0,0,0));
+
         drawAxis(gc, boundary.lowerLeft().getX(), boundary.upperRight().getX(), true);
-        drawAxis(gc, boundary.upperRight().getY(), boundary.lowerLeft().getY(), false);
+        drawAxis(gc, boundary.upperRight().getY()-1, boundary.lowerLeft().getY(), false);
+
     }
 
     private void updateChartsRange(){
@@ -503,7 +519,10 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
 
         StatisticsTracker tracker = new StatisticsTracker();
         tracker.updateStats(newMap, 0);
+
         presenter.initChartsComboBox();
+        presenter.initCanvas(presenter.map);
+
         presenter.setSimulation(simulation);
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();

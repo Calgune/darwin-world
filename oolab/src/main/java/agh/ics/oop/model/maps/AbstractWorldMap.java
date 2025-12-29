@@ -71,12 +71,12 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public int getRowsCount(){
-        return getBoundary().upperRight().getX()-getBoundary().lowerLeft().getX()+1;
+        return getBoundary().upperRight().getY()-getBoundary().lowerLeft().getY()+1;
     }
 
     @Override
     public int getColumnsCount(){
-        return getBoundary().upperRight().getY()-getBoundary().lowerLeft().getY()+1;
+        return getBoundary().upperRight().getX()-getBoundary().lowerLeft().getX()+1;
     }
 
     @Override
