@@ -7,6 +7,7 @@ import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.util.MapSettings;
 import agh.ics.oop.model.util.PriorityHandler;
 import agh.ics.oop.model.util.RandomPositionGenerator;
+import agh.ics.oop.model.util.WriteToCSV;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ abstract public class AbstractSimulation implements Simulation {
     private volatile boolean paused = false;
     protected int day;
     private volatile boolean running = true;
+    private WriteToCSV csv;
 
     @Override
     public StatisticsTracker getStatistics(){
@@ -30,6 +32,11 @@ abstract public class AbstractSimulation implements Simulation {
     @Override
     public void killSimulation() {
         this.running = false;
+    }
+
+    @Override
+    public WriteToCSV getCSV() {
+        return csv;
     }
 
     @Override
@@ -177,33 +184,50 @@ abstract public class AbstractSimulation implements Simulation {
     }
 
     @Override
+    public void runOneStep() {
+        // 1 usunięcie martwych zwierzaków
+        deleteDeadAnimals();
+
+        // 2 ruch wszystkich zwierzaków
+        moveAnimals();
+
+        // 3 zjadzanie roślin (aktualizowanie energii, usunięcie rośliny)
+        handleGrasses();
+
+        // 4 rozmnażanie
+        breedAnimals();
+
+        // 5 wzrost nowych roślin
+        growGrasses();
+
+        // 6 utrata energii ze względu na przeminięcie dnia
+        loseEnergy();
+
+        // 7 przeminiecie dnia
+        advanceDay();
+        updateStatistics();
+
+        csv.writeData(new String[]{
+                    String.valueOf(day),
+                    String.valueOf(statisticsTracker.getAnimalsOnMap()),
+                    String.valueOf(statisticsTracker.getGrassesOnMap()),
+                    String.valueOf(statisticsTracker.getEmptyCells()),
+                    String.valueOf(statisticsTracker.getMostPopularGenotype()),
+                    String.valueOf(statisticsTracker.getAnimalsOnMapAverageEnergy()),
+                    String.valueOf(statisticsTracker.getAnimalsOnMapAverageKidsCount()),
+                    String.valueOf(statisticsTracker.getDeadAnimalsAverageLifespan())
+        });
+    }
+
+    @Override
     public void run(){
         updateStatistics();
         updateCharts();
+        csv = new WriteToCSV();
 
         while (running) {
             if (!paused) {
-                // 1 usunięcie martwych zwierzaków
-                deleteDeadAnimals();
-
-                // 2 ruch wszystkich zwierzaków
-                moveAnimals();
-
-                // 3 zjadzanie roślin (aktualizowanie energii, usunięcie rośliny)
-                handleGrasses();
-
-                // 4 rozmnażanie
-                breedAnimals();
-
-                // 5 wzrost nowych roślin
-                growGrasses();
-
-                // 6 utrata energii ze względu na przeminięcie dnia
-                loseEnergy();
-
-                // 7 przeminiecie dnia
-                advanceDay();
-                updateStatistics();
+                runOneStep();
             }
             try {
                 Thread.sleep(settings.getRefreshSpeed() * 3L);

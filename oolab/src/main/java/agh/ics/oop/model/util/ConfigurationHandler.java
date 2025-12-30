@@ -18,6 +18,10 @@ public class ConfigurationHandler {
         config.setProperty("dailyEnergyDecay", String.valueOf(settings.getDailyEnergyDecay()));
         config.setProperty("reproductionCost", String.valueOf(settings.getReproductionEnergyCost()));
         config.setProperty("reproductionThreshold", String.valueOf(settings.getReproductionEnergyThreshold()));
+        config.setProperty("summerLengthInDays", String.valueOf(settings.getSummerLengthInDays()));
+        config.setProperty("winterLengthInDays", String.valueOf(settings.getWinterLengthInDays()));
+        config.setProperty("minimalTemperatureInWinter", String.valueOf(settings.getMinimalTemperatureInWinter()));
+        config.setProperty("distanceToTransferHeat", String.valueOf(settings.getDistanceToTransferHeat()));
 
         try (OutputStream output = new FileOutputStream(file)) {
             config.store(output, "Konfiguracje symulacji");
