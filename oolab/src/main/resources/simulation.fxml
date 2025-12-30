@@ -62,6 +62,7 @@
                     <Label fx:id="dayLabel" text="dzień:" wrapText="true" />
                     <Label fx:id="temperatureLabel" managed="false" text="temperatura:" visible="false" wrapText="true" />
                     <Label fx:id="seasonLabel" managed="false" text="pora roku:" visible="false" wrapText="true" />
+                    <Button fx:id="openCSVButton" onAction="#openCSVClicked" text="Otwórz statystyki w CSV" />
                 </VBox>
 
                 <VBox fx:id="trackedAnimalBox" managed="false" spacing="5.0" style="-fx-padding: 10; -fx-background-radius: 5;" visible="false">

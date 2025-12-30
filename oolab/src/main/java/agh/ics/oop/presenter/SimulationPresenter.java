@@ -10,10 +10,7 @@ import agh.ics.oop.model.observers.StatisticsTracker;
 import agh.ics.oop.model.simulation.SimulationType;
 import agh.ics.oop.model.simulation.Simulation;
 import agh.ics.oop.model.simulation.SimulationEngine;
-import agh.ics.oop.model.util.ChartsDataHandler;
-import agh.ics.oop.model.util.ConfigurationHandler;
-import agh.ics.oop.model.util.MapSettings;
-import agh.ics.oop.model.util.Utility;
+import agh.ics.oop.model.util.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -51,6 +48,7 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     private Animal trackedAnimal = null;
     private int rows;
     private int columns;
+    private WriteToCSV csv;
 
     @FXML private ComboBox chartsComboBox;
     @FXML private Label dayLabel;
@@ -182,6 +180,18 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     private void pauseButtonClicked() {
         if (this.simulation != null) {
             this.simulation.startStop();
+        }
+    }
+
+    @FXML
+    private void openCSVClicked() {
+        if (this.simulation != null) {
+            WriteToCSV currCSV = this.simulation.getCSV();
+            if (currCSV != null) {
+                currCSV.openFile();
+            } else {
+                System.out.println("Plik nie został jeszcze utworzony");
+            }
         }
     }
 
