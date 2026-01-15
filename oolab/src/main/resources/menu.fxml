@@ -41,7 +41,7 @@
 
                         <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="3">
                             <Label text="Początkowa ilość zwierząt:" />
-                            <TextField fx:id="animalsCntTextField" maxWidth="100.0" text="15" />
+                            <TextField fx:id="animalsCntTextField" maxWidth="100.0" text="20" />
                             <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: &lt; 1/2 pól)" />
                         </VBox>
 
@@ -53,7 +53,7 @@
 
                         <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="5">
                             <Label text="Ile energii ubywa dziennie:" />
-                            <TextField fx:id="dailyEnergyDecay" maxWidth="100.0" text="12" />
+                            <TextField fx:id="dailyEnergyDecay" maxWidth="100.0" text="2" />
                             <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 1-5)" />
                         </VBox>
 
@@ -65,32 +65,32 @@
 
                         <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <Label text="Ile dodawać roślin dziennie:" />
-                            <TextField fx:id="dailyGrassesTextField" maxWidth="100.0" text="7" />
+                            <TextField fx:id="dailyGrassesTextField" maxWidth="100.0" text="15" />
                             <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: &lt; 1/4 pól)" />
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <Label text="Próg energii do prokreacji:" />
-                            <TextField fx:id="breedingThreshold" maxWidth="100.0" text="12" />
-                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 15-30)" />
+                            <TextField fx:id="breedingThreshold" maxWidth="100.0" text="10" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 10-30)" />
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
                             <Label text="Koszt prokreacji:" />
-                            <TextField fx:id="breedingCost" maxWidth="100.0" text="10" />
+                            <TextField fx:id="breedingCost" maxWidth="100.0" text="5" />
                             <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 5-20)" />
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4">
                             <Label text="Energia z trawy:" />
-                            <TextField fx:id="fromGrassEnergy" maxWidth="100.0" text="2" />
-                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 1-5)" />
+                            <TextField fx:id="fromGrassEnergy" maxWidth="100.0" text="15" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 5-20)" />
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                            <Label text="Ile trwa ruch zwierzaka (ms):" />
-                            <TextField fx:id="refreshTimeTextField" maxWidth="100.0" text="50" />
-                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 50-500)" />
+                            <Label text="Ile trwa dzień (ms):" />
+                            <TextField fx:id="refreshTimeTextField" maxWidth="100.0" text="300" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 100-1000)" />
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="6">
@@ -109,7 +109,7 @@
 
                         <VBox alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <Label text="Min. temp. w zimę (°C):" />
-                            <TextField fx:id="minimalTemperatureTextField" maxWidth="100.0" text="0" />
+                            <TextField fx:id="minimalTemperatureTextField" maxWidth="100.0" text="-10" />
                             <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 10 do -20)" />
                         </VBox>
 
