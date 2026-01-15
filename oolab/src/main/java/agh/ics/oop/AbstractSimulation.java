@@ -24,6 +24,7 @@ abstract public class AbstractSimulation implements Simulation {
     private volatile boolean running = true;
     private WriteToCSV csv;
 
+
     @Override
     public StatisticsTracker getStatistics(){
         return statisticsTracker;
@@ -131,11 +132,11 @@ abstract public class AbstractSimulation implements Simulation {
     public void moveAnimals(){
         map.getAnimalsList().forEach(animal -> {
             map.move(animal);
-            try {
-                Thread.sleep(settings.getRefreshSpeed());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                Thread.sleep(settings.getRefreshSpeed());
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
         });
     }
 
@@ -207,7 +208,8 @@ abstract public class AbstractSimulation implements Simulation {
         advanceDay();
         updateStatistics();
 
-        csv.writeData(new String[]{
+        if (csv != null) {
+            csv.writeData(new String[]{
                     String.valueOf(day),
                     String.valueOf(statisticsTracker.getAnimalsOnMap()),
                     String.valueOf(statisticsTracker.getGrassesOnMap()),
@@ -216,7 +218,8 @@ abstract public class AbstractSimulation implements Simulation {
                     String.valueOf(statisticsTracker.getAnimalsOnMapAverageEnergy()),
                     String.valueOf(statisticsTracker.getAnimalsOnMapAverageKidsCount()),
                     String.valueOf(statisticsTracker.getDeadAnimalsAverageLifespan())
-        });
+            });
+        }
     }
 
     @Override
@@ -230,7 +233,7 @@ abstract public class AbstractSimulation implements Simulation {
                 runOneStep();
             }
             try {
-                Thread.sleep(settings.getRefreshSpeed() * 3L);
+                Thread.sleep(settings.getRefreshSpeed());
             } catch (InterruptedException e) {
                 break;
             }
