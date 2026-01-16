@@ -7,14 +7,16 @@ public class ChartData {
     double averageEnergy;
     double averageLifeSpan;
     double averageKidsCount;
+    double temperature;
 
-    public ChartData(int day, int animals, int grasses, double averageEnergy, double averageLifeSpan, double averageKidsCount){
+    public ChartData(int day, int animals, int grasses, double averageEnergy, double averageLifeSpan, double averageKidsCount, double temperature){
         this.day = day;
         this.animals = animals;
         this.grasses = grasses;
         this.averageEnergy = averageEnergy;
         this.averageLifeSpan = averageLifeSpan;
         this.averageKidsCount = averageKidsCount;
+        this.temperature = temperature;
     }
 
     public int getDay() {
@@ -40,4 +42,6 @@ public class ChartData {
     public double getAverageKidsCount() {
         return averageKidsCount;
     }
+
+    public double getTemperature() { return temperature;}
 }

@@ -35,6 +35,8 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -55,11 +57,14 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     @FXML public TextField minMutationLength;
     @FXML public TextField maxMutationLength;
     @FXML public CheckBox simulationTypeCheckButton;
+
     @FXML private LineChart<Number, Number> averageLifeSpanPerDayLineChart;
     @FXML private LineChart<Number, Number> averageEnergyPerDayLineChart;
     @FXML private LineChart<Number, Number> grassesPerDayLineChart;
     @FXML private LineChart<Number, Number> animalsPerDayLineChart;
     @FXML private LineChart<Number, Number> averageKidsCountPerDayLineChart;
+    @FXML private LineChart<Number, Number> temperaturePerDayLineChart;
+
     @FXML private TextField distanceToTransferHeatTextField;
     @FXML private TextField minimalTemperatureTextField;
     @FXML private TextField summerLengthTextField;
@@ -110,15 +115,24 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
         else if (selected.equals("średnia liczba energia od dnia")) showAverageEnergyPerDayLineChart();
         else if (selected.equals("średnia długość życia")) showAverageLifeSpanPerDayLineChart();
         else if (selected.equals("średnia liczba dzieci")) showAverageKidsCount();
+        else if (selected.equals("temperatura od dnia")) showTemperaturePerDay();
     }
 
     void initChartsComboBox(){
         chartsComboBox.getItems().clear();
-        chartsComboBox.getItems().addAll("liczba zwierząt od dnia",
+
+        ArrayList<String> comboValues = new ArrayList<>(List.of(
+                "liczba zwierząt od dnia",
                 "liczba traw od dnia",
                 "średnia liczba energia od dnia",
                 "średnia długość życia",
-                "średnia liczba dzieci");
+                "średnia liczba dzieci"
+        ));
+
+        if (map.getMapSettings().getSimulationType() == SimulationType.Seasonal)
+            comboValues.add("temperatura od dnia");
+
+        chartsComboBox.getItems().addAll(comboValues);
     }
 
     private void connectChartsDataWithCharts(){
@@ -127,6 +141,7 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
         averageEnergyPerDayLineChart.getData().add(chartsDataHandler.getAverageEnergyPerDay());
         averageLifeSpanPerDayLineChart.getData().add(chartsDataHandler.getAverageLifeSpanPerDay());
         averageKidsCountPerDayLineChart.getData().add(chartsDataHandler.getAverageKidsCountPerDay());
+        temperaturePerDayLineChart.getData().add(chartsDataHandler.getTemperaturePerDay());
     }
 
     public void showAnimalsPerDayLineChart(){
@@ -159,12 +174,19 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
         averageKidsCountPerDayLineChart.setVisible(true);
     }
 
+    public void showTemperaturePerDay(){
+        hideCharts();
+        temperaturePerDayLineChart.setManaged(true);
+        temperaturePerDayLineChart.setVisible(true);
+    }
+
     private void hideCharts(){
         animalsPerDayLineChart.setManaged(false); animalsPerDayLineChart.setVisible(false);
         grassesPerDayLineChart.setManaged(false); grassesPerDayLineChart.setVisible(false);
         averageEnergyPerDayLineChart.setManaged(false); averageEnergyPerDayLineChart.setVisible(false);
         averageLifeSpanPerDayLineChart.setManaged(false); averageLifeSpanPerDayLineChart.setVisible(false);
         averageKidsCountPerDayLineChart.setManaged(false); averageKidsCountPerDayLineChart.setVisible(false);
+        temperaturePerDayLineChart.setManaged(false); temperaturePerDayLineChart.setVisible(false);
     }
 
     public void setWorldMap(WorldMap map){
@@ -410,6 +432,7 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
         updateRange((NumberAxis) averageEnergyPerDayLineChart.getXAxis(), chartsDataHandler.getAverageEnergyPerDay());
         updateRange((NumberAxis) averageKidsCountPerDayLineChart.getXAxis(), chartsDataHandler.getAverageKidsCountPerDay());
         updateRange((NumberAxis) averageLifeSpanPerDayLineChart.getXAxis(), chartsDataHandler.getAverageLifeSpanPerDay());
+        updateRange((NumberAxis) temperaturePerDayLineChart.getXAxis(), chartsDataHandler.getTemperaturePerDay());
     }
 
     private void updateRange(NumberAxis axis, javafx.scene.chart.XYChart.Series<Number, Number> series) {
@@ -528,7 +551,7 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                 ? new NormalSimulation(newMap, settings) : new SeasonalSimulation(newMap, settings);
 
         StatisticsTracker tracker = new StatisticsTracker();
-        tracker.updateStats(newMap, 0);
+        tracker.updateStats(newMap, 0, 20);
 
         presenter.initChartsComboBox();
         presenter.initCanvas(presenter.map);

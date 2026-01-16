@@ -68,7 +68,7 @@ public class StatisticsTracker {
     // skala projektu jest zbyt mała, aby aktualizować statystyki dopiero po
     // konkretnym wydarzeniu lepiej jeden raz zawsze wszystkie
     // czytelność lepsza niż mikrooptymalizacja
-    public void updateStats(WorldMap map, int day) {
+    public void updateStats(WorldMap map, int day, double temperature) {
         animalsOnMap = map.getAnimalsCount();
         grassesOnMap = map.getGrassesCount();
         emptyCells = map.getEmptySpacesCount();
@@ -80,7 +80,7 @@ public class StatisticsTracker {
         animalsOnMapAverageKidsCount = calculateAnimalsOnMapAverageKidsCount(map);
 
         chartData = new ChartData(day, animalsOnMap,
-                grassesOnMap, animalsOnMapAverageEnergy, deadAnimalsAverageLifespan, animalsOnMapAverageKidsCount);
+                grassesOnMap, animalsOnMapAverageEnergy, deadAnimalsAverageLifespan, animalsOnMapAverageKidsCount, temperature);
     }
 
     public int getDeadAnimalsAgeSum() {

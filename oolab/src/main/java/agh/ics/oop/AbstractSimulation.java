@@ -17,8 +17,8 @@ import java.util.stream.IntStream;
 abstract public class AbstractSimulation implements Simulation {
     protected final WorldMap map;
     protected final MapSettings settings;
-    private final ArrayList<SimulationChangeListener> simulationChangeListeners = new ArrayList<>();
-    private final StatisticsTracker statisticsTracker = new StatisticsTracker();
+    protected final ArrayList<SimulationChangeListener> simulationChangeListeners = new ArrayList<>();
+    protected final StatisticsTracker statisticsTracker = new StatisticsTracker();
     private volatile boolean paused = false;
     protected int day;
     private volatile boolean running = true;
@@ -68,8 +68,9 @@ abstract public class AbstractSimulation implements Simulation {
         simulationChangeListeners.remove(observer);
     }
 
-    private void updateStatistics(){
-        statisticsTracker.updateStats(map, day);
+    @Override
+    public void updateStatistics(){
+        statisticsTracker.updateStats(map, day, 20);
         simulationChangeListeners.forEach(observer -> observer.simulationStatisticsChanged(statisticsTracker));
     }
 

@@ -12,7 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 public class SeasonalSimulation extends AbstractSimulation implements SeasonalInfo {
-    private SeasonManager seasonManager;
+    private final SeasonManager seasonManager;
+
+    @Override
+    public void updateStatistics(){
+        statisticsTracker.updateStats(map, day, seasonManager.getTemperature(day));
+        simulationChangeListeners.forEach(observer -> observer.simulationStatisticsChanged(statisticsTracker));
+    }
 
     @Override
     public MapVisualState getMapVisualState() {

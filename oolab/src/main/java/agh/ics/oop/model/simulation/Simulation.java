@@ -22,5 +22,8 @@ public interface Simulation extends Runnable {
 
     @Override
     void run();
+
+    void updateStatistics();
+
     public void runOneStep();
 }

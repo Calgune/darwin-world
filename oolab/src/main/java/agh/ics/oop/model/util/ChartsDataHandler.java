@@ -8,7 +8,7 @@ public class ChartsDataHandler {
     private final XYChart.Series<Number, Number> averageEnergyPerDay;
     private final XYChart.Series<Number, Number> averageLifeSpanPerDay;
     private final XYChart.Series<Number, Number> averageKidsCountPerDay;
-    private int prev = -1;
+    private final XYChart.Series<Number, Number> temperaturePerDay;
 
     public ChartsDataHandler() {
         animalsPerDay = new XYChart.Series<>();
@@ -16,6 +16,7 @@ public class ChartsDataHandler {
         averageEnergyPerDay = new XYChart.Series<>();
         averageLifeSpanPerDay = new XYChart.Series<>();
         averageKidsCountPerDay = new XYChart.Series<>();
+        temperaturePerDay = new XYChart.Series<>();
     }
 
     public void updateChart(ChartData chartData){
@@ -25,6 +26,7 @@ public class ChartsDataHandler {
             averageEnergyPerDay.getData().removeFirst();
             averageLifeSpanPerDay.getData().removeFirst();
             averageKidsCountPerDay.getData().removeFirst();
+            temperaturePerDay.getData().removeFirst();
         }
 
         animalsPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAnimals()));
@@ -32,7 +34,7 @@ public class ChartsDataHandler {
         averageEnergyPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageEnergy()));
         averageLifeSpanPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageLifeSpan()));
         averageKidsCountPerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getAverageKidsCount()));
-        prev = chartData.getDay();
+        temperaturePerDay.getData().add(new XYChart.Data<>(chartData.getDay(), chartData.getTemperature()));
     }
 
 
@@ -54,5 +56,9 @@ public class ChartsDataHandler {
 
     public XYChart.Series<Number, Number> getAverageKidsCountPerDay() {
         return averageKidsCountPerDay;
+    }
+
+    public XYChart.Series<Number, Number> getTemperaturePerDay() {
+        return temperaturePerDay;
     }
 }
