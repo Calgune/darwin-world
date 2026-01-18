@@ -133,11 +133,6 @@ abstract public class AbstractSimulation implements Simulation {
     public void moveAnimals(){
         map.getAnimalsList().forEach(animal -> {
             map.move(animal);
-//            try {
-//                Thread.sleep(settings.getRefreshSpeed());
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
         });
     }
 
@@ -181,7 +176,6 @@ abstract public class AbstractSimulation implements Simulation {
     }
 
     public void advanceDay(){
-        updateCharts();
         day++;
     }
 
@@ -207,7 +201,9 @@ abstract public class AbstractSimulation implements Simulation {
 
         // 7 przeminiecie dnia
         advanceDay();
+        map.mapChanged("");
         updateStatistics();
+        updateCharts();
 
         if (csv != null) {
             csv.writeData(new String[]{
@@ -225,6 +221,7 @@ abstract public class AbstractSimulation implements Simulation {
 
     @Override
     public void run(){
+        map.mapChanged("");
         updateStatistics();
         updateCharts();
         csv = new WriteToCSV();

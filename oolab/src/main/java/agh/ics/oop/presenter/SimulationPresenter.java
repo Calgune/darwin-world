@@ -409,9 +409,9 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                             gc.setFill(Color.rgb(255,0,0));
                             drawTextInTheMiddleOfRectangle(gc, animal.toString(), x, y);
                         }
-                    } else {
+                    } else if (object != null){
                         gc.setFill(Color.rgb(0,0,0));
-                        drawTextInTheMiddleOfRectangle(gc, worldMap.objectAt(position).toString(), x, y);
+                        drawTextInTheMiddleOfRectangle(gc, object.toString(), x, y);
                     }
                 }
             }

@@ -26,27 +26,27 @@
                     <StackPane>
                         <LineChart fx:id="animalsPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
                             <xAxis><NumberAxis animated="false" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
-                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                            <yAxis><NumberAxis animated="false" side="LEFT" /></yAxis>
                         </LineChart>
                         <LineChart fx:id="grassesPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
-                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
-                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                            <xAxis><NumberAxis animated="false" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis animated="false" side="LEFT" /></yAxis>
                         </LineChart>
                         <LineChart fx:id="averageEnergyPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
-                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
-                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                            <xAxis><NumberAxis animated="false" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis animated="false" side="LEFT" /></yAxis>
                         </LineChart>
                         <LineChart fx:id="averageLifeSpanPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
-                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
-                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                            <xAxis><NumberAxis animated="false" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis animated="false" side="LEFT" /></yAxis>
                         </LineChart>
                         <LineChart fx:id="averageKidsCountPerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
-                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
-                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                            <xAxis><NumberAxis animated="false" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis  animated="false" side="LEFT" /></yAxis>
                         </LineChart>
                         <LineChart fx:id="temperaturePerDayLineChart" createSymbols="false" managed="false" prefHeight="180.0" visible="false">
-                            <xAxis><NumberAxis animated="true" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
-                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                            <xAxis><NumberAxis animated="false" autoRanging="false" minorTickVisible="false" side="BOTTOM" tickUnit="1" /></xAxis>
+                            <yAxis><NumberAxis animated="false" side="LEFT" /></yAxis>
                         </LineChart>
                     </StackPane>
                     <ComboBox fx:id="chartsComboBox" onAction="#selectChart" prefWidth="200.0" promptText="wybierz wykres..." />

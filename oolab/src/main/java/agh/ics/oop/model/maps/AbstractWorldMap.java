@@ -105,13 +105,11 @@ public abstract class AbstractWorldMap implements WorldMap {
     public void placeAnimal(Animal animal){
         animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
                 .add(animal);
-        mapChanged(String.format("", animal.getPosition()));
     }
 
     @Override
     public void placeGrass(Grass grass){
         grasses.put(grass.getPosition(), grass);
-        mapChanged(String.format("", grass.getPosition()));
     }
 
     @Override
@@ -127,8 +125,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             animals.computeIfAbsent(animal.getPosition(), _ -> new ArrayList<>())
                     .add(animal);
 
-            mapChanged(String.format("", previousPosition, previousDirection,
-                    animal.getPosition(), animal.getDirection()));
         }
     }
 
