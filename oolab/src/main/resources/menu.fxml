@@ -24,13 +24,13 @@
                         <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <Label text="Szerokość mapy:" />
                             <TextField fx:id="mapWidthTextField" maxWidth="100.0" text="25" />
-                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 10-45)" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 10-50)" />
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <Label text="Wysokość mapy:" />
                             <TextField fx:id="mapHeightTextField" maxWidth="100.0" text="12" />
-                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 5-20)" />
+                            <Label style="-fx-font-size: 10px; -fx-text-fill: gray;" text="(Sugerowane: 10-50)" />
                         </VBox>
 
                         <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="2">

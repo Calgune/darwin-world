@@ -508,27 +508,49 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
 
     private int boundaryGuard(int value, int min, int max) { return Math.max(min, Math.min(max, value)); }
 
+    private int parseInteger(String text, int min, int max) {
+        try {
+            int value = Integer.parseInt(text);
+            if (value < min || value > max) {
+                throw new NumberFormatException("Out of range");
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            errorPopup();
+            throw new RuntimeException();
+        }
+    }
+
+    private void errorPopup() {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle("Błąd");
+        alert.setHeaderText("Błędne wartości");
+        alert.setContentText("Wpisuj liczby całkowite w sugerowanych zakresach.");
+        alert.showAndWait();
+    }
+
     public void onSimulationStartClicked(ActionEvent actionEvent) throws Exception {
+        try {
+            int mapWidth = parseInteger(mapWidthTextField.getText(), 2, 50);
+            int mapHeight = parseInteger(mapHeightTextField.getText(), 2, 50);
+            int maxFields = (mapWidth + 1) * (mapHeight + 1);
+            int initialGrasses = parseInteger(initialGrassesTextField.getText(), 0, maxFields);
+            int dailyGrasses = parseInteger(dailyGrassesTextField.getText(), 0, maxFields / 2);
+            int animalsCnt = parseInteger(animalsCntTextField.getText(), 1, maxFields * 2);
+            int initialEnergy = parseInteger(initialEnergyTextField.getText(), 1, 1000);
+            int genomesLength = parseInteger(genomesTextField.getText(), 1, 100);
+            int energyDecay = parseInteger(dailyEnergyDecay.getText(), 0, 100);
+            int reproductionThreshold = parseInteger(breedingThreshold.getText(), 1, 1000);
+            int reproductionCost = parseInteger(breedingCost.getText(), 0, 500);
+            int grassEnergy = parseInteger(fromGrassEnergy.getText(), 0, 500);
+            int refreshTime = parseInteger(refreshTimeTextField.getText(), 10, 1000);
+            int minMutation = parseInteger(minMutationLength.getText(), 0, genomesLength);
+            int maxMutation = parseInteger(maxMutationLength.getText(), minMutation, genomesLength);
+
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
         BorderPane viewRoot = loader.load();
         SimulationPresenter presenter = loader.getController();
-
-        int mapWidth = boundaryGuard(Integer.parseInt(mapWidthTextField.getText()), 2, 50);
-        int mapHeight = boundaryGuard(Integer.parseInt(mapHeightTextField.getText()), 2, 50);
-        int maxFields = (mapWidth + 1) * (mapHeight + 1);
-        int initialGrasses = boundaryGuard(Integer.parseInt(initialGrassesTextField.getText()), 0, maxFields);
-        int dailyGrasses = boundaryGuard(Integer.parseInt(dailyGrassesTextField.getText()), 0, maxFields / 2);
-        int animalsCnt = boundaryGuard(Integer.parseInt(animalsCntTextField.getText()), 1, maxFields*2);
-        int initialEnergy = boundaryGuard(Integer.parseInt(initialEnergyTextField.getText()), 1, 1000);
-        int genomesLength = boundaryGuard(Integer.parseInt(genomesTextField.getText()), 1, 100);
-        int energyDecay = boundaryGuard(Integer.parseInt(dailyEnergyDecay.getText()), 0, 100);
-        int reproductionThreshold = boundaryGuard(Integer.parseInt(breedingThreshold.getText()), 1, 1000);
-        int reproductionCost = boundaryGuard(Integer.parseInt(breedingCost.getText()), 0, 500);
-        int grassEnergy = boundaryGuard(Integer.parseInt(fromGrassEnergy.getText()), 0, 500);
-        int refreshTime = boundaryGuard(Integer.parseInt(refreshTimeTextField.getText()), 10, 1000);
-        int minMutation = boundaryGuard(Integer.parseInt(minMutationLength.getText()), 0, genomesLength);
-        int maxMutation = boundaryGuard(Integer.parseInt(maxMutationLength.getText()), minMutation, genomesLength);
 
         MapSettings settings = new MapSettings.Builder()
                 .boundary(new Boundary(new Vector2d(0,0), new Vector2d(mapWidth, mapHeight)))
@@ -536,15 +558,12 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                 .initialAnimalCount(animalsCnt).newDailyGrasses(dailyGrasses).dailyEnergyDecay(energyDecay)
                 .energyFromGrass(grassEnergy).reproductionEnergyCost(reproductionCost).reproductionEnergyThreshold(reproductionThreshold)
                 .refreshSpeed(refreshTime).simulationType(getSimulationType())
-                .minimalTemperatureInWinter(Integer.parseInt(minimalTemperatureTextField.getText()))
-                .distanceToTransferHeat(Integer.parseInt(distanceToTransferHeatTextField.getText()))
-                .winterLengthInDays(Integer.parseInt(winterLengthTextField.getText()))
-                .summerLengthInDays(Integer.parseInt(summerLengthTextField.getText()))
+                .minimalTemperatureInWinter(parseInteger(minimalTemperatureTextField.getText(), -50, 50))
+                .distanceToTransferHeat(parseInteger(distanceToTransferHeatTextField.getText(), 0, 10))
+                .winterLengthInDays(parseInteger(winterLengthTextField.getText(), 1, 100))
+                .summerLengthInDays(parseInteger(summerLengthTextField.getText(), 1, 100))
                 .minMutationLength(minMutation).maxMutationLength(maxMutation).build();
 
-        // jak stworzymy nowa mape to mozemy miec kilka okien.
-        // Nie ma juz threadow i disablowania przycisku,
-        // po usunieciu tego zaczelo dzialac wielokrotne otwieranie
         WorldMap newMap = new CylindricalMap(settings);
         presenter.setWorldMap(newMap);
         Simulation simulation = (settings.getSimulationType() == SimulationType.Normal)
@@ -568,6 +587,10 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
 
         presenter.connectChartsDataWithCharts();
         if(settings.getSimulationType() == SimulationType.Seasonal) presenter.enableSeasonalLabels();
+
+        } catch (RuntimeException e) {
+            System.out.println("Przerwano symulację, błędne dane");
+        }
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
