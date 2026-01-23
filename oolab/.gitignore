@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 .kotlin
 simulation_*.csv
+*.csv
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

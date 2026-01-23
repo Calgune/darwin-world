@@ -232,14 +232,14 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
                 mapWidthTextField.setText("25"); mapHeightTextField.setText("12");
                 animalsCntTextField.setText("200"); initialGrassesTextField.setText("70");
                 dailyGrassesTextField.setText("20"); initialEnergyTextField.setText("50");
-                breedingCost.setText("3"); breedingThreshold.setText("3"); refreshTimeTextField.setText("10");
+                breedingCost.setText("3"); breedingThreshold.setText("3"); refreshTimeTextField.setText("300");
             }
             case "Postapo" -> {
                 mapWidthTextField.setText("25"); mapHeightTextField.setText("12");
                 animalsCntTextField.setText("6"); initialGrassesTextField.setText("10");
                 dailyGrassesTextField.setText("1"); dailyEnergyDecay.setText("3");
                 initialEnergyTextField.setText("30"); breedingCost.setText("10");
-                breedingThreshold.setText("10"); refreshTimeTextField.setText("50");
+                breedingThreshold.setText("10"); refreshTimeTextField.setText("300");
             }
         }
     }
@@ -522,7 +522,7 @@ public class SimulationPresenter implements MapChangeListener, SimulationChangeL
     }
 
     private void errorPopup() {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
         alert.setTitle("Błąd");
         alert.setHeaderText("Błędne wartości");
         alert.setContentText("Wpisuj liczby całkowite w sugerowanych zakresach.");
