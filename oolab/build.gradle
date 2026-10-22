@@ -8,16 +8,16 @@ group = 'org.example'
 version = '1.0-SNAPSHOT'
 
 repositories {
-    javafx {
-        version = "25"
-        modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']
-    }
     mavenCentral()
 }
 
+javafx {
+    version = "25"
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']
+}
 
 application {
-    getMainClass().set('agh.ics.oop.World')
+    mainClass.set('agh.ics.oop.World')
 }
 
 java {
