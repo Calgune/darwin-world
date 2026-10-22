@@ -13,7 +13,11 @@ Projekt wykonany na przedmiocie **Programowanie obiektowe** (AGH, Informatyka).
 
 Krótki film pokazujący, jak działa aplikacja:
 
-[Obejrzyj film]([2026-10-22 12-53-56.mp4](../../../Videos/2026-10-22%2012-53-56.mp4))
+
+
+https://github.com/user-attachments/assets/303ab0a5-631a-4d8a-bb95-317e23c03dc4
+
+
 
 ## Jak działa symulacja
 
