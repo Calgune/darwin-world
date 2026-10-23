@@ -1,58 +1,55 @@
 # Darwin World
 
-Symulacja ewolucji zwierząt na mapie, napisana w Javie z interfejsem w JavaFX. Zwierzaki chodzą po planszy, szukają trawy, rozmnażają się i przekazują dalej swoje geny (z drobnymi mutacjami). Można patrzeć, jak populacja się zmienia z dnia na dzień, i sprawdzać, które strategie przeżywają.
+An animal evolution simulation written in Java with a JavaFX interface. Animals roam the map, look for grass, reproduce and pass their genes on (with small mutations). You can watch the population change from day to day and see which strategies survive.
 
-Projekt wykonany na przedmiocie **Programowanie obiektowe** (AGH, Informatyka).
+The project was made for the **Object-Oriented Programming** course (AGH University of Krakow, Computer Science).
 
-## Autorzy
+## Authors
 
 - Paweł Pochwalski
 - Justyna Konior
 
-## Film
+## Video
 
-Krótki film pokazujący, jak działa aplikacja:
-
-
+A short video showing how the application works:
 
 https://github.com/user-attachments/assets/303ab0a5-631a-4d8a-bb95-317e23c03dc4
 
 
+## How the simulation works
 
-## Jak działa symulacja
+The world is a map shaped like a cylinder: the left and right edges are connected, while the top and bottom are walls. The middle strip of the map is a jungle where grass grows more often; the rest is steppe.
 
-Świat to plansza w kształcie walca: lewa i prawa krawędź się łączą, góra i dół są ścianami. Środkowy pas mapy to dżungla, gdzie trawa rośnie częściej, reszta to stepy.
+A typical day looks like this:
 
-Każdy dzień wygląda mniej więcej tak:
+1. Animals lose energy (daily cost of living).
+2. Each animal moves according to its genome.
+3. Animals standing on grass eat it and regain energy.
+4. Animals with enough energy reproduce. The child gets a mix of its parents' genes, and some genes may mutate.
+5. New grass grows on the map.
 
-1. Zwierzęta tracą energię (dzienny koszt życia).
-2. Każde rusza się zgodnie ze swoim genomem.
-3. Zwierzęta stojące na trawie ją zjadają i odzyskują energię.
-4. Zwierzęta z odpowiednio dużą ilością energii się rozmnażają. Dziecko dostaje mieszankę genów rodziców, a część genów może zmutować.
-5. Na mapie wyrasta nowa trawa.
+Dead animals disappear from the map, but their lifespan is still counted in the statistics.
 
-Martwe zwierzaki znikają z planszy, ale ich długość życia zostaje wliczona do statystyk.
+### Modes
 
-### Tryby
+- **Normal**: constant conditions throughout the simulation.
+- **Seasonal**: alternating summer and winter. In winter the temperature drops and animals have to cope with a higher cost of living. The length of the seasons, the minimum temperature and the distance over which heat spreads are set in the configuration.
 
-- **Normalny**: stałe warunki przez cały czas.
-- **Sezonowy**: na zmianę lato i zima. Zimą spada temperatura, a zwierzęta muszą radzić sobie z większym kosztem życia. Długość pór roku, minimalną temperaturę i odległość, na jaką rozchodzi się ciepło, ustawia się w konfiguracji.
+## What you can do in the program
 
-## Co można w programie robić
+- set all simulation parameters (map size, number of animals and grass, energies, reproduction costs, genome length, mutation range and more),
+- use ready-made presets: *Bezpłodni*, *Indie*, *Postapo*,
+- save and load the configuration from a `.txt` file,
+- run several simulations at once, each in its own window,
+- pause and resume the simulation,
+- watch live statistics: number of animals and grass, empty cells, most popular genotype, average energy, average lifespan and average number of children,
+- view charts of these values over time (including temperature in seasonal mode),
+- after pausing, click an animal to follow its genome, energy, age, number of children, descendants and plants eaten,
+- save the statistics from each day to a CSV file.
 
-- ustawić wszystkie parametry symulacji (rozmiar mapy, liczba zwierząt i traw, energie, koszty rozmnażania, długość genomu, zakres mutacji i inne),
-- skorzystać z gotowych presetów: *Bezpłodni*, *Indie*, *Postapo*,
-- zapisywać i wczytywać konfigurację z pliku `.txt`,
-- uruchamiać kilka symulacji naraz, każda w osobnym oknie,
-- zatrzymywać i wznawiać symulację,
-- oglądać statystyki na bieżąco: liczba zwierząt i traw, puste pola, najpopularniejszy genotyp, średnia energia, średnia długość życia i średnia liczba dzieci,
-- przeglądać wykresy tych wartości w czasie (w trybie sezonowym także temperaturę),
-- po zatrzymaniu kliknąć w zwierzaka i śledzić jego genom, energię, wiek, liczbę dzieci, potomków i zjedzonych roślin,
-- zapisywać statystyki z każdego dnia do pliku CSV.
+## Running
 
-## Uruchomienie
-
-Potrzebne jest **JDK 25** (Gradle w razie czego sam spróbuje je dobrać). Biblioteki, w tym JavaFX i OpenCSV, pobierają się automatycznie.
+You need **JDK 25** (Gradle will try to provision it if needed). Libraries, including JavaFX and OpenCSV, are downloaded automatically.
 
 ```bash
 git clone https://github.com/Calgune/Darwin-World.git
@@ -60,13 +57,13 @@ cd Darwin-World/oolab
 ./gradlew run
 ```
 
-Na Windowsie zamiast `./gradlew` używamy `gradlew.bat`.
+On Windows use `gradlew.bat` instead of `./gradlew`.
 
-Można też otworzyć projekt w IntelliJ IDEA, poczekać aż Gradle się zsynchronizuje i uruchomić zadanie `application > run`.
+You can also open the project in IntelliJ IDEA, wait for Gradle to sync and run the `application > run` task.
 
-Jeśli IntelliJ nie chce odpalić aplikacji z zielonej strzałki, w ustawieniach (`Build Tools > Gradle`) trzeba ustawić *Build and run using: Gradle*.
+If IntelliJ won't start the application from the green arrow, go to the settings (`Build Tools > Gradle`) and set *Build and run using: Gradle*.
 
-## Technologie
+## Technologies
 
 - Java 25
 - JavaFX 25
@@ -74,15 +71,15 @@ Jeśli IntelliJ nie chce odpalić aplikacji z zielonej strzałki, w ustawieniach
 - OpenCSV
 - JUnit 5
 
-## Struktura projektu
+## Project structure
 
-Kod jest podzielony na pakiety w `agh.ics.oop`:
+The code is split into packages under `agh.ics.oop`:
 
-- `model` – zwierzęta, trawa, genomy, mapa i jej ustawienia,
-- `model.maps` – implementacje mapy,
-- `model.simulation` – silnik i logika symulacji (normalnej i sezonowej),
-- `model.observers` – obserwatorzy zmian na mapie i w statystykach,
-- `model.util` – klasy pomocnicze, m.in. zapis do CSV i obsługa plików konfiguracyjnych,
-- `presenter` – kontrolery widoków JavaFX.
+- `model` – animals, grass, genomes, the map and its settings,
+- `model.maps` – map implementations,
+- `model.simulation` – the simulation engine and logic (normal and seasonal),
+- `model.observers` – observers of changes on the map and in the statistics,
+- `model.util` – helper classes, including CSV writing and configuration file handling,
+- `presenter` – JavaFX view controllers.
 
-Widoki są opisane w plikach FXML w `src/main/resources`.
+The views are described in FXML files in `src/main/resources`.
