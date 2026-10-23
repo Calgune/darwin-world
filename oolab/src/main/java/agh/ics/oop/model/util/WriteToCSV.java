@@ -3,6 +3,8 @@ package agh.ics.oop.model.util;
 import com.opencsv.CSVWriter;
 
 import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,7 +15,15 @@ public class WriteToCSV {
 
     public WriteToCSV() {
         String uuid = UUID.randomUUID().toString().substring(0, 4);
-        this.filePath = "simulation_" + uuid + ".csv";
+        Path dir = Path.of("csv.storage");
+
+        try {
+            Files.createDirectory(dir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.filePath = "csv.storage/" + "simulation_" + uuid + ".csv";
         writeHeader();
     }
 
